@@ -1,0 +1,33 @@
+{
+  "name": "release-bump",
+  "version": "0.0.0",
+  "description": "Release Bump handles version bump tasks for a code release.",
+  "keywords": [
+    "release",
+    "bump",
+    "version",
+    "changelog"
+  ],
+  "homepage": "https://github.com/paulshryock/release-bump#readme",
+  "bugs": {
+    "url": "https://github.com/paulshryock/release-bump/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulshryock/release-bump.git"
+  },
+  "license": "Hippocratic 2.1",
+  "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
+  "main": "src/bump.js",
+  "bin": {
+    "release-bump": "cli.js"
+  },
+  "scripts": {
+    "version": "node cli.js && git add ."
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "deepmerge": "^4.2.2"
+  },
+  "devDependencies": {}
+}
