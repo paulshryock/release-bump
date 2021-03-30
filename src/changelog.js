@@ -27,7 +27,10 @@ module.exports = class Changelog {
     }
     const [month, date, year] = new Date().toLocaleDateString('en-US').split('/')
     this.version = version
-    this.repository = repository.url.replace('git+', '').replace('.git', '')
+    this.repository = repository.url
+      .replace(`^git\+?`, '')
+      .replace(/^(ssh)?:\/\//, 'https://')
+      .replace(/\.git(#.*$)?/, '')
     this.today = `${month}/${date}/${year}`
     this.filePath = filePath
     this.includeV = includeV

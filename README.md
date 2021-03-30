@@ -2,11 +2,71 @@
 
 Release Bump handles version bump tasks for a code release.
 
-## Roadmap
+## Features
 
-- [x] Bump Changelog
-- [ ] Bump docblock comments
-- [ ] Add CLI flag configuration
+[View roadmap](https://github.com/paulshryock/release-bump/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
+
+### Bump Changelog
+
+From this:
+
+```bash
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- Add my new feature.
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+- Fix a bug.
+- Fix another bug.
+
+### Security
+```
+
+to this:
+
+```bash
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased](https://example.com/repo/compare/HEAD..1.0.0)
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [1.0.0](https://example.com/repo/releases/tags/v1.0.0) - 3/30/2021
+
+### Added
+- Add my new feature.
+
+### Fixed
+- Fix a bug.
+- Fix another bug.
+```
 
 ## Usage
 

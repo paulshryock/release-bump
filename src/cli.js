@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 (function () {
-  const Bump = require('./src/bump.js')
+  const Bump = require('./bump.js')
 
   /**
    * Initialize Release Bump.

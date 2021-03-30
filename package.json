@@ -20,10 +20,11 @@
   "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
   "main": "src/bump.js",
   "bin": {
-    "release-bump": "cli.js"
+    "release-bump": "src/cli.js"
   },
   "scripts": {
-    "version": "node cli.js && git add ."
+    "version": "node src/cli.js && git add .",
+    "postversion": "git push && git push --tags && npm publish"
   },
   "dependencies": {
     "axios": "^0.21.1",
