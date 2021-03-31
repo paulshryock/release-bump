@@ -1,6 +1,6 @@
-const fs = require('fs')
-// @todo: Use fetch instead of a dependency.
 const axios = require('axios')
+// @todo: Use fetch instead of a dependency.
+const fs = require('fs')
 
 /**
  * Changelog class.
@@ -13,13 +13,13 @@ module.exports = class Changelog {
    * Changelog class constructor.
    *
    * @param {string}  options.filePath       The Changelog file path.
-   * @param {boolean} options.includeV       Whether to include v in the version.
+   * @param {string}  options.gitRemote      The Git remote. (`github`|`bitbucket`)
    * @param {string}  options.initialText    The initial Changelog text.
    * @param {string}  options.initialTextUrl The initial Changelog text URL.
-   * @param {string}  options.remote         Accepts 'github' or 'bitbucket'.
+   * @param {boolean} options.skipV          Whether to skip v in the version.
    * @since 1.0.0
    */
-  constructor({ filePath, includeV, initialText, initialTextUrl, remote }) {
+  constructor({ filePath, gitRemote, initialText, initialTextUrl, skipV }) {
     const { version, repository } = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
     if (!version || !repository || !repository.url) {
       console.error('version or repository url is missing from package.json.')
@@ -33,12 +33,12 @@ module.exports = class Changelog {
       .replace(/\.git(#.*$)?/, '')
     this.today = `${month}/${date}/${year}`
     this.filePath = filePath
-    this.includeV = includeV
+    this.gitRemote = gitRemote.toLowerCase()
     this.initialText = initialText
     this.initialTextUrl = initialTextUrl
-    this.remote = remote.toLowerCase()
+    this.skipV = skipV
     this.unreleased =
-      `## [Unreleased](${this.repository}/${this.remote === 'bitbucket' ? 'branches/' : ''}compare/HEAD..${this.version})` +
+      `## [Unreleased](${this.repository}/${this.gitRemote === 'bitbucket' ? 'branches/' : ''}compare/HEAD..${this.version})` +
       '\n\n### Added' +
       '\n\n### Changed' +
       '\n\n### Deprecated' +
@@ -146,8 +146,8 @@ module.exports = class Changelog {
    */
   bump () {
     this.header = `## [${this.version}](${this.repository}/` +
-      `${this.remote === 'bitbucket' ? 'commits/tag' : 'releases/tags'}/` +
-      `${this.includeV ? 'v' : ''}${this.version}) - ${this.today}`
+      `${this.gitRemote === 'bitbucket' ? 'commits/tag' : 'releases/tags'}/` +
+      `${this.skipV ? '' : 'v'}${this.version}) - ${this.today}`
 
     this.write(this.text
       // Bump unreleased version and add today's date.

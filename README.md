@@ -1,6 +1,6 @@
-# Release Bump
+# `release-bump`
 
-Release Bump handles version bump tasks for a code release.
+`release-bump` handles version bump tasks for a code release.
 
 ## Features
 
@@ -8,15 +8,11 @@ Release Bump handles version bump tasks for a code release.
 
 ### Bump Changelog
 
-From this:
+Add lines to your Changelog beneath the Unreleased header as you make changes. 
+
+`release-bump` will change this:
 
 ```bash
-# Changelog
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
 ## [Unreleased]
 
 ### Added
@@ -38,12 +34,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 to this:
 
 ```bash
-# Changelog
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
 ## [Unreleased](https://example.com/repo/compare/HEAD..1.0.0)
 
 ### Added
@@ -88,11 +78,21 @@ Add `release-bump` to a `version` npm script.
 }
 ```
 
-Now whenever you run `npm version <major|minor|patch>`, all of the Release Bump tasks will execute with the new version number before npm creates a version commit.
+Now whenever you run `npm version <major|minor|patch>`, all of the `release-bump` tasks will execute with the new version number before npm creates a version commit.
+
+#### Configuration
+
+| Option | Type    | Default                                | Description                            |
+| :---   | :---    | :---                                   | :---                                   |
+| `-p`   | string  | `./CHANGELOG.md`                       | The Changelog file path.               |
+| `-r`   | string  | `github`                               | The Git remote. (`github`|`bitbucket`) |
+| `-s`   | boolean | `false`                                | Whether to skip `v` in the version.    |
+| `-t`   | string  | empty string                           | The initial Changelog text.            |
+| `-u`   | string  | `https://keepachangelog.com/en/1.0.0/` | The initial Changelog text URL.        |
 
 ### JavaScript API
 
-If you prefer to run Release Bump programattically, just require Release Bump as a class and instantiate it:
+If you prefer to run `release-bump` programattically, just require and instantiate a `release-bump` class:
 
 ```javascript
 const Bump = require('release-bump')
@@ -106,21 +106,21 @@ const Bump = require('release-bump')
 new Bump({
   changelog: {
     filePath: './CHANGELOG.md',
-    includeV: true,
+    gitRemote: 'github',
     initialText: '',
     initialTextUrl: 'https://keepachangelog.com/en/1.0.0/',
-    remote: 'github',
-  }
+    skipV: false,
+  },
 })
 ```
 
 #### Configuration
 
-| Option                     | Type    | Default                                | Description                          |
-| :---                       | :---    | :---                                   | :---                                 |
-| `changelog`                | Object  |                                        | The Changelog options.               |
-| `changelog.filePath`       | string  | `./CHANGELOG.md`                       | The Changelog file path.             |
-| `changelog.includeV`       | boolean | `true`                                 | Whether to include v in the version. |
-| `changelog.initialText`    | string  | empty string                           | The initial Changelog text.          |
-| `changelog.initialTextUrl` | string  | `https://keepachangelog.com/en/1.0.0/` | The initial Changelog text URL.      |
-| `changelog.remote`         | string  | `github`                               | Accepts `github` or `bitbucket`.     |
+| Option                     | Type    | Default                                | Description                            |
+| :---                       | :---    | :---                                   | :---                                   |
+| `changelog`                | Object  |                                        | The Changelog options.                 |
+| `changelog.filePath`       | string  | `./CHANGELOG.md`                       | The Changelog file path.               |
+| `changelog.gitRemote`      | string  | `github`                               | The Git remote. (`github`|`bitbucket`) |
+| `changelog.initialText`    | string  | empty string                           | The initial Changelog text.            |
+| `changelog.initialTextUrl` | string  | `https://keepachangelog.com/en/1.0.0/` | The initial Changelog text URL.        |
+| `changelog.skipV`          | boolean | `false`                                | Whether to skip `v` in the version.    |
