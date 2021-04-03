@@ -12,4 +12,6 @@ module.exports = {
     initialTextUrl: 'https://keepachangelog.com/en/1.0.0/',
     skipV: false,
   },
+  help: false,
+  version: false,
 }
