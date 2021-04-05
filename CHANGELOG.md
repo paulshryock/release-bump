@@ -15,10 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 ### Fixed
+- Fix release tags typo. [#12]
 
 ### Security
 
-## [1.2.0](https://github.com/paulshryock/release-bump/releases/tags/v1.2.0) - 4/5/2021
+## [1.2.0](https://github.com/paulshryock/release-bump/releases/tag/v1.2.0) - 4/5/2021
 
 ### Added
 - Get package version from CLI. [#7]
@@ -28,12 +29,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Better logging.
 - Cancel Changelog bump if file does not exist.
 
-## [1.1.0](https://github.com/paulshryock/release-bump/releases/tags/v1.1.0) - 4/2/2021
+## [1.1.0](https://github.com/paulshryock/release-bump/releases/tag/v1.1.0) - 4/2/2021
 
 ### Added
 - Add CLI flag configuration. [#4]
 
-## [1.0.0](https://github.com/paulshryock/release-bump/releases/tags/v1.0.0) - 3/30/2021
+## [1.0.0](https://github.com/paulshryock/release-bump/releases/tag/v1.0.0) - 3/30/2021
 
 ### Added
 - Bump Changelog.
