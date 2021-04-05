@@ -1,5 +1,4 @@
 const axios = require('axios')
-// @todo: Use fetch instead of a dependency.
 const fs = require('fs')
 
 /**
@@ -21,14 +20,18 @@ module.exports = class Changelog {
    */
   constructor({ filePath, gitRemote, initialText, initialTextUrl, skipV }) {
     const { version, repository } = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
-    if (!version || !repository || !repository.url) {
-      console.error('version or repository url is missing from package.json.')
+    if (!version) {
+      console.error('version is missing from package.json.')
+      return
+    }
+    if (!repository || !repository.url) {
+      console.error('repository url is missing from package.json.')
       return
     }
     const [month, date, year] = new Date().toLocaleDateString('en-US').split('/')
     this.version = version
     this.repository = repository.url
-      .replace(`^git\+?`, '')
+      .replace(/^git\+?/, '')
       .replace(/^(ssh)?:\/\//, 'https://')
       .replace(/\.git(#.*$)?/, '')
     this.today = `${month}/${date}/${year}`
@@ -38,7 +41,8 @@ module.exports = class Changelog {
     this.initialTextUrl = initialTextUrl
     this.skipV = skipV
     this.unreleased =
-      `## [Unreleased](${this.repository}/${this.gitRemote === 'bitbucket' ? 'branches/' : ''}compare/HEAD..${this.version})` +
+      '## [Unreleased]' +
+      `(${this.repository}/${this.gitRemote === 'bitbucket' ? 'branches/' : ''}compare/HEAD..${this.version})` +
       '\n\n### Added' +
       '\n\n### Changed' +
       '\n\n### Deprecated' +
@@ -57,11 +61,8 @@ module.exports = class Changelog {
    */
   async init () {
     try {
-      // Set the initialText.
-      await this.setInitialText()
-
       // Set the text.
-      this.setText()
+      await this.setText()
 
       // Bump the Changelog.
       this.bump()
@@ -78,26 +79,27 @@ module.exports = class Changelog {
    * @since 1.0.0
    */
   async setInitialText () {
-    if (!this.initialText) {
-      try {
-        const { data } = await axios.get(this.initialTextUrl)
-        this.initialText = data
-          // Get Changelog intro text.
-          .match(/# Changelog.*## \[Unreleased\]/s)[0]
-          // Fix newlines.
-          .replace(/&#x000A;/g, '\n')
-          // Add unreleased lines.
-          .replace(/## \[Unreleased\](\(.*\))?/, this.unreleased)
+    console.info(`Getting Changelog initial text from ${this.initialTextUrl}.`)
+    try {
+      const { data } = await axios.get(this.initialTextUrl)
+      this.initialText = data
+        // Get Changelog intro text.
+        .match(/# Changelog.*## \[Unreleased\]/s)[0]
+        // Fix newlines.
+        .replace(/&#x000A;/g, '\n')
+        // Add unreleased lines.
+        .replace(/## \[Unreleased\](\(.*\))?/, this.unreleased)
+        // Remove link and add a newline.
+        .replace(/## \[Unreleased\](\(.*\))?/, '## [Unreleased]') + '\n'
+    }
+
+    catch (error) {
+      console.warn(`Bad response from ${this.initialTextUrl}.`)
+      this.initialText = this.unreleased
+        ? this.unreleased
           // Remove link and add a newline.
           .replace(/## \[Unreleased\](\(.*\))?/, '## [Unreleased]') + '\n'
-      }
-
-      catch (error) {
-        console.warn(`Bad response from ${this.initialTextUrl}.`)
-        if (!this.unreleased) return
-
-        this.initialText = this.unreleased
-      }
+        : ''
     }
   }
 
@@ -106,7 +108,7 @@ module.exports = class Changelog {
    *
    * @since 1.0.0
    */
-  setText () {
+  async setText () {
     try {
       this.text = fs.readFileSync(this.filePath, 'utf8')
     }
@@ -114,9 +116,10 @@ module.exports = class Changelog {
     catch (error) {
       switch (error.code) {
         case 'ENOENT': // File does not exist.
-          const initialText = this.initialText ? this.initialText : ''
-          this.write(initialText)
-          throw `${error.path} does not exist.`
+          console.error(`${error.path} does not exist.`)
+          if (!this.initialText) await this.setInitialText()
+          this.write(this.initialText)
+          throw 'Cancelling Changelog bump.'
           break
         default:
           throw error
@@ -149,6 +152,7 @@ module.exports = class Changelog {
       `${this.gitRemote === 'bitbucket' ? 'commits/tag' : 'releases/tags'}/` +
       `${this.skipV ? '' : 'v'}${this.version}) - ${this.today}`
 
+    console.info('Bumping Changelog to:', this.version)
     this.write(this.text
       // Bump unreleased version and add today's date.
       .replace(/## \[Unreleased\](\(.*\))?/, this.header)
@@ -170,6 +174,5 @@ module.exports = class Changelog {
         this.unreleased + '\n\n' + this.header
       )
     )
-    console.info('Bumping Changelog to:', this.version)
   }
 }

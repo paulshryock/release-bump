@@ -84,11 +84,13 @@ Now whenever you run `npm version <major|minor|patch>`, all of the `release-bump
 
 | Option | Type    | Default                                | Description                            |
 | :---   | :---    | :---                                   | :---                                   |
+| `-h`   | boolean | `false`                                | Log help information.                  |
 | `-p`   | string  | `./CHANGELOG.md`                       | The Changelog file path.               |
 | `-r`   | string  | `github`                               | The Git remote. (`github`|`bitbucket`) |
 | `-s`   | boolean | `false`                                | Whether to skip `v` in the version.    |
 | `-t`   | string  | empty string                           | The initial Changelog text.            |
 | `-u`   | string  | `https://keepachangelog.com/en/1.0.0/` | The initial Changelog text URL.        |
+| `-v`   | boolean | `false`                                | Log package version.                   |
 
 ### JavaScript API
 
@@ -111,6 +113,8 @@ new Bump({
     initialTextUrl: 'https://keepachangelog.com/en/1.0.0/',
     skipV: false,
   },
+  help: false,
+  version: false,
 })
 ```
 
@@ -124,3 +128,5 @@ new Bump({
 | `changelog.initialText`    | string  | empty string                           | The initial Changelog text.            |
 | `changelog.initialTextUrl` | string  | `https://keepachangelog.com/en/1.0.0/` | The initial Changelog text URL.        |
 | `changelog.skipV`          | boolean | `false`                                | Whether to skip `v` in the version.    |
+| `help`                     | boolean | `false`                                | Whether to log help information.       |
+| `version`                  | boolean | `false`                                | Whether to log package version.        |
