@@ -149,7 +149,7 @@ module.exports = class Changelog {
    */
   bump () {
     this.header = `## [${this.version}](${this.repository}/` +
-      `${this.gitRemote === 'bitbucket' ? 'commits/tag' : 'releases/tags'}/` +
+      `${this.gitRemote === 'bitbucket' ? 'commits/tag' : 'releases/tag'}/` +
       `${this.skipV ? '' : 'v'}${this.version}) - ${this.today}`
 
     console.info('Bumping Changelog to:', this.version)
