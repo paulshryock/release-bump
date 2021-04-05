@@ -1,7 +1,7 @@
 /**
  * Configuration defaults.
  *
- * @since 1.0.0
+ * @since 1.1.0
  * @type  {Object}
  */
 module.exports = {
@@ -12,4 +12,6 @@ module.exports = {
     initialTextUrl: 'https://keepachangelog.com/en/1.0.0/',
     skipV: false,
   },
+  help: false,
+  version: false,
 }
