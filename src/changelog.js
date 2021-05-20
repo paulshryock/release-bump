@@ -21,11 +21,11 @@ module.exports = class Changelog {
   constructor({ filePath, gitRemote, initialText, initialTextUrl, skipV }) {
     const { version, repository } = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
     if (!version) {
-      console.error('version is missing from package.json.')
+      console.error('Missing package.json version. Can not bump.')
       return
     }
     if (!repository || !repository.url) {
-      console.error('repository url is missing from package.json.')
+      console.error('Missing package.json repository url. Can not bump.')
       return
     }
     const [month, date, year] = new Date().toLocaleDateString('en-US').split('/')
