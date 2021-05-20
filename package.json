@@ -1,6 +1,6 @@
 {
   "name": "release-bump",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Release Bump handles version bump tasks for a code release.",
   "keywords": [
     "release",
@@ -23,6 +23,7 @@
     "release-bump": "src/cli.js"
   },
   "scripts": {
+    "test": "node src/cli.js",
     "version": "node src/cli.js && git add .",
     "postversion": "git push && git push --tags && npm publish"
   },

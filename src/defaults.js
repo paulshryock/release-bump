@@ -13,5 +13,6 @@ module.exports = {
     skipV: false,
   },
   help: false,
+  skipWordPress: false,
   version: false,
 }
