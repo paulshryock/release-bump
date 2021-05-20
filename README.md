@@ -58,6 +58,30 @@ to this:
 - Fix another bug.
 ```
 
+### Bump WordPress theme
+
+If your project has a file named `style.css` in the root directory, it will bump the version, if there is one.
+
+`release-bump` will change this:
+
+```css
+/*
+Theme Name: ...
+Version: 0.0.1
+...
+*/
+```
+
+to this:
+
+```css
+/*
+Theme Name: ...
+Version: 1.0.0
+...
+*/
+```
+
 ## Usage
 
 ### Install
@@ -91,6 +115,7 @@ Now whenever you run `npm version <major|minor|patch>`, all of the `release-bump
 | `-t`   | string  | empty string                           | The initial Changelog text.            |
 | `-u`   | string  | `https://keepachangelog.com/en/1.0.0/` | The initial Changelog text URL.        |
 | `-v`   | boolean | `false`                                | Log package version.                   |
+| `-w`   | boolean | `false`                                | Whether to skip WordPress theme bump.  |
 
 ### JavaScript API
 
@@ -114,6 +139,7 @@ new Bump({
     skipV: false,
   },
   help: false,
+  skipWordPress: false,
   version: false,
 })
 ```
@@ -129,4 +155,5 @@ new Bump({
 | `changelog.initialTextUrl` | string  | `https://keepachangelog.com/en/1.0.0/` | The initial Changelog text URL.        |
 | `changelog.skipV`          | boolean | `false`                                | Whether to skip `v` in the version.    |
 | `help`                     | boolean | `false`                                | Whether to log help information.       |
+| `skipWordPress`            | boolean | `false`                                | Whether to skip WordPress theme bump.  |
 | `version`                  | boolean | `false`                                | Whether to log package version.        |

@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/paulshryock/release-bump/compare/HEAD..1.2.1)
 
 ### Added
+- Bump WordPress theme version.
 
 ### Changed
 

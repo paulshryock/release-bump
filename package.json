@@ -23,6 +23,7 @@
     "release-bump": "src/cli.js"
   },
   "scripts": {
+    "test": "node src/cli.js",
     "version": "node src/cli.js && git add .",
     "postversion": "git push && git push --tags && npm publish"
   },
