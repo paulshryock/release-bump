@@ -2,13 +2,23 @@
 
 `release-bump` handles version bump tasks for a code release.
 
+## Announcements
+
+Version `2.0.0` includes breaking changes:
+- CLI configuration has been removed
+- JavaScript API configuration has been removed
+- [JavaScript class instantiation](#javascript-api) should be followed by a call to `init()` inside an async function.
+
 ## Features
+
+- [Bump Changelog](#bump-changelog)
+- [Bump WordPress theme or plugin](#bump-wordpress-theme-or-plugin)
 
 [View roadmap](https://github.com/paulshryock/release-bump/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
 
 ### Bump Changelog
 
-Add lines to your Changelog beneath the Unreleased header as you make changes. 
+If your project has a Changelog, add lines beneath the Unreleased header as you make changes. If there is no Changelog, one is automatically created.
 
 `release-bump` will change this:
 
@@ -58,15 +68,15 @@ to this:
 - Fix another bug.
 ```
 
-### Bump WordPress theme
+### Bump WordPress theme or plugin
 
-If your project has a file named `style.css` in the root directory, it will bump the version, if there is one.
+If your project has a file named `style.css` or a PHP file of the folder name in the root directory, it will bump the version.
 
 `release-bump` will change this:
 
 ```css
 /*
-Theme Name: ...
+...
 Version: 0.0.1
 ...
 */
@@ -76,7 +86,7 @@ to this:
 
 ```css
 /*
-Theme Name: ...
+...
 Version: 1.0.0
 ...
 */
@@ -106,54 +116,21 @@ Now whenever you run `npm version <major|minor|patch>`, all of the `release-bump
 
 #### Configuration
 
-| Option | Type    | Default                                | Description                            |
-| :---   | :---    | :---                                   | :---                                   |
-| `-h`   | boolean | `false`                                | Log help information.                  |
-| `-p`   | string  | `./CHANGELOG.md`                       | The Changelog file path.               |
-| `-r`   | string  | `github`                               | The Git remote. (`github`|`bitbucket`) |
-| `-s`   | boolean | `false`                                | Whether to skip `v` in the version.    |
-| `-t`   | string  | empty string                           | The initial Changelog text.            |
-| `-u`   | string  | `https://keepachangelog.com/en/1.0.0/` | The initial Changelog text URL.        |
-| `-v`   | boolean | `false`                                | Log package version.                   |
-| `-w`   | boolean | `false`                                | Whether to skip WordPress theme bump.  |
+In version `2.0.0`, CLI configuration has been removed. This will be added back in a future version.
 
 ### JavaScript API
 
-If you prefer to run `release-bump` programattically, just require and instantiate a `release-bump` class:
+If you prefer to run `release-bump` programmatically, just require and instantiate a `release-bump` class inside an async function; then call `init()`:
 
 ```javascript
-const Bump = require('release-bump')
-new Bump()
-```
+import Bump from 'release-bump'
 
-Pass configuration options if you want to override the defaults:
-
-```javascript
-const Bump = require('release-bump')
-new Bump({
-  changelog: {
-    filePath: './CHANGELOG.md',
-    gitRemote: 'github',
-    initialText: '',
-    initialTextUrl: 'https://keepachangelog.com/en/1.0.0/',
-    skipV: false,
-  },
-  help: false,
-  skipWordPress: false,
-  version: false,
-})
+;(async function () {
+  const bump = new Bump()
+  await bump.init()
+})();
 ```
 
 #### Configuration
 
-| Option                     | Type    | Default                                | Description                            |
-| :---                       | :---    | :---                                   | :---                                   |
-| `changelog`                | Object  |                                        | The Changelog options.                 |
-| `changelog.filePath`       | string  | `./CHANGELOG.md`                       | The Changelog file path.               |
-| `changelog.gitRemote`      | string  | `github`                               | The Git remote. (`github`|`bitbucket`) |
-| `changelog.initialText`    | string  | empty string                           | The initial Changelog text.            |
-| `changelog.initialTextUrl` | string  | `https://keepachangelog.com/en/1.0.0/` | The initial Changelog text URL.        |
-| `changelog.skipV`          | boolean | `false`                                | Whether to skip `v` in the version.    |
-| `help`                     | boolean | `false`                                | Whether to log help information.       |
-| `skipWordPress`            | boolean | `false`                                | Whether to skip WordPress theme bump.  |
-| `version`                  | boolean | `false`                                | Whether to log package version.        |
+In version `2.0.0`, JavaScript API configuration has been removed. This will be added back in a future version.
