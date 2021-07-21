@@ -7,12 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/paulshryock/release-bump/compare/HEAD..1.3.0)
 
 ### Added
+- Bump WordPress plugin.
 
 ### Changed
+- Rewrite classes.
 
 ### Deprecated
 
 ### Removed
+- Remove configuration.
 
 ### Fixed
 
@@ -21,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0](https://github.com/paulshryock/release-bump/releases/tag/v1.3.0) - 5/20/2021
 
 ### Added
-- Bump WordPress theme version.
+- Bump WordPress theme.
 
 ## [1.2.1](https://github.com/paulshryock/release-bump/releases/tag/v1.2.1) - 4/5/2021
 
