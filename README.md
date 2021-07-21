@@ -9,6 +9,8 @@ Version `2.0.0` includes breaking changes:
 - JavaScript API configuration has been removed
 - [JavaScript class instantiation](#javascript-api) should be followed by a call to `init()` inside an async function.
 
+Version `2.1.0` adds [CLI](#cli) and [JavaScript API](#javascript-api) configuration for `prefix`.
+
 ## Features
 
 - [Bump Changelog](#bump-changelog)
@@ -116,7 +118,10 @@ Now whenever you run `npm version <major|minor|patch>`, all of the `release-bump
 
 #### Configuration
 
-In version `2.0.0`, CLI configuration has been removed. This will be added back in a future version.
+```bash
+Options
+  --prefix, -p  Include a "v" prefix before the version number.
+```
 
 ### JavaScript API
 
@@ -133,4 +138,23 @@ import Bump from 'release-bump'
 
 #### Configuration
 
-In version `2.0.0`, JavaScript API configuration has been removed. This will be added back in a future version.
+##### `prefix`
+
+Include a "v" prefix before the version number.
+
+- Type: `boolean`
+- Default: `false`
+- Optional: `true`
+
+```javascript
+import Bump from 'release-bump'
+
+;(async function () {
+  const options = {
+    prefix: true,
+  }
+
+  const bump = new Bump(options)
+  await bump.init()
+})();
+```

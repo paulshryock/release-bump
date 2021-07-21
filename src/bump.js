@@ -6,8 +6,14 @@ import WordPress from './WordPress.js'
 $.verbose = false
 
 export default class Bump {
-  constructor () {
-    this.prefix = 'v'
+  /**
+   * Bump class constructor.
+   *
+   * @param {Object} options Configuration options.
+   */
+  constructor (options = {}) {
+    const { prefix } = options
+    this.prefix = prefix ? 'v' : ''
   }
 
   /**
