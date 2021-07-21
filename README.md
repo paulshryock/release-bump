@@ -121,6 +121,9 @@ Now whenever you run `npm version <major|minor|patch>`, all of the `release-bump
 ```bash
 Options
   --prefix, -p  Include a "v" prefix before the version number.
+
+  --help        Log this help text.
+  --version     Log the installed release-bump version.
 ```
 
 ### JavaScript API
