@@ -9,6 +9,9 @@ const cli = meow(`
   Options
     --prefix, -p  Include a "v" prefix before the version number.
 
+    --help        Log this help text.
+    --version     Log the installed release-bump version.
+
   Examples
     $ release-bump --prefix
 `, {
