@@ -20,7 +20,7 @@ Version `2.1.0` adds [CLI](#cli) and [JavaScript API](#javascript-api) configura
 
 ### Bump Changelog
 
-If your project has a Changelog, add lines beneath the Unreleased header as you make changes. If there is no Changelog, one is automatically created.
+If your project has a Changelog, add lines beneath the Unreleased header as you make changes.
 
 `release-bump` will change this:
 
