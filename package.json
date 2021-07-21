@@ -16,20 +16,22 @@
     "type": "git",
     "url": "git+https://github.com/paulshryock/release-bump.git"
   },
+  "type": "module",
   "license": "Hippocratic 2.1",
   "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
-  "main": "src/bump.js",
+  "main": "src/Bump.js",
   "bin": {
-    "release-bump": "src/cli.js"
+    "release-bump": "cli.js"
   },
   "scripts": {
-    "test": "node src/cli.js",
-    "version": "node src/cli.js && git add .",
+    "test": "node --trace-warnings cli.js",
+    "version": "node cli.js && git add .",
     "postversion": "git push && git push --tags && npm publish"
   },
   "dependencies": {
     "arg": "^5.0.0",
     "axios": "^0.21.1",
-    "deepmerge": "^4.2.2"
+    "deepmerge": "^4.2.2",
+    "zx": "^2.0.0"
   }
 }
