@@ -24,14 +24,12 @@
     "release-bump": "cli.js"
   },
   "scripts": {
-    "test": "node --trace-warnings cli.js",
+    "start": "node cli.js -p",
     "version": "node cli.js -p && git add .",
     "postversion": "git push && git push --tags && npm publish"
   },
   "dependencies": {
     "arg": "^5.0.0",
-    "axios": "^0.21.1",
-    "deepmerge": "^4.2.2",
     "meow": "^10.1.0",
     "zx": "^2.0.0"
   }
