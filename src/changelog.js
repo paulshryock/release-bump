@@ -8,7 +8,7 @@ export default class Changelog {
   constructor (options = {}) {
     try {
       const { prefix, remote, repository, today, version } = options
-      if (!prefix || !remote || !repository || !today || !version) {
+      if (!remote || !repository || !today || !version) {
         throw new Error('Could not bump changelog.')
       }
 
