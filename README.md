@@ -121,6 +121,7 @@ Now whenever you run `npm version <major|minor|patch>`, all of the `release-bump
 ```bash
 Options
   --prefix, -p  Include a "v" prefix before the version number.
+  --quiet,  -q  Silence console logs.
 
   --help        Log this help text.
   --version     Log the installed release-bump version.
@@ -149,15 +150,34 @@ Include a "v" prefix before the version number.
 - Default: `false`
 - Optional: `true`
 
+##### `quiet`
+
+Silence console logs.
+
+- Type: `boolean`
+- Default: `false` (`true` during tests)
+- Optional: `true`
+
 ```javascript
 import Bump from 'release-bump'
 
-;(async function () {
-  const options = {
-    prefix: true,
-  }
+const options = {
+  prefix: true,
+  quiet: true,
+}
 
-  const bump = new Bump(options)
-  await bump.init()
-})();
+const bump = new Bump(options)
+await bump.init()
 ```
+
+## Development
+
+### Linting
+
+- `npm run lint`: Lint code.
+
+### Testing
+
+- `npm test`: Run Ava unit tests.
+- `npm run test:watch`: Run Ava unit tests and watch for changes.
+- `npm run test:coverage`: Run Ava unit tests and see test coverage.

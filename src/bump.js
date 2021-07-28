@@ -2,56 +2,123 @@ import { $, chalk } from 'zx'
 import Git from './Git.js'
 import Changelog from './Changelog.js'
 import WordPress from './WordPress.js'
+import { readFile } from 'fs/promises'
+import { getType } from './utils/type.js'
 
 $.verbose = false
 
+/**
+ * Bump class.
+ *
+ * @since 2.0.0
+ */
 export default class Bump {
   /**
    * Bump class constructor.
    *
    * @param {Object} options Configuration options.
+   * @since 2.0.0
    */
   constructor (options = {}) {
-    const { prefix } = options
-    this.prefix = prefix ? 'v' : ''
+    const { paths, prefix, quiet } = options
+    const defaults = {
+      paths: {
+        changelog: 'CHANGELOG.md',
+        package: 'package.json',
+      },
+      prefix: '',
+      quiet: false,
+    }
+    const passed = {
+      paths: getType(paths) === 'object' ? paths : {},
+    }
+    this.prefix = prefix === true ? 'v' : defaults.prefix
+    this.quiet = getType(quiet) === 'boolean' ? quiet : defaults.quiet
+    this.paths = {
+      ...defaults.paths,
+      ...passed.paths,
+    }
   }
 
   /**
-   * Initialize.
+   * Initialize async tasks.
+   *
+   * @since 2.2.0
    */
   async init () {
     try {
-      const pkg = await fs.readFile('./package.json')
-      const { version } = JSON.parse(pkg.toString())
+      // Handle async setup tasks.
+      await this.setup()
+
+      // Bump.
+      await this.bump()
+    } catch (p) {
+      console.error(chalk.red(p.stderr))
+      $`exit 1`
+    }
+  }
+
+  /**
+   * Handle async setup tasks.
+   *
+   * @since 2.2.0
+   */
+  async setup () {
+    try {
+      const pkg = await readFile(this.paths.package, 'utf8')
+      const { repository, version } = JSON.parse(pkg.toString())
 
       if (!version) throw new Error('Missing package.json version')
 
-      const [month, date, year] = new Date()
-        .toLocaleDateString('en-US')
-        .split('/')
-      const formattedMonth = month < 10 ? `0${month}` : month
-      const formattedDate = date < 10 ? `0${date}` : date
-      this.today = `${year}/${formattedMonth}/${formattedDate}`
+      this.repository = repository?.url ||
+        (await $`git remote get-url --push origin`).toString()
+          .replace('\n', '')
+      this.repository = 'https://' + this.repository
+        .replace(/^git[+@]?/, '')
+        .replace(/^(https?|ssh)?:\/\//, '')
+        .replace(/\.git(#.*$)?/, '')
+        .replace(':', '/')
 
-      // Get git info.
-      this.git = new Git({ version })
+      // Initialize Git.
+      this.git = new Git({
+        quiet: this.quiet,
+        repository: this.repository,
+        version,
+      })
       await this.git.init()
 
-      // Bump Changelog.
+      // Initialize Changelog.
       this.changelog = new Changelog({
+        path: this.paths.changelog,
         prefix: this.prefix,
+        quiet: this.quiet,
         remote: this.git.remote,
-        repository: this.git.repository,
-        today: this.today,
-        version: this.git.version,
+        repository: this.repository,
+        version,
       })
+
+      // Initialize WordPress.
+      this.wordpress = new WordPress({ quiet: this.quiet, version })
+    } catch (p) {
+      console.error(chalk.red(p.stderr))
+      $`exit 1`
+    }
+  }
+
+  /**
+   * Bump.
+   *
+   * @since 2.0.0
+   */
+  async bump () {
+    try {
+      // Bump Changelog.
       await this.changelog.init()
 
       // Bump WordPress.
-      this.wordpress = new WordPress({ version })
       await this.wordpress.init()
     } catch (p) {
-      console.error(p.stderr)
+      console.error(chalk.red(p.stderr))
       $`exit 1`
     }
   }
