@@ -30,7 +30,7 @@ export default class Bump {
       quiet: false,
     }
     const passed = {
-      paths: getType(paths) === 'object' ? paths : {},
+      paths: paths && getType(paths) === 'object' ? paths : {},
     }
     this.prefix = prefix === true ? 'v' : defaults.prefix
     this.quiet = getType(quiet) === 'boolean' ? quiet : defaults.quiet
@@ -38,6 +38,7 @@ export default class Bump {
       ...defaults.paths,
       ...passed.paths,
     }
+    console.log(this.paths)
   }
 
   /**
