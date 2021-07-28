@@ -1,27 +1,69 @@
-import { $, chalk, fs } from 'zx'
-import { writeFile } from 'fs/promises'
-import { get } from './utils/file.js'
+import { $, chalk } from 'zx'
+import { mkdir, writeFile } from 'fs/promises'
+import { parse } from 'path'
+import { getFileContent } from './utils/file.js'
+import { getType } from './utils/type.js'
 
 $.verbose = false
 
+/**
+ * Changelog class.
+ *
+ * @since 2.0.0
+ */
 export default class Changelog {
+  #header
+  #today
+  #unreleased
+
+  /**
+   * Changelog class constructor.
+   *
+   * @param {Object} options Configuration options.
+   * @since 2.0.0
+   */
   constructor (options = {}) {
+    const [month, date, year] = new Date()
+      .toLocaleDateString('en-US')
+      .split('/')
+    const formattedMonth = month < 10 ? `0${month}` : month
+    const formattedDate = date < 10 ? `0${date}` : date
+    this.#today = `${year}/${formattedMonth}/${formattedDate}`
+
     try {
-      const { prefix, remote, repository, today, version } = options
-      if (!remote || !repository || !today || !version) {
-        throw new Error('Could not bump changelog.')
+      const {
+        path,
+        prefix,
+        quiet,
+        remote,
+        repository,
+        version,
+      } = options
+      const defaults = {
+        path: 'CHANGELOG.md',
+        prefix: '',
+        quiet: false,
+        remote: undefined,
+        repository: undefined,
+        version: undefined,
       }
 
-      this.prefix = prefix
-      this.remote = remote
-      this.repository = repository
-      this.today = today
-      this.version = version
-      this.path = 'CHANGELOG.md'
-      this.header = `## [${this.version}](${this.repository}/` +
+      this.path = getType(path) === 'string' ? path : defaults.path
+      this.prefix = getType(prefix) === 'string' ? prefix : defaults.prefix
+      this.quiet = process.env.NODE_ENV === 'test'
+        ? true
+        : (getType(quiet) === 'boolean'
+            ? quiet
+            : defaults.quiet)
+      this.remote = getType(remote) === 'string' ? remote : defaults.remote
+      this.repository = getType(repository) === 'string'
+        ? repository
+        : defaults.repository
+      this.version = getType(version) === 'string' ? version : defaults.version
+      this.#header = `## [${this.version}](${this.repository}/` +
         `${this.remote === 'bitbucket' ? 'commits/tag' : 'releases/tag'}/` +
-        `${this.prefix}${this.version}) - ${this.today}`
-      this.unreleased =
+        `${this.prefix}${this.version}) - ${this.#today}`
+      this.#unreleased =
         `## [Unreleased](${this.repository}/` +
           `${this.remote === 'bitbucket' ? 'branches/' : ''}` +
           `compare/HEAD..${this.prefix}${this.version})` +
@@ -37,39 +79,91 @@ export default class Changelog {
     }
   }
 
+  /**
+   * Initialize async tasks.
+   *
+   * @since 2.2.0
+   */
   async init () {
     try {
-      const file = await get({ path: this.path })
-      if (!file) {
-        console.log(chalk.yellow('No Changelog to bump.'))
+      // Handle async setup tasks.
+      await this.setup()
+
+      // Bump.
+      await this.bump()
+    } catch (p) {
+      console.error(p.stderr)
+      $`exit 1`
+    }
+  }
+
+  /**
+   * Handle async setup tasks.
+   *
+   * @since 2.2.0
+   */
+  async setup () {
+    if (
+      !this.path ||
+      !this.remote ||
+      !this.repository ||
+      !this.#today ||
+      !this.#unreleased ||
+      !this.version
+    ) {
+      throw new Error('Could not bump changelog.')
+    }
+
+    try {
+      const text = await getFileContent({ path: this.path })
+      if (!text) {
+        if (!this.quiet) {
+          console.log(chalk.yellow('No Changelog to bump, or Changelog empty.'))
+        }
         return
       }
 
-      this.text = file
+      this.text = text
       this.new = this.text
         // Bump unreleased version and add today's date.
-        .replace(/## \[Unreleased\](\(.*\))?/, this.header)
+        .replace(/## \[Unreleased\](\(.*\))?/, this.#header)
         // Remove empty changelog subheads.
         .replace(
           /### (Added|Changed|Deprecated|Removed|Fixed|Security)\n\n/g,
-          ''
+          '',
         )
         // Remove last empty changelog subhead.
         .replace(
           /### (Added|Changed|Deprecated|Removed|Fixed|Security)\n$/g,
-          ''
+          '',
         )
         // Remove any duplicate trailing newline.
         .replace(/\n\n$/g, '\n')
         // Add unreleased section.
         .replace(
-          this.header,
-          this.unreleased + '\n\n' + this.header
+          this.#header,
+          this.#unreleased + '\n\n' + this.#header,
         )
-      writeFile(this.path, this.new, 'utf8')
-      console.log(chalk.green('Bumped Changelog.'))
     } catch (error) {
       console.error(chalk.red(error))
+      $`exit 1`
+    }
+  }
+
+  /**
+   * Bump.
+   *
+   * @param {string|null} path Optional path to write the Changelog.
+   * @since 2.2.0
+   */
+  async bump (options) {
+    const { path } = options
+    try {
+      await mkdir(parse(path || this.path).dir, { recursive: true })
+      await writeFile(path || this.path, this.new, 'utf8')
+      if (!this.quiet) console.log(chalk.green('Bumped Changelog.'))
+    } catch (p) {
+      console.error(p.stderr)
       $`exit 1`
     }
   }
