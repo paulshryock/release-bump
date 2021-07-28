@@ -139,8 +139,7 @@ test('after bump', async t => {
 
   // Bump Changelog.
   const changelog = new Changelog(options)
-  await changelog.setup()
-  await changelog.bump({ path: temp.path })
+  await changelog.init()
 
   // Test written file.
   const file = await readFile(options.path, 'utf8')
