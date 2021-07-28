@@ -8,16 +8,12 @@ import { access } from 'fs/promises'
  * @return {boolean}      Whether or not the file exists and is readable.
  * @since  unreleased
  */
-async function exists (file) {
-  if (!file) {
-    throw new Error('fileExists() missing file.')
-    return
-  }
+async function fileExists (file) {
+  if (!file) return false
 
-  let exists
+  let exists = true
   try {
     await access(file, constants.F_OK | constants.R_OK)
-    exists = true
   } catch (error) {
     exists = false
   }
@@ -26,26 +22,26 @@ async function exists (file) {
 }
 
 /**
- * Get file.
+ * Get file content as a string, if it exists.
  *
- * @param {Object} options      File options.
- * @param {string} options.path File path.
- * @param {string} options.type File type.
- * @since unreleased
+ * @param  {Object} options      File options.
+ * @param  {string} options.path File path.
+ * @return {string}              The file content, or an empty string.
+ * @since  unreleased
+ * @todo   Change options argument to path string.
  */
-export async function get (options = {}) {
+export async function getFileContent (options = {}) {
   const { path } = options
   if (!path) {
-    throw new Error('getFile() missing path.')
-    return
+    return null
   }
 
   let file = null
-  let fileExists = false
+  let exists = false
   try {
     // If the file doesn't exist, bail.
-    fileExists = await exists(path)
-    if (!fileExists) return
+    exists = await fileExists(path)
+    if (!exists) return null
 
     // Get the file text.
     file = readFileSync(path, 'utf8')

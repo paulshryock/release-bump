@@ -1,83 +1,152 @@
-import { $, chalk, fs } from 'zx'
+import { $, chalk } from 'zx'
 import { writeFile } from 'fs/promises'
 import { parse } from 'path'
-import { get } from './utils/file.js'
+import { getFileContent } from './utils/file.js'
+import { getType } from './utils/type.js'
 
 $.verbose = false
 
+/**
+ * WordPress class.
+ *
+ * @since 2.0.0
+ */
 export default class WordPress {
+  /**
+   * WordPress class constructor.
+   *
+   * @param {Object} options Configuration options.
+   * @since 2.0.0
+   */
   constructor (options = {}) {
     try {
-      const { version } = options
-      if (!version) {
-        throw new Error('Could not bump WordPress.')
+      const { paths, quiet, version } = options
+      this.paths = {
+        plugin: paths?.plugin || parse(process.cwd()).name + '.php',
+        theme: paths?.theme || 'style.css',
       }
-
-      this.version = version
+      this.quiet = process.env.NODE_ENV === 'test'
+        ? true
+        : (quiet !== undefined
+            ? quiet
+            : false)
+      this.version = getType(version) === 'string' ? version : null
     } catch (error) {
       console.error(chalk.red(error))
       $`exit 1`
     }
   }
 
+  /**
+   * Initialize async tasks.
+   *
+   * @since 2.2.0
+   */
   async init () {
     try {
-      this.theme = {
-        path: 'style.css',
-        text: await get({ type: 'theme', path: 'style.css' }),
-      }
-      const plugin = parse(process.cwd()).name + '.php'
-      this.plugin = {
-        path: plugin,
-        text: await get({ type: 'plugin', path: plugin }),
+      // Handle async setup tasks.
+      await this.setup()
+
+      // If there is no WordPress plugin or theme to bump, bail.
+      if (!this.plugin?.text && !this.theme?.text) return
+
+      // Bump.
+      await this.bump()
+    } catch (p) {
+      console.error(p.stderr)
+      $`exit 1`
+    }
+  }
+
+  /**
+   * Handle async setup tasks.
+   *
+   * @since 2.2.0
+   */
+  async setup () {
+    if (!this.paths.plugin || !this.paths.theme || !this.version) {
+      throw new Error('Could not bump WordPress.')
+    }
+
+    try {
+      this.plugin = await {
+        path: this.paths.plugin,
+        text: await getFileContent({ path: this.paths?.plugin }),
       }
 
-      if (!this.theme?.text && !this.plugin?.text) {
-        console.log(chalk.yellow('No WordPress theme or plugin to bump.'))
-        this.theme = null
-        this.plugin = null
-        return
+      this.theme = await {
+        path: this.paths.theme,
+        text: await getFileContent({ path: this.paths?.theme }),
       }
 
+      if (!this.plugin.text && !this.theme.text) {
+        if (!this.quiet) {
+          console.log(chalk.yellow('No WordPress plugin or theme to bump.'))
+        }
+        delete this.plugin
+        delete this.theme
+      }
+    } catch (error) {
+      console.error(chalk.red(error))
+      $`exit 1`
+    }
+  }
+
+  /**
+   * Bump.
+   *
+   * @since 2.2.0
+   */
+  async bump () {
+    try {
       const regex = /Version:(\s+)\d*\.?\d*\.?\d*/
 
+      // Bump WordPress theme version.
       if (!this.theme?.text) {
-        console.log(chalk.yellow('No WordPress theme to bump.'))
+        if (!this.quiet) {
+          console.log(chalk.yellow('No WordPress theme to bump.'))
+        }
         this.theme = null
       } else {
-        // Bump theme.
         if (!this.theme?.text?.match(regex)) {
-          console.log(
-            chalk.red('Can not bump WordPress theme. Missing Version header.')
-          )
+          if (!this.quiet) {
+            console.log(
+              chalk.yellow(
+                'Can not bump WordPress theme. Missing Version header.',
+              ),
+            )
+          }
           return
         }
 
-        // Bump WordPress theme version.
+        // Bump theme.
         this.theme.new = this.theme.text
           .replace(regex, `Version:$1${this.version}`)
         writeFile(this.theme.path, this.theme.new, 'utf8')
-        console.log(chalk.green('Bumped WordPress theme.'))
+        if (!this.quiet)console.log(chalk.green('Bumped WordPress theme.'))
       }
 
       // Bump WordPress plugin version.
       if (!this.plugin?.text) {
-        console.log(chalk.yellow('No WordPress plugin to bump.'))
+        if (!this.quiet) {
+          console.log(chalk.yellow('No WordPress plugin to bump.'))
+        }
         this.plugin = null
       } else {
-        // Bump plugin.
         if (!this.plugin?.text?.match(regex)) {
-          console.log(
-            chalk.red('Can not bump WordPress plugin. Missing Version header.')
-          )
+          if (!this.quiet) {
+            console.log(
+              chalk.red('Can not bump WordPress plugin. Missing Version header.'),
+            )
+          }
           return
         }
 
-        // Bump WordPress plugin version.
+        // Bump plugin.
         this.plugin.new = this.plugin.text
           .replace(regex, `Version:$1${this.version}`)
         writeFile(this.plugin.path, this.plugin.new, 'utf8')
-        console.log(chalk.green('Bumped WordPress plugin.'))
+        if (!this.quiet)console.log(chalk.green('Bumped WordPress plugin.'))
       }
     } catch (error) {
       console.error(chalk.red(error))

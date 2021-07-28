@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/paulshryock/release-bump/compare/HEAD..v2.1.0)
 
 ### Added
+- Add unit tests. [#22]
+- Add `type` util methods.
+- Add `quiet` CLI flag.
+- Add linting. [#26]
 
 ### Changed
+- Update `file` util methods.
 
 ### Deprecated
 

@@ -1,36 +1,43 @@
-import { $, chalk, fs } from 'zx'
+import { $, chalk } from 'zx'
+import { getType } from './utils/type.js'
 
 $.verbose = false
 
 export default class Git {
   constructor (options = {}) {
-    const { version } = options
-    if (!version) {
-      console.log(chalk.yellow('Could not read git info.'))
-      $`exit 1`
-    }
-    this.version = version
+    const { repository, version } = options
+    this.repository = getType(repository) === 'string' ? repository : null
+    this.version = getType(version) === 'string' ? version : null
   }
+
   /**
-   * Initialize.
+   * Initialize async tasks.
+   *
+   * @since 2.2.0
    */
   async init () {
     try {
-      const pkg = await fs.readFile('./package.json')
-      const { repository} = JSON.parse(pkg.toString())
+      // Handle async setup tasks.
+      await this.setup()
+    } catch (p) {
+      console.error(chalk.red(p.stderr))
+      $`exit 1`
+    }
+  }
+
+  /**
+   * Handle async setup tasks.
+   *
+   * @since 2.2.0
+   */
+  async setup () {
+    if (!this.repository || !this.version) {
+      throw new Error('Could not read git info.')
+    }
+
+    try {
       this.branch = (await $`git branch --show-current`).toString()
         .replace('\n', '')
-      this.repository = repository?.url
-      if (!repository?.url) {
-        this.repository = (await $`git remote get-url --push origin`).toString()
-          .replace('\n', '')
-      }
-      this.repository = 'https://' +
-        this.repository
-          .replace(/^git[+@]?/, '')
-          .replace(/^(https?|ssh)?:\/\//, '')
-          .replace(/\.git(#.*$)?/, '')
-          .replace(':', '/')
       this.remote = this.repository
         .replace(/(https?:\/\/|www\.)/g, '')
         .split('/')[0]
@@ -43,8 +50,7 @@ export default class Git {
       this.tags.current = this.tags.all
         .filter(tag => tag.includes(this.version))
     } catch (p) {
-      console.log(chalk.yellow('Could not read git info'))
-      console.error(p.stderr)
+      console.error(chalk.red(p.stderr))
       await $`exit 1`
     }
   }
