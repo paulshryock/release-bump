@@ -32,7 +32,7 @@
     "test:watch": "ava --watch",
     "test:coverage": "c8 npm test",
     "lint": "eslint . ./*.cjs src --fix",
-    "preversion": "npm lint && npm test",
+    "preversion": "npm run lint && npm test",
     "version": "node cli.js -p -q && git add .",
     "postversion": "git push && git push --tags && npm publish"
   },

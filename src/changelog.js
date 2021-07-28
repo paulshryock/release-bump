@@ -48,18 +48,18 @@ export default class Changelog {
         version: undefined,
       }
 
-      this.path = getType(path) === 'string' ? path : defaults.path
-      this.prefix = getType(prefix) === 'string' ? prefix : defaults.prefix
+      this.path = path && getType(path) === 'string' ? path : defaults.path
+      this.prefix = prefix && getType(prefix) === 'string' ? prefix : defaults.prefix
       this.quiet = process.env.NODE_ENV === 'test'
         ? true
         : (getType(quiet) === 'boolean'
             ? quiet
             : defaults.quiet)
-      this.remote = getType(remote) === 'string' ? remote : defaults.remote
-      this.repository = getType(repository) === 'string'
+      this.remote = remote && getType(remote) === 'string' ? remote : defaults.remote
+      this.repository = repository && getType(repository) === 'string'
         ? repository
         : defaults.repository
-      this.version = getType(version) === 'string' ? version : defaults.version
+      this.version = version && getType(version) === 'string' ? version : defaults.version
       this.#header = `## [${this.version}](${this.repository}/` +
         `${this.remote === 'bitbucket' ? 'commits/tag' : 'releases/tag'}/` +
         `${this.prefix}${this.version}) - ${this.#today}`
@@ -91,8 +91,8 @@ export default class Changelog {
 
       // Bump.
       await this.bump()
-    } catch (p) {
-      console.error(p.stderr)
+    } catch (error) {
+      console.error(chalk.red(error))
       $`exit 1`
     }
   }
@@ -153,17 +153,16 @@ export default class Changelog {
   /**
    * Bump.
    *
-   * @param {string|null} path Optional path to write the Changelog.
    * @since 2.2.0
    */
-  async bump (options) {
-    const { path } = options
+  async bump () {
     try {
-      await mkdir(parse(path || this.path).dir, { recursive: true })
-      await writeFile(path || this.path, this.new, 'utf8')
+      const directory = parse(this.path).dir
+      if (directory) await mkdir(directory, { recursive: true })
+      await writeFile(this.path, this.new, 'utf8')
       if (!this.quiet) console.log(chalk.green('Bumped Changelog.'))
-    } catch (p) {
-      console.error(p.stderr)
+    } catch (error) {
+      console.error(chalk.red(error))
       $`exit 1`
     }
   }

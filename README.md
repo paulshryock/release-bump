@@ -4,12 +4,14 @@
 
 ## Announcements
 
+Version `2.2.0` adds unit tests, code linting, and [CLI](#cli) and [JavaScript API](#javascript-api) configuration for `quiet`.
+
+Version `2.1.0` adds [CLI](#cli) and [JavaScript API](#javascript-api) configuration for `prefix`.
+
 Version `2.0.0` includes breaking changes:
 - CLI configuration has been removed
 - JavaScript API configuration has been removed
 - [JavaScript class instantiation](#javascript-api) should be followed by a call to `init()` inside an async function.
-
-Version `2.1.0` adds [CLI](#cli) and [JavaScript API](#javascript-api) configuration for `prefix`.
 
 ## Features
 
