@@ -1,10 +1,8 @@
-import { $, chalk } from 'zx'
+import { chalk } from 'zx'
 import { mkdir, writeFile } from 'fs/promises'
 import { parse } from 'path'
 import { getFileContent } from './utils/file.js'
 import { getType } from './utils/type.js'
-
-$.verbose = false
 
 /**
  * Changelog class.
@@ -49,17 +47,21 @@ export default class Changelog {
       }
 
       this.path = path && getType(path) === 'string' ? path : defaults.path
-      this.prefix = prefix && getType(prefix) === 'string' ? prefix : defaults.prefix
+      this.prefix = prefix && getType(prefix) === 'string'
+        ? prefix
+        : defaults.prefix
       this.quiet = process.env.NODE_ENV === 'test'
         ? true
-        : (getType(quiet) === 'boolean'
-            ? quiet
-            : defaults.quiet)
-      this.remote = remote && getType(remote) === 'string' ? remote : defaults.remote
+        : (getType(quiet) === 'boolean' ? quiet : defaults.quiet)
+      this.remote = remote && getType(remote) === 'string'
+        ? remote
+        : defaults.remote
       this.repository = repository && getType(repository) === 'string'
         ? repository
         : defaults.repository
-      this.version = version && getType(version) === 'string' ? version : defaults.version
+      this.version = version && getType(version) === 'string'
+        ? version
+        : defaults.version
       this.#header = `## [${this.version}](${this.repository}/` +
         `${this.remote === 'bitbucket' ? 'commits/tag' : 'releases/tag'}/` +
         `${this.prefix}${this.version}) - ${this.#today}`
@@ -73,10 +75,7 @@ export default class Changelog {
         '\n\n### Removed' +
         '\n\n### Fixed' +
         '\n\n### Security'
-    } catch (error) {
-      console.error(chalk.red(error))
-      $`exit 1`
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 
   /**
@@ -91,10 +90,7 @@ export default class Changelog {
 
       // Bump.
       await this.bump()
-    } catch (error) {
-      console.error(chalk.red(error))
-      $`exit 1`
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 
   /**
@@ -144,10 +140,7 @@ export default class Changelog {
           this.#header,
           this.#unreleased + '\n\n' + this.#header,
         )
-    } catch (error) {
-      console.error(chalk.red(error))
-      $`exit 1`
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 
   /**
@@ -161,9 +154,6 @@ export default class Changelog {
       if (directory) await mkdir(directory, { recursive: true })
       await writeFile(this.path, this.new, 'utf8')
       if (!this.quiet) console.log(chalk.green('Bumped Changelog.'))
-    } catch (error) {
-      console.error(chalk.red(error))
-      $`exit 1`
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 }

@@ -19,9 +19,9 @@ export default class Git {
     try {
       // Handle async setup tasks.
       await this.setup()
-    } catch (p) {
-      console.error(chalk.red(p.stderr))
-      $`exit 1`
+    } catch (error) {
+      console.error(chalk.red(error))
+      throw error
     }
   }
 
@@ -49,9 +49,9 @@ export default class Git {
       }
       this.tags.current = this.tags.all
         .filter(tag => tag.includes(this.version))
-    } catch (p) {
-      console.error(chalk.red(p.stderr))
-      await $`exit 1`
+    } catch (error) {
+      console.error(chalk.red(error))
+      throw error
     }
   }
 }
