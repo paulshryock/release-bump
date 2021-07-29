@@ -122,11 +122,4 @@ export default class Bump {
       $`exit 1`
     }
   }
-
-  /**
-   * Log the class instance to the console.
-   */
-  debug () {
-    console.log(this)
-  }
 }
