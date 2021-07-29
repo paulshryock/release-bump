@@ -13,6 +13,13 @@ Version `2.0.0` includes breaking changes:
 - JavaScript API configuration has been removed
 - [JavaScript class instantiation](#javascript-api) should be followed by a call to `init()` inside an async function.
 
+## Requirements
+
+| Software | Minimum version | Tested version | Tested date |
+| :--- | :--- | :--- | :--- |
+| Node | `^14.14.0` | `16.5.0` | 2021/07/29 |
+| npm | `^3.0.0` | `7.20.3` | 2021/07/29 |
+
 ## Features
 
 - [Bump Changelog](#bump-changelog)
