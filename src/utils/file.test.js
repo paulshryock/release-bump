@@ -17,7 +17,7 @@ const path = `${temp.dir}/${goodPath}`
  *
  * @param {Object}  t      Assertion object.
  * @param {Boolean} exists Whether or not file exists.
- * @since unreleased
+ * @since 2.2.1
  */
 function returnsFalse (t, exists) {
   t.plan(1)
