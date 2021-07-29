@@ -1,6 +1,7 @@
 import test from 'ava'
 import Bump from './Bump.js'
 import { getType } from './utils/type.js'
+import { mkdir, readFile, rm, writeFile } from 'fs/promises'
 
 const defaults = {
   paths: {
@@ -20,7 +21,7 @@ const badOptions = {
 }
 
 const temp = {
-  dir: 'temp',
+  dir: 'temp/bump',
 }
 
 const options = {
@@ -40,6 +41,20 @@ function hasDefaults (t, bump) {
   t.deepEqual(bump.paths, defaults.paths, 'has the default paths')
   t.is(bump.prefix, defaults.prefix, 'has the default prefix')
   t.is(bump.quiet, defaults.quiet, 'has the default quiet')
+}
+
+/**
+ * Write files.
+ *
+ * @since 2.2.0
+ */
+async function writeFiles () {
+  await mkdir(temp.dir, { recursive: true })
+
+  for (const path in defaults.paths) {
+    const data = await readFile(defaults.paths[path], 'utf8')
+    await writeFile(options.paths[path], data)
+  }
 }
 
 /**
@@ -81,4 +96,32 @@ test('after setup', async t => {
   t.is(getType(bump.git), 'object', 'git is an object.')
   t.is(getType(bump.changelog), 'object', 'changelog is an object.')
   t.is(getType(bump.wordpress), 'object', 'wordpress is an object.')
+})
+
+/**
+ * Setup tests.
+ */
+
+test('after bump', async t => {
+  t.plan(4)
+
+  // Write files.
+  await writeFiles()
+
+  // Bump files.
+  const bump = new Bump(options)
+  await bump.init()
+
+  t.is(getType(bump.repository), 'string', 'repository is a string')
+  t.is(getType(bump.git), 'object', 'git is an object.')
+  t.is(getType(bump.changelog), 'object', 'changelog is an object.')
+  t.is(getType(bump.wordpress), 'object', 'wordpress is an object.')
+})
+
+/**
+ * Cleanup
+ */
+
+test.after('cleanup', async () => {
+  await rm(temp.dir, { recursive: true, force: true })
 })
