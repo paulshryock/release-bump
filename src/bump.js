@@ -38,7 +38,6 @@ export default class Bump {
       ...defaults.paths,
       ...passed.paths,
     }
-    console.log(this.paths)
   }
 
   /**
