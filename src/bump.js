@@ -52,10 +52,7 @@ export default class Bump {
 
       // Bump.
       await this.bump()
-    } catch (error) {
-      console.error(chalk.red(error))
-      throw error
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 
   /**
@@ -99,10 +96,7 @@ export default class Bump {
 
       // Initialize WordPress.
       this.wordpress = new WordPress({ quiet: this.quiet, version })
-    } catch (error) {
-      console.error(chalk.red(error))
-      throw error
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 
   /**
@@ -117,9 +111,6 @@ export default class Bump {
 
       // Bump WordPress.
       await this.wordpress.init()
-    } catch (error) {
-      console.error(chalk.red(error))
-      throw error
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 }

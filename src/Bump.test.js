@@ -52,7 +52,8 @@ async function writeFiles () {
   await mkdir(temp.dir, { recursive: true })
 
   for (const path in defaults.paths) {
-    const data = await readFile(defaults.paths[path], 'utf8')
+    let data = await readFile(defaults.paths[path], 'utf8')
+    if (path === 'package') data = data.replace('repository', 'something-else')
     await writeFile(options.paths[path], data)
   }
 }
