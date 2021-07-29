@@ -38,7 +38,6 @@ export default class Bump {
       ...defaults.paths,
       ...passed.paths,
     }
-    console.log(this.paths)
   }
 
   /**
@@ -122,12 +121,5 @@ export default class Bump {
       console.error(chalk.red(p.stderr))
       $`exit 1`
     }
-  }
-
-  /**
-   * Log the class instance to the console.
-   */
-  debug () {
-    console.log(this)
   }
 }
