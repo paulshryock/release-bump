@@ -30,9 +30,9 @@
     "test": "ava",
     "posttest": "rm -rf temp",
     "test:watch": "ava --watch",
-    "test:coverage": "c8 npm test",
+    "test:coverage": "c8 npm test && c8 check-coverage",
     "lint": "eslint . ./*.cjs src --fix",
-    "preversion": "npm run lint && npm test",
+    "preversion": "npm run lint && npm run test:coverage",
     "version": "node cli.js -p -q && git add .",
     "postversion": "git push && git push --tags && npm publish"
   },

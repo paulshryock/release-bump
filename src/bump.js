@@ -52,10 +52,7 @@ export default class Bump {
 
       // Bump.
       await this.bump()
-    } catch (p) {
-      console.error(chalk.red(p.stderr))
-      $`exit 1`
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 
   /**
@@ -99,10 +96,7 @@ export default class Bump {
 
       // Initialize WordPress.
       this.wordpress = new WordPress({ quiet: this.quiet, version })
-    } catch (p) {
-      console.error(chalk.red(p.stderr))
-      $`exit 1`
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 
   /**
@@ -117,9 +111,6 @@ export default class Bump {
 
       // Bump WordPress.
       await this.wordpress.init()
-    } catch (p) {
-      console.error(chalk.red(p.stderr))
-      $`exit 1`
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 }

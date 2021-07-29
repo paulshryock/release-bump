@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update `file` util methods.
+- Update test coverage.
 
 ### Deprecated
 
