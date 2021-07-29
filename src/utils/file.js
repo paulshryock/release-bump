@@ -6,7 +6,7 @@ import { access } from 'fs/promises'
  *
  * @param  {string}  file The file path.
  * @return {boolean}      Whether or not the file exists and is readable.
- * @since  unreleased
+ * @since  2.2.0
  */
 async function fileExists (file) {
   if (!file) return false
@@ -27,7 +27,7 @@ async function fileExists (file) {
  * @param  {Object} options      File options.
  * @param  {string} options.path File path.
  * @return {string}              The file content, or an empty string.
- * @since  unreleased
+ * @since  2.2.0
  * @todo   Change options argument to path string.
  */
 export async function getFileContent (options = {}) {
