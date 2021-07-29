@@ -114,7 +114,7 @@ test.serial('after setup if file does not exist', async t => {
   t.falsy(changelog.new, 'has no new')
 })
 
-test.serial('after setup if file does exist', async t => {
+test('after setup if file does exist', async t => {
   t.plan(4)
   // Write Changelog.
   await writeChangelog()
@@ -146,6 +146,7 @@ test('after bump', async t => {
   await Promise.all([
     t.assert(file, 'file exists'),
     t.is(getType(file), 'string', 'file contents is a string'),
+    // todo: Pass new version.
     t.assert(file.includes(`[${options.version}]`), 'file has new version'),
   ])
 })

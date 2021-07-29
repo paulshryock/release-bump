@@ -1,19 +1,19 @@
-import { constants, readFileSync } from 'fs'
-import { access } from 'fs/promises'
+import { constants } from 'fs'
+import { access, readFile } from 'fs/promises'
 
 /**
  * Check if the file exists in the current directory, and if it is readable.
  *
- * @param  {string}  file The file path.
+ * @param  {string}  path The file path.
  * @return {boolean}      Whether or not the file exists and is readable.
  * @since  2.2.0
  */
-async function fileExists (file) {
-  if (!file) return false
+export async function fileExists (path = '') {
+  if (!path) return false
 
   let exists = true
   try {
-    await access(file, constants.F_OK | constants.R_OK)
+    await access(path, constants.F_OK | constants.R_OK)
   } catch (error) {
     exists = false
   }
@@ -24,30 +24,18 @@ async function fileExists (file) {
 /**
  * Get file content as a string, if it exists.
  *
- * @param  {Object} options      File options.
- * @param  {string} options.path File path.
- * @return {string}              The file content, or an empty string.
+ * @param  {string} path File path.
+ * @return {string}      The file content, or an empty string.
  * @since  2.2.0
- * @todo   Change options argument to path string.
  */
-export async function getFileContent (options = {}) {
-  const { path } = options
-  if (!path) {
-    return null
-  }
+export async function getFileContent (path = '') {
+  // If there is no path, bail.
+  if (!path) return null
 
-  let file = null
-  let exists = false
-  try {
-    // If the file doesn't exist, bail.
-    exists = await fileExists(path)
-    if (!exists) return null
+  // If the file doesn't exist, bail.
+  const exists = await fileExists(path)
+  if (!exists) return null
 
-    // Get the file text.
-    file = readFileSync(path, 'utf8')
-  } catch (error) {
-    return file
-  }
-
-  return file
+  // Get the file text.
+  return await readFile(path, 'utf8')
 }
