@@ -1,6 +1,6 @@
 {
   "name": "release-bump",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Release Bump handles version bump tasks for a code release.",
   "keywords": [
     "release",
