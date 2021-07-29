@@ -1,10 +1,8 @@
-import { $, chalk } from 'zx'
+import { chalk } from 'zx'
 import { writeFile } from 'fs/promises'
 import { parse } from 'path'
 import { getFileContent } from './utils/file.js'
 import { getType } from './utils/type.js'
-
-$.verbose = false
 
 /**
  * WordPress class.
@@ -31,10 +29,7 @@ export default class WordPress {
             ? quiet
             : false)
       this.version = getType(version) === 'string' ? version : null
-    } catch (error) {
-      console.error(chalk.red(error))
-      $`exit 1`
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 
   /**
@@ -52,10 +47,7 @@ export default class WordPress {
 
       // Bump.
       await this.bump()
-    } catch (p) {
-      console.error(p.stderr)
-      $`exit 1`
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 
   /**
@@ -86,10 +78,7 @@ export default class WordPress {
         delete this.plugin
         delete this.theme
       }
-    } catch (error) {
-      console.error(chalk.red(error))
-      $`exit 1`
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 
   /**
@@ -148,9 +137,6 @@ export default class WordPress {
         writeFile(this.plugin.path, this.plugin.new, 'utf8')
         if (!this.quiet)console.log(chalk.green('Bumped WordPress plugin.'))
       }
-    } catch (error) {
-      console.error(chalk.red(error))
-      $`exit 1`
-    }
+    } catch (error) { console.error(chalk.red(error)) }
   }
 }
