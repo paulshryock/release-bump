@@ -1,86 +1,97 @@
 import test from 'ava'
-import { getFileContent } from './file.js'
+import { fileExists, getFileContent } from './file.js'
 import { mkdir, rm, writeFile } from 'fs/promises'
 
-const defaults = {
-  path: 'test.txt',
-  text: 'test',
-}
+const emptyPath = ''
+const goodPath = 'package.json'
+const badPath = goodPath + '1'
 
 const temp = {
   dir: 'temp/file',
 }
 
-const emptyOptions = {}
+const path = `${temp.dir}/${goodPath}`
 
-const badOptions = {
-  path: 1,
+/**
+ * Returns false.
+ *
+ * @param {Object}  t      Assertion object.
+ * @param {Boolean} exists Whether or not file exists.
+ * @since unreleased
+ */
+function returnsFalse (t, exists) {
+  t.plan(1)
+  t.is(exists, false, 'returns false')
 }
 
-const options = {
-  path: `${temp.dir}/${defaults.path}`,
-}
-
-function hasNull (t, content) {
+/**
+ * Returns null.
+ *
+ * @param {Object} t       Assertion object.
+ * @param {Object} content File content.
+ * @since 2.2.0
+ */
+function returnsNull (t, content) {
   t.plan(1)
   t.is(content, null, 'returns null')
 }
 
 /**
- * Write test file.
- *
- * @since 2.2.0
+ * fileExists() tests.
  */
-async function writeTestFile () {
-  await mkdir(temp.dir, { recursive: true })
-  await writeFile(options.path, defaults.text)
-}
 
-test('getFileContent with no options passed', async t => {
-  // Write test file.
-  await writeTestFile()
+test('fileExists with no path', async t => {
+  const exists = await fileExists()
+  returnsFalse(t, exists)
+})
 
+test('fileExists with empty path', async t => {
+  const exists = await fileExists(emptyPath)
+  returnsFalse(t, exists)
+})
+
+test('fileExists with bad path', async t => {
+  const exists = await fileExists(badPath)
+  returnsFalse(t, exists)
+})
+
+test('fileExists with path', async t => {
+  const exists = await fileExists(goodPath)
+  t.plan(1)
+  t.assert(exists, 'returns true')
+})
+
+/**
+ * getFileContent() tests.
+ */
+
+test('getFileContent with no path', async t => {
   const content = await getFileContent()
-  hasNull(t, content)
+  returnsNull(t, content)
 })
 
-test('getFileContent with empty options passed', async t => {
-  // Write test file.
-  await writeTestFile()
-
-  const content = await getFileContent(emptyOptions)
-  hasNull(t, content)
+test('getFileContent with empty path', async t => {
+  const content = await getFileContent(emptyPath)
+  returnsNull(t, content)
 })
 
-test('getFileContent with bad options passed', async t => {
-  // Write test file.
-  await writeTestFile()
-
-  const content = await getFileContent(badOptions)
-  hasNull(t, content)
+test('getFileContent with bad path', async t => {
+  const content = await getFileContent(badPath)
+  returnsNull(t, content)
 })
 
-test.serial(
-  'getFileContent with options passed if file does not exist',
-  async t => {
-    // Remove test file.
-    await rm(options.path, { recursive: true, force: true })
-
-    const content = await getFileContent(options)
-    hasNull(t, content)
-  },
-)
-
-test.serial('getFileContent with options passed if file does exist', async t => {
+test('getFileContent with path', async t => {
   t.plan(1)
 
   // Write test file.
-  await writeTestFile()
+  await mkdir(temp.dir, { recursive: true })
+  const data = await getFileContent(goodPath)
+  await writeFile(path, data)
 
-  const content = await getFileContent(options)
+  const content = await getFileContent(path)
   t.is(
     content,
-    defaults.text,
+    data,
     'path to existing file returns the right text string',
   )
 })

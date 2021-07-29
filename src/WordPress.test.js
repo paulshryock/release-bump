@@ -1,7 +1,8 @@
 import test from 'ava'
 import WordPress from './WordPress.js'
+import { getFileContent } from './utils/file.js'
 import { getType } from './utils/type.js'
-import { mkdir, readFile, rm, writeFile } from 'fs/promises'
+import { mkdir, rm, writeFile } from 'fs/promises'
 
 const temp = {
   dir: 'temp/wordpress',
@@ -147,7 +148,7 @@ test('after bump', async t => {
 
   // Test written files.
   for (const type in options.paths) {
-    const file = await readFile(options.paths[type], 'utf8')
+    const file = await getFileContent(options.paths[type])
     await Promise.all([
       t.assert(file, 'file exists'),
       t.is(getType(file), 'string', 'file contents is a string'),
