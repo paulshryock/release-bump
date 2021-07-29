@@ -71,12 +71,12 @@ export default class WordPress {
     try {
       this.plugin = await {
         path: this.paths.plugin,
-        text: await getFileContent({ path: this.paths?.plugin }),
+        text: await getFileContent(this.paths?.plugin),
       }
 
       this.theme = await {
         path: this.paths.theme,
-        text: await getFileContent({ path: this.paths?.theme }),
+        text: await getFileContent(this.paths?.theme),
       }
 
       if (!this.plugin.text && !this.theme.text) {

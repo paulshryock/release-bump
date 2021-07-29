@@ -115,7 +115,7 @@ export default class Changelog {
     }
 
     try {
-      const text = await getFileContent({ path: this.path })
+      const text = await getFileContent(this.path)
       if (!text) {
         if (!this.quiet) {
           console.log(chalk.yellow('No Changelog to bump, or Changelog empty.'))
