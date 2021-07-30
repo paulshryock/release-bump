@@ -65,5 +65,5 @@ test('after setup', async t => {
   t.is(getType(git.commit), 'string', 'commit is string')
   t.is(getType(git.tags), 'object', 'tags is object')
   t.is(getType(git.tags.all), 'array', 'all tags is array')
-  t.is(getType(git.tags.current), 'array', 'current tags is array')
+  t.is(getType(git.tags.latest), 'string', 'latest tags is string')
 })

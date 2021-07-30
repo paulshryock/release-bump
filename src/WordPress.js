@@ -1,4 +1,4 @@
-import { chalk } from 'zx'
+import chalk from 'chalk'
 import { writeFile } from 'fs/promises'
 import { parse } from 'path'
 import { getFileContent } from './utils/file.js'

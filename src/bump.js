@@ -1,11 +1,10 @@
-import { $, chalk } from 'zx'
+import chalk from 'chalk'
+import simpleGit from 'simple-git'
 import Git from './Git.js'
 import Changelog from './Changelog.js'
 import WordPress from './WordPress.js'
 import { readFile } from 'fs/promises'
 import { getType } from './utils/type.js'
-
-$.verbose = false
 
 /**
  * Bump class.
@@ -64,11 +63,12 @@ export default class Bump {
     try {
       const pkg = await readFile(this.paths.package, 'utf8')
       const { repository, version } = JSON.parse(pkg.toString())
+      const git = simpleGit()
 
       if (!version) throw new Error('Missing package.json version')
 
       this.repository = repository?.url ||
-        (await $`git remote get-url --push origin`).toString()
+        (await git.remote(['get-url', '--push', 'origin']))
           .replace('\n', '')
       this.repository = 'https://' + this.repository
         .replace(/^git[+@]?/, '')
