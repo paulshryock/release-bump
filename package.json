@@ -1,7 +1,7 @@
 {
   "name": "release-bump",
   "version": "2.2.1",
-  "description": "Release Bump handles version bump tasks for a code release.",
+  "description": "Handle version bump tasks for a code release.",
   "keywords": [
     "release",
     "bump",
@@ -13,20 +13,17 @@
   "bugs": {
     "url": "https://github.com/paulshryock/release-bump/issues"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/paulshryock/release-bump.git"
-  },
-  "type": "module",
+  "repository": "paulshryock/release-bump",
   "license": "Hippocratic 2.1",
   "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
+  "type": "module",
   "main": "src/Bump.js",
   "bin": {
     "release-bump": "cli.js"
   },
   "scripts": {
     "start": "node cli.js -p -q",
-    "lint": "eslint . ./*.cjs src --fix",
+    "lint": "eslint . --ext .js,.cjs --fix",
     "build": "esbuild src/Bump.js --bundle --minify --outfile=dist/release-bump.min.cjs --platform=node",
     "pretest": "mkdir -p temp",
     "test": "ava",
@@ -36,6 +33,14 @@
     "preversion": "npm run lint && npm run test:coverage",
     "version": "node cli.js -p -q && git add .",
     "postversion": "git push && git push --tags && npm publish"
+  },
+  "ava": {
+    "files": [
+      "!temp"
+    ],
+    "ignoredByWatcher": [
+      "temp"
+    ]
   },
   "dependencies": {
     "arg": "^5.0.0",
@@ -50,19 +55,10 @@
     "eslint": "^7.31.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-compat": "^3.11.1",
-    "eslint-plugin-json-files": "^1.1.0",
     "simple-git": "^2.41.2"
   },
   "engines": {
     "node": ">=14.14.0",
     "npm": ">=3.0.0"
-  },
-  "ava": {
-    "files": [
-      "!temp"
-    ],
-    "ignoredByWatcher": [
-      "temp"
-    ]
   }
 }
