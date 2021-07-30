@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Replace `Changelog.tags.current` array with `Changelog.tags.latest` string.
 - Update dependencies.
+- Update linting config.
+- Reorder `package.json`.
+- Get repository URL from git instead of `package.json`.
 
 ### Deprecated
 
