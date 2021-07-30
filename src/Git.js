@@ -1,7 +1,6 @@
-import { $, chalk } from 'zx'
+import chalk from 'chalk'
 import { getType } from './utils/type.js'
-
-$.verbose = false
+import simpleGit from 'simple-git'
 
 export default class Git {
   constructor (options = {}) {
@@ -36,19 +35,15 @@ export default class Git {
     }
 
     try {
-      this.branch = (await $`git branch --show-current`).toString()
-        .replace('\n', '')
+      const git = simpleGit()
+      this.branch = (await git.branch()).current
       this.remote = this.repository
         .replace(/(https?:\/\/|www\.)/g, '')
         .split('/')[0]
         .split('.')[0]
-      this.commit = (await $`git log -n 1 --pretty=format:"%H"`).toString()
-      this.tags = {
-        all: (await $`git tag`).toString().split('\n')
-          .filter(tag => tag !== ''),
-      }
-      this.tags.current = this.tags.all
-        .filter(tag => tag.includes(this.version))
+      // todo: Get short format: git log -n 1 --pretty=format:"%H"
+      this.commit = (await git.log()).latest.hash
+      this.tags = (await git.tags())
     } catch (error) {
       console.error(chalk.red(error))
       throw error
