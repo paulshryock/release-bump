@@ -62,14 +62,13 @@ export default class Bump {
   async setup () {
     try {
       const pkg = await readFile(this.paths.package, 'utf8')
-      const { repository, version } = JSON.parse(pkg.toString())
+      const { version } = JSON.parse(pkg.toString())
       const git = simpleGit()
 
       if (!version) throw new Error('Missing package.json version')
 
-      this.repository = repository?.url ||
-        (await git.remote(['get-url', '--push', 'origin']))
-          .replace('\n', '')
+      this.repository = (await git.remote(['get-url', '--push', 'origin']))
+        .replace('\n', '')
       this.repository = 'https://' + this.repository
         .replace(/^git[+@]?/, '')
         .replace(/^(https?|ssh)?:\/\//, '')

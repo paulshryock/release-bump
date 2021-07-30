@@ -4,6 +4,11 @@ module.exports = {
     node: true,
   },
   extends: 'standard',
+  ignorePatterns: [
+    '.github',
+    'coverage',
+    'dist',
+  ],
   /**
    * @see:  https://github.com/tc39/proposal-private-methods
    * @see:  https://tc39.es/proposal-private-methods/
@@ -18,13 +23,9 @@ module.exports = {
     requireConfigFile: false,
     sourceType: 'module',
   },
-  plugins: [
-    'json-files',
-  ],
   rules: {
     'comma-dangle': ['error', 'always-multiline'],
     indent: ['error', 2, { offsetTernaryExpressions: true }],
-    'json-files/sort-package-json': 'error',
     'linebreak-style': ['error', 'unix'],
     'max-len': ['error', { ignoreTemplateLiterals: true, ignoreStrings: true }],
     'multiline-ternary': ['error', 'always-multiline'],
