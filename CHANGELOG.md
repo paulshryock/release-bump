@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add Node/npm support information. [#27]
+- Bundle and minify JavaScript for dist. [#27]
 
 ### Changed
+- Replace `Changelog.tags.current` array with `Changelog.tags.latest` string.
+- Update dependencies.
 
 ### Deprecated
 

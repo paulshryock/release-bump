@@ -1,21 +1,10 @@
 # `release-bump`
 
-`release-bump` handles version bump tasks for a code release.
-
-## Announcements
-
-Version `2.2.0` adds unit tests, code linting, and [CLI](#cli) and [JavaScript API](#javascript-api) configuration for `quiet`.
-
-Version `2.1.0` adds [CLI](#cli) and [JavaScript API](#javascript-api) configuration for `prefix`.
-
-Version `2.0.0` includes breaking changes:
-- CLI configuration has been removed
-- JavaScript API configuration has been removed
-- [JavaScript class instantiation](#javascript-api) should be followed by a call to `init()` inside an async function.
+Handle version bump tasks for a code release.
 
 ## Requirements
 
-| Software | Minimum version | Tested version | Tested date |
+| Software | Minimum version | Tested up to | Test date |
 | :--- | :--- | :--- | :--- |
 | Node | `^14.14.0` | `16.5.0` | 2021/07/29 |
 | npm | `^3.0.0` | `7.20.3` | 2021/07/29 |
