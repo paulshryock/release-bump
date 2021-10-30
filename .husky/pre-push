@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Prevent pushing main branch directly.
+git branch | grep "*" | egrep -v "^* main$"
+
+# Complete a full build.
+npm run build

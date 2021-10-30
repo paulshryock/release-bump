@@ -7,15 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/paulshryock/release-bump/compare/HEAD..v2.2.1)
 
 ### Added
-- Add Node/npm support information. [#27]
-- Bundle and minify JavaScript for dist. [#27]
+- TypeScript, modern JavaScript features, and ES modules by default.
+- JavaScript formatting, linting, type-checking, unit testing, bundling, compiling, legacy transpiling, and minification.
+- Commit, push, and pull hooks.
 
 ### Changed
-- Replace `Changelog.tags.current` array with `Changelog.tags.latest` string.
-- Update dependencies.
-- Update linting config.
-- Reorder `package.json`.
-- Get repository URL from git instead of `package.json`.
+- Rebuilt from scratch in TypeScript.
 
 ### Deprecated
 
