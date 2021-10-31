@@ -1,34 +1,14 @@
 {
-  "include": ["./scripts/**/*", "./src/**/*"],
-
   "compilerOptions": {
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "exactOptionalPropertyTypes": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "declaration": true,
+    "importHelpers": true,
+    "module": "commonjs",
+    "outDir": "lib",
+    "rootDir": "src",
     "strict": true,
-
-    "baseUrl": "./",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-
-    "newLine": "lf",
-    "noEmit": true,
-    "outDir": "dist",
-
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-
-    "target": "es2015",
-
-    "skipLibCheck": true
-  }
+    "target": "es2017"
+  },
+  "include": [
+    "src/**/*"
+  ]
 }

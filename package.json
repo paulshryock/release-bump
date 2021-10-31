@@ -1,97 +1,56 @@
 {
   "name": "release-bump",
-  "version": "2.2.1",
   "description": "Handle version bump tasks for a code release.",
-  "keywords": [
-    "release",
-    "bump",
-    "version",
-    "changelog",
-    "wordpress",
-    "docblock",
-    "jsdoc"
-  ],
-  "homepage": "https://github.com/paulshryock/release-bump#readme",
-  "bugs": {
-    "url": "https://github.com/paulshryock/release-bump/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/paulshryock/release-bump.git"
-  },
-  "license": "Hippocratic 2.1",
+  "version": "2.2.1",
   "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
-  "type": "module",
-  "main": "src/Bump.js",
-  "scripts": {
-    "prebuild": "run-p lint typecheck test env",
-    "build": "node --loader ts-node/esm --experimental-specifier-resolution=node ./scripts/build.ts",
-    "preenv": "touch .env",
-    "env": "sync-dotenv",
-    "lint": "run-s lint:*",
-    "lint:format": "prettier --loglevel=warn --write \"./**/*.{ts,js,{m,c}js,json}\"",
-    "lint:js": "eslint \"./**/*.{ts,js,{m,c}js,json}\" --fix",
-    "lint:pkg": "sort-package-json",
-    "prepare": "husky install",
-    "test": "ava",
-    "typecheck": "tsc",
-    "typecheck:watch": "tsc --watch",
-    "preversion": "npm run prebuild && git add .",
-    "postversion": "git push && git push --tags && npm publish"
+  "bin": {
+    "release-bump": "./bin/run"
   },
-  "ava": {
-    "extensions": {
-      "ts": "module"
-    },
-    "files": [
-      "!build",
-      "!dist",
-      "!temp"
-    ],
-    "ignoredByWatcher": [
-      "build",
-      "dist",
-      "temp"
-    ],
-    "nodeArguments": [
-      "--loader=ts-node/esm"
-    ],
-    "nonSemVerExperiments": {
-      "configurableModuleFormat": true
-    },
-    "require": [
-      "esm"
-    ]
-  },
+  "bugs": "https://github.com/paulshryock/release-bump/issues",
   "devDependencies": {
-    "@swc/cli": "^0.1.51",
-    "@swc/core": "^1.2.105",
-    "@types/node": "^16.11.6",
-    "@typescript-eslint/eslint-plugin": "^5.2.0",
-    "@typescript-eslint/parser": "^5.2.0",
-    "ava": "^3.15.0",
-    "esbuild": "^0.13.11",
-    "eslint": "^7.32.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-ava": "^13.1.0",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-json-format": "^2.0.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-promise": "^5.1.1",
-    "esm": "^3.2.25",
-    "husky": "^7.0.4",
-    "npm-run-all2": "^5.0.2",
-    "prettier": "^2.4.1",
-    "sort-package-json": "^1.52.0",
-    "sync-dotenv": "^2.6.2",
-    "ts-node": "^10.4.0",
-    "tslib": "^2.3.1",
-    "typescript": "^4.4.4",
-    "zx": "^4.2.0"
+    "@oclif/dev-cli": "^1.26.0",
+    "@oclif/test": "^1.2.8",
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^10.17.60",
+    "chai": "^4.3.4",
+    "eslint": "^5.16.0",
+    "eslint-config-oclif": "^3.1.0",
+    "eslint-config-oclif-typescript": "^0.1.0",
+    "mocha": "^5.2.0",
+    "nyc": "^14.1.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.10"
   },
   "engines": {
-    "node": "^17",
-    "npm": "^8"
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib"
+  ],
+  "homepage": "https://github.com/paulshryock/release-bump",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "Hippocratic 2.1",
+  "main": "lib/index.js",
+  "oclif": {
+    "bin": "release-bump"
+  },
+  "repository": "paulshryock/release-bump",
+  "scripts": {
+    "posttest": "eslint . --ext .ts --config .eslintrc",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "types": "lib/index.d.ts",
+  "dependencies": {
+    "@oclif/command": "^1.8.0",
+    "@oclif/config": "^1.17.0",
+    "@oclif/plugin-help": "^3.2.3",
+    "release-bump-core": "file:../release-bump-core",
+    "tslib": "^1.14.1"
   }
 }
