@@ -1,15 +1,8 @@
-# Environment variables.
-.env
-.env.*
-!.env.example
-
-# Dependencies.
-node_modules/
-vendor/
-
-# Compiled assets.
-build/
-dist/
-
-# Temporary scratch files.
-temp/
+*-debug.log
+*-error.log
+/.nyc_output
+/dist
+/lib
+/tmp
+/yarn.lock
+node_modules
