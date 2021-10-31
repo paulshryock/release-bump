@@ -1,4 +1,4 @@
-import { sum } from 'release-bump-core'
+import {sum} from 'release-bump-core'
 import {Command, flags} from '@oclif/command'
 
 class ReleaseBump extends Command {
@@ -19,7 +19,7 @@ class ReleaseBump extends Command {
   async run() {
     const {args, flags} = this.parse(ReleaseBump)
 
-    this.log(`${sum(1,2)}`)
+    this.log(`${sum(1, 2)}`)
 
     const name = flags.name ?? 'world'
     this.log(`hello ${name} from ./src/index.ts`)
