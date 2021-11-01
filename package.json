@@ -1,7 +1,7 @@
 {
   "name": "release-bump",
   "description": "Handle version bump tasks for a code release.",
-  "version": "2.2.1",
+  "version": "3.0.0-alpha.0",
   "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
   "bin": {
     "release-bump": "./bin/run"
