@@ -28,8 +28,8 @@ class ReleaseBump extends Command {
     console.info({ flags })
 
     const bump = new Bump()
-    bump.setup()
-    bump.bump()
+    await bump.setup()
+    await bump.bump()
 
     // const name = flags.name ?? 'world'
     // this.log(`hello ${name} from ./src/index.ts`)
