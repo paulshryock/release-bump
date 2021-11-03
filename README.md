@@ -19,7 +19,7 @@ $ npm install -g release-bump
 $ release-bump COMMAND
 running command...
 $ release-bump (-v|--version|version)
-release-bump/3.0.0-alpha.3 darwin-x64 node-v17.0.1
+release-bump/3.0.0-alpha.4 darwin-x64 node-v17.0.1
 $ release-bump --help [COMMAND]
 USAGE
   $ release-bump COMMAND
