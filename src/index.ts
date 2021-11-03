@@ -1,4 +1,4 @@
-import {sum} from 'release-bump-core'
+import {Bump} from 'release-bump-core'
 import {Command, flags} from '@oclif/command'
 
 class ReleaseBump extends Command {
@@ -9,23 +9,33 @@ class ReleaseBump extends Command {
     version: flags.version({char: 'v'}),
     help: flags.help({char: 'h'}),
     // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
+    // name: flags.string({char: 'n', description: 'name to print'}),
     // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
+    // force: flags.boolean({char: 'f'}),
+
+    // Release bump flags.
+    prefix: flags.boolean({char: 'p'}),
+    quiet: flags.boolean({char: 'q'}),
   }
 
   static args = [{name: 'file'}]
 
   async run() {
     const {args, flags} = this.parse(ReleaseBump)
+    const {prefix, quiet} = flags
 
-    this.log(`${sum(1, 2)}`)
+    console.info({ args })
+    console.info({ flags })
 
-    const name = flags.name ?? 'world'
-    this.log(`hello ${name} from ./src/index.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
-    }
+    const bump = new Bump()
+    bump.setup()
+    bump.bump()
+
+    // const name = flags.name ?? 'world'
+    // this.log(`hello ${name} from ./src/index.ts`)
+    // if (args.file && flags.force) {
+    //   this.log(`you input --force and --file: ${args.file}`)
+    // }
   }
 }
 
