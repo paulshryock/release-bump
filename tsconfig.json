@@ -1,0 +1,38 @@
+{
+  "include": ["./*.ts", "./bin/**/*", "./src/**/*"],
+
+  "compilerOptions": {
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true,
+
+    "baseUrl": "./",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+
+    "newLine": "lf",
+    "noEmit": true,
+    "outDir": "dist",
+
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+
+    "target": "es2015",
+
+    "skipLibCheck": true
+  },
+
+  "ts-node": {
+    "esm": true
+  }
+}
