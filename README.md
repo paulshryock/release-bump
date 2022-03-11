@@ -28,6 +28,10 @@ npm install -D release-bump
 
 ## Usage
 
+CLI coming soon.
+
+Config files coming soon.
+
 <details>
   <summary>TypeScript</summary>
 
@@ -88,10 +92,11 @@ npm install -D release-bump
 
 1. [x] Core API
 2. [ ] CLI
+3. [ ] Config files
 
 ## Contributing
 
-todo
+Please see the [contributing guidelines](CONTRIBUTING.md).
 
 ## License
 
