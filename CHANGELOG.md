@@ -4,18 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/paulshryock/release-bump/compare/HEAD..v2.2.1)
+## [Unreleased]
 
 ### Added
-- Add Node/npm support information. [#27]
-- Bundle and minify JavaScript for dist. [#27]
+- Rewrite core API.
 
 ### Changed
-- Replace `Changelog.tags.current` array with `Changelog.tags.latest` string.
-- Update dependencies.
-- Update linting config.
-- Reorder `package.json`.
-- Get repository URL from git instead of `package.json`.
 
 ### Deprecated
 

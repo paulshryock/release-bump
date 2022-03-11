@@ -1,0 +1,13 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Maybe install dependencies.
+$(dirname "$0")/maybe-install
+
+# Audit production dependencies.
+echo "📦 auditing production dependencies."
+npm audit --omit=dev
+
+# Check for outdated dependencies.
+echo "📦 checking for outdated dependencies."
+./node_modules/.bin/ncu

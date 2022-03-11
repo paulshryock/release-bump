@@ -1,181 +1,111 @@
-# `release-bump`
+# Release Bump
 
 Handle version bump tasks for a code release.
 
-## Requirements
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+- [Acknowledgments](#acknowledgments)
 
-| Software | Minimum version | Tested up to | Test date |
-| :--- | :--- | :--- | :--- |
-| Node | `^14.14.0` | `16.5.0` | 2021/07/29 |
-| npm | `^3.0.0` | `7.20.3` | 2021/07/29 |
+## Getting Started
 
-## Features
+todo
 
-- [Bump Changelog](#bump-changelog)
-- [Bump WordPress theme or plugin](#bump-wordpress-theme-or-plugin)
+### Prerequisites
 
-[View roadmap](https://github.com/paulshryock/release-bump/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
+Node ^8
 
-### Bump Changelog
-
-If your project has a Changelog, add lines beneath the Unreleased header as you make changes.
-
-`release-bump` will change this:
-
-```bash
-## [Unreleased]
-
-### Added
-- Add my new feature.
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-- Fix a bug.
-- Fix another bug.
-
-### Security
-```
-
-to this:
+### Installation
 
 ```bash
-## [Unreleased](https://example.com/repo/compare/HEAD..1.0.0)
-
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
-
-## [1.0.0](https://example.com/repo/releases/tags/v1.0.0) - 3/30/2021
-
-### Added
-- Add my new feature.
-
-### Fixed
-- Fix a bug.
-- Fix another bug.
-```
-
-### Bump WordPress theme or plugin
-
-If your project has a file named `style.css` or a PHP file of the folder name in the root directory, it will bump the version.
-
-`release-bump` will change this:
-
-```css
-/*
-...
-Version: 0.0.1
-...
-*/
-```
-
-to this:
-
-```css
-/*
-...
-Version: 1.0.0
-...
-*/
+npm install -D release-bump
 ```
 
 ## Usage
 
-### Install
+CLI coming soon.
 
-```bash
-npm i -D release-bump
-```
+Config files coming soon.
 
-### CLI
+<details>
+  <summary>TypeScript</summary>
 
-Add `release-bump` to a `version` npm script.
+  ```bash
+  import { ReleaseBump, ReleaseBumpOptions } from 'release-bump'
 
-```
-{
-  "scripts": {
-    "version": "release-bump && git add ."
-  }
-}
-```
+  ;(async function() {
+    const options: ReleaseBumpOptions = {
+      changelogPath: 'CHANGELOG.md',
+      date: '2022-01-01',
+      dryRun: false,
+      files: [
+        'src/ts/script.ts',
+        'src/scss/style.scss',
+      ],
+      quiet: true,
+      prefix: 'v',
+      remote: 'github',
+      repository: 'my-org/some-repo',
+      version: '1.0.0',
+    }
+    const releaseBump = new ReleaseBump(options)
+    await releaseBump.init()
+  })()
 
-Now whenever you run `npm version <major|minor|patch>`, all of the `release-bump` tasks will execute with the new version number before npm creates a version commit.
+  ```
+</details>
 
-#### Configuration
+<details>
+  <summary>JavaScript</summary>
 
-```bash
-Options
-  --prefix, -p  Include a "v" prefix before the version number.
-  --quiet,  -q  Silence console logs.
+  ```bash
+  import { ReleaseBump } from 'release-bump'
 
-  --help        Log this help text.
-  --version     Log the installed release-bump version.
-```
+  ;(async function() {
+    const options = {
+      changelogPath: 'CHANGELOG.md',
+      date: '2022-01-01',
+      dryRun: false,
+      files: [
+        'src/ts/script.ts',
+        'src/scss/style.scss',
+      ],
+      quiet: true,
+      prefix: 'v',
+      remote: 'github',
+      repository: 'my-org/some-repo',
+      version: '1.0.0',
+    }
+    const releaseBump = new ReleaseBump(options)
+    await releaseBump.init()
+  })()
 
-### JavaScript API
+  ```
+</details>
 
-If you prefer to run `release-bump` programmatically, just require and instantiate a `release-bump` class inside an async function; then call `init()`:
+## Roadmap
 
-```javascript
-import Bump from 'release-bump'
+1. [x] Core API
+2. [ ] CLI
+3. [ ] Config files
 
-;(async function () {
-  const bump = new Bump()
-  await bump.init()
-})();
-```
+## Contributing
 
-#### Configuration
+Please see the [contributing guidelines](CONTRIBUTING.md).
 
-##### `prefix`
+## License
 
-Include a "v" prefix before the version number.
+[Hippocratic 2.1](LICENSE)
 
-- Type: `boolean`
-- Default: `false`
-- Optional: `true`
+## Contact
 
-##### `quiet`
+todo
 
-Silence console logs.
+## Acknowledgments
 
-- Type: `boolean`
-- Default: `false` (`true` during tests)
-- Optional: `true`
-
-```javascript
-import Bump from 'release-bump'
-
-const options = {
-  prefix: true,
-  quiet: true,
-}
-
-const bump = new Bump(options)
-await bump.init()
-```
-
-## Development
-
-### Linting
-
-- `npm run lint`: Lint code.
-
-### Testing
-
-- `npm test`: Run Ava unit tests.
-- `npm run test:watch`: Run Ava unit tests and watch for changes.
-- `npm run test:coverage`: Run Ava unit tests and see test coverage.
+todo
