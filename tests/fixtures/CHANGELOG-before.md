@@ -7,14 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Bump changelog and docblocks.
+- Added something.
 
 ### Changed
+- Changed something.
 
 ### Deprecated
+- Deprecated something.
 
 ### Removed
+- Removed something.
 
 ### Fixed
+- Fixed something.
 
 ### Security
+- Security something.
