@@ -35,7 +35,7 @@ Config files coming soon.
 <details>
   <summary>TypeScript</summary>
 
-  ```bash
+  ```typescript
   import { ReleaseBump, ReleaseBumpOptions } from 'release-bump'
 
   ;(async function() {
@@ -63,7 +63,7 @@ Config files coming soon.
 <details>
   <summary>JavaScript</summary>
 
-  ```bash
+  ```javascript
   import { ReleaseBump } from 'release-bump'
 
   ;(async function() {
@@ -104,7 +104,9 @@ Please see the [contributing guidelines](CONTRIBUTING.md).
 
 ## Contact
 
-todo
+- [Ask a question](https://github.com/paulshryock/release-bump/discussions/new)
+- [Request a feature](https://github.com/paulshryock/release-bump/issues/new?assignees=&labels=&template=feature_request.md&title=)
+- [Report a bug](https://github.com/paulshryock/release-bump/issues/new?assignees=&labels=&template=bug_report.md&title=)
 
 ## Acknowledgments
 

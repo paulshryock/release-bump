@@ -1,17 +1,14 @@
 # How to contribute
 
 - [Local environment](#markdown-header-local-environment)
-
 - [Git](#markdown-header-git)
   - [Branches](#markdown-header-branches)
   - [Commits](#markdown-header-commits)
   - [Pull requests](#markdown-header-pull-requests)
   - [Tags](#markdown-header-tags)
-
 - [Code quality](#markdown-header-code-quality)
     - [During development](#markdown-header-during-development)
     - [Skipping code quality checks](#markdown-header-skipping-code-quality-checks)
-
 - [Versions](#markdown-header-versions)
 - [Releases](#markdown-header-releases)
 - [Deployments](#markdown-header-deployments)
@@ -78,7 +75,6 @@ A pre-commit hook will enforce code quality before code is committed. **Don't sk
 
 If you need to save code which doesn't pass code quality checks, and `git stash` is not a suitable option, you can use `git commit --no-verify`. Later you can run `git commit --amend` to add passing code to your latest commit and re-run code quality checks.
 
-
 **You must run your code through code quality checks before pushing to remote and setting up a pull request.**
 
 ## Versions
@@ -89,9 +85,7 @@ Code is released by pushing a release tag to the remote. This is not the same as
 
 ### Prerelease
 
-todo
-
-Run `npm version <premajor|preminor|prepatch> --preid=<prerelease-id>`.
+Run `npm version <premajor|preminor|prepatch|prerelease> --preid=<prerelease-id>`.
 
 #### Prerelease ID's
 
@@ -104,13 +98,11 @@ Run `npm version <premajor|preminor|prepatch> --preid=<prerelease-id>`.
 
 ### Release
 
-todo
-
 Run `npm version <major|minor|patch>`.
 
 ## Deployments
 
-Code is deployed to an environment when a git tag matching one of these patterns is pushed to the remote.
+todo: Code is deployed to an environment when a git tag matching one of these patterns is pushed to the remote.
 
 | Environment | Pattern         | Example          |
 | :---        | :---            | :---             |
