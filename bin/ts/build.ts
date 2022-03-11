@@ -11,21 +11,20 @@ const paths = {
 		dist: join(__dirname, '../../dist/index.js'),
 	},
 	cli: {
-		src: join(__dirname, '../../src/cli.ts'),
+		src: join(__dirname, '../../bin/ts/cli.ts'),
 		dist: join(__dirname, '../../dist/cli.js'),
 	},
 }
 
 ;(async function() {
-	// Module.
+	// Bundle module.
 	await $`esbuild ${paths.module.src} \
 		--bundle \
 		--format=esm \
 		--minify \
 		--outfile=${paths.module.dist} \
 		--platform=node \
-		--target=node8 \
-	}`
+		--target=node8`
 
 	// todo: Types.
 
@@ -36,6 +35,5 @@ const paths = {
 		--minify \
 		--outfile=${paths.cli.dist} \
 		--platform=node \
-		--target=node8 \
-	}`
+		--target=node8`
 })()

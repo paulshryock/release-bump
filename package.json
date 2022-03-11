@@ -33,7 +33,12 @@
     "typecheck": "tsc",
     "typecheck:watch": "npm run typecheck -- --watch"
   },
+  "dependencies": {
+    "fast-glob": "3.2.11"
+  },
   "devDependencies": {
+    "@swc/cli": "0.1.55",
+    "@swc/core": "1.2.153",
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.21",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
@@ -64,8 +69,5 @@
   "engines": {
     "node": ">=17.5.0",
     "npm": ">=8.4.1"
-  },
-  "dependencies": {
-    "fast-glob": "3.2.11"
   }
 }

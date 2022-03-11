@@ -37,7 +37,7 @@ const cli = meow(
 	},
 )
 
-;(async function() {
+;(async function () {
 	const {
 		changelogPath,
 		date,

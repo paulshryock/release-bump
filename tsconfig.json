@@ -20,7 +20,7 @@
 
     "newLine": "lf",
     "noEmit": true,
-    "outDir": "dist",
+    "outDir": "build",
 
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
