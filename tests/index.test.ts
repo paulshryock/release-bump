@@ -9,6 +9,7 @@ beforeAll(async () => {
 })
 
 test('bumps changelog', async () => {
+	// Create the file.
 	const changelogPath = './temp/CHANGELOG.md'
 	await writeFile(
 		changelogPath,
@@ -16,12 +17,12 @@ test('bumps changelog', async () => {
 		'utf8',
 	)
 
+	// Bump changelog.
 	const options: ReleaseBumpOptions = {
 		changelogPath,
 		date: '2022-03-11',
-		remote: 'github',
+		release: '3.0.0',
 		repository: 'https://github.com/paulshryock/release-bump',
-		version: '3.0.0',
 	}
 	const releaseBump = new ReleaseBump(options)
 	await releaseBump.init()
@@ -49,8 +50,8 @@ test('bumps docblocks', async () => {
 
 	// Bump docblocks.
 	const options: ReleaseBumpOptions = {
-		files,
-		version: '3.0.0',
+		filesPath: './temp',
+		release: '3.0.0',
 	}
 	const releaseBump = new ReleaseBump(options)
 	await releaseBump.init()

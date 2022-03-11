@@ -1,7 +1,7 @@
 /**
  * Returns a value.
  *
- * @since  unreleased
+ * @since  3.0.0
  * @param  string someParam Some param.
  * @return string           Some return value.
  */

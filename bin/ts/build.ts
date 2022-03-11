@@ -2,26 +2,40 @@ import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { $ } from 'zx'
 
-const { BUILD_WATCH } = process.env
-const WATCH = BUILD_WATCH === 'true'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const paths = {
-	dist: 'dist',
-	js: {
+	module: {
 		src: join(__dirname, '../../src/index.ts'),
 		dist: join(__dirname, '../../dist/index.js'),
+	},
+	cli: {
+		src: join(__dirname, '../../src/cli.ts'),
+		dist: join(__dirname, '../../dist/cli.js'),
 	},
 }
 
 ;(async function() {
-	await $`esbuild ${paths.js.src} \
+	// Module.
+	await $`esbuild ${paths.module.src} \
 		--bundle \
 		--format=esm \
 		--minify \
-		--outfile=${paths.js.dist} \
+		--outfile=${paths.module.dist} \
 		--platform=node \
 		--target=node8 \
-		${WATCH ? '--watch' : ''}`
+	}`
+
+	// todo: Types.
+
+	// CLI.
+	await $`esbuild ${paths.cli.src} \
+		--bundle \
+		--format=esm \
+		--minify \
+		--outfile=${paths.cli.dist} \
+		--platform=node \
+		--target=node8 \
+	}`
 })()

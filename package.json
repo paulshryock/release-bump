@@ -19,8 +19,9 @@
   "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
   "type": "module",
   "scripts": {
-    "build": "ts-node -r dotenv/config ./bin/ts/build.ts",
+    "build": "ts-node ./bin/ts/build.ts",
     "clean": "rm -rf ./dist",
+    "cli": "ts-node ./bin/ts/cli.ts",
     "format": "prettier --loglevel=warn --write \"./!(vendor)/**/*.{ts,js,{m,c}js,json}\"",
     "lint": "run-p lint:*",
     "lint:js": "eslint \"./!(tests)/**/*.{ts,d.ts,js,{m,c}js,json}\" --fix",
@@ -63,5 +64,8 @@
   "engines": {
     "node": ">=17.5.0",
     "npm": ">=8.4.1"
+  },
+  "dependencies": {
+    "fast-glob": "3.2.11"
   }
 }

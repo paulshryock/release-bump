@@ -110,4 +110,4 @@ Please see the [contributing guidelines](CONTRIBUTING.md).
 
 ## Acknowledgments
 
-todo
+Thanks `globby` and sub-dependencies. Globs are hard.
