@@ -2,6 +2,75 @@ import { ReleaseBumpOptions } from './index.js'
 import { readdir, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 
+export const cliOptions = [
+	{
+		argument: 'changelogPath',
+		description: 'Path to changelog.',
+		type: 'string',
+	},
+	{
+		argument: 'date',
+		description: 'Release date.',
+		type: 'string',
+	},
+	{
+		argument: 'dryRun',
+		alias: 'd',
+		description: 'Dry run.',
+		type: 'boolean',
+	},
+	{
+		argument: 'failOnError',
+		alias: 'e',
+		description: 'Fail on error.',
+		type: 'boolean',
+	},
+	{
+		argument: 'filesPath',
+		description: 'Path to directory of files to bump.',
+		type: 'string',
+	},
+	{
+		argument: 'ignore',
+		description: 'Directories to ignore.',
+		type: 'string[]',
+	},
+	{
+		argument: 'help',
+		alias: 'h',
+		description: 'Log CLI usage text.',
+		type: 'boolean',
+	},
+	{
+		argument: 'prefix',
+		alias: 'p',
+		description: "Prefix release version with a 'v'.",
+		type: 'boolean',
+	},
+	{
+		argument: 'quiet',
+		alias: 'q',
+		description: 'Quiet, no logs.',
+		type: 'boolean',
+	},
+	{
+		argument: 'release',
+		description: 'Release version.',
+		type: 'string',
+	},
+	{
+		argument: 'repository',
+		description: 'Remote git repository URL.',
+		type: 'string',
+	},
+	{
+		argument: 'version',
+		alias: 'v',
+		description: 'Log Release Bump version.',
+		type: 'boolean',
+	},
+]
+
 /**
  * Filters file paths.
  *
@@ -69,13 +138,10 @@ export function formatChangelogText(
 
 	/** Unreleased. */
 	const unreleased =
-		`## [Unreleased]${repository ? unreleasedDiffUrl : ''}` +
-		'\n\n### Added' +
-		'\n\n### Changed' +
-		'\n\n### Deprecated' +
-		'\n\n### Removed' +
-		'\n\n### Fixed' +
-		'\n\n### Security'
+		`## [Unreleased]${repository ? unreleasedDiffUrl : ''}\n\n### ` +
+		['Added', 'Changed', 'Deprecated', 'Removed', 'Fixed', 'Security'].join(
+			'\n\n### ',
+		)
 
 	return (
 		unformatted
@@ -172,7 +238,7 @@ export async function getRecursiveFilePaths(
 	dir: string,
 	paths: string[] = [],
 ): Promise<string[]> {
-	(await readdir(dir)).forEach(async (file) => {
+	;(await readdir(dir)).forEach(async (file) => {
 		if ((await stat(dir + '/' + file)).isDirectory()) {
 			paths = await getRecursiveFilePaths(`${dir}/${file}`, paths)
 		} else {
@@ -192,27 +258,19 @@ export async function getRecursiveFilePaths(
  * @return {string} CLI usage text.
  */
 export function getCliUsageText(): string {
-	return `
-Usage
-	$ release-bump <options>
-
-Options
-	--changelogPath     Path to changelog.
-	--date              Release date.
-	--dryRun,        -d Dry run.
-	--failOnError,   -e Fail on error.
-	--filesPath         Path to directory of files to bump.
-	--ignore            Directories to ignore.
-	--help,          -h Log CLI usage text.
-	--prefix,        -p Prefix release version with a 'v'.
-	--quiet,         -q Quiet, no logs.
-	--release           Release version.
-	--repository        Remote git repository URL.
-	--version,       -v Log Release Bump version.
-
-Examples
-	$ release-bump -pq --files=src
-`
+	return (
+		'\nUsage\n	$ release-bump <options>\n\nOptions' +
+		cliOptions.reduce((output, current) => {
+			const alias = current.alias
+				? (current.argument.length < 6 ? '	' : '') + `	-${current.alias}`
+				: `		`
+			const description = current.alias
+				? `	${current.description}`
+				: (current.argument.length < 6 ? '	' : '') + current.description
+			return output + `\n	--${current.argument}${alias}${description}`
+		}, '') +
+		'\nExamples\n	$ release-bump -pq --files=src\n'
+	)
 }
 
 /**
@@ -242,75 +300,6 @@ interface CliArgs extends ReleaseBumpOptions {
  * @return {CliArgs}       Parsed CLI arguments.
  */
 export function parseCliArgs(args: string[]): CliArgs {
-	const cliOptions = [
-		{
-			argument: 'changelogPath',
-			description: 'Path to changelog.',
-			type: 'string',
-		},
-		{
-			argument: 'date',
-			description: 'Release date.',
-			type: 'string',
-		},
-		{
-			argument: 'dryRun',
-			alias: 'd',
-			description: 'Dry run.',
-			type: 'boolean',
-		},
-		{
-			argument: 'failOnError',
-			alias: 'e',
-			description: 'Fail on error.',
-			type: 'boolean',
-		},
-		{
-			argument: 'filesPath',
-			description: 'Path to directory of files to bump.',
-			type: 'string',
-		},
-		{
-			argument: 'ignore',
-			description: 'Directories to ignore.',
-			type: 'string[]',
-		},
-		{
-			argument: 'help',
-			alias: 'h',
-			description: 'Log CLI usage text.',
-			type: 'boolean',
-		},
-		{
-			argument: 'prefix',
-			alias: 'p',
-			description: "Prefix release version with a 'v'.",
-			type: 'boolean',
-		},
-		{
-			argument: 'quiet',
-			alias: 'q',
-			description: 'Quiet, no logs.',
-			type: 'boolean',
-		},
-		{
-			argument: 'release',
-			description: 'Release version.',
-			type: 'string',
-		},
-		{
-			argument: 'repository',
-			description: 'Remote git repository URL.',
-			type: 'string',
-		},
-		{
-			argument: 'version',
-			alias: 'v',
-			description: 'Log Release Bump version.',
-			type: 'boolean',
-		},
-	]
-
 	return args.reduce(
 		(all: { [key: string]: any }, current: string, index: number) => {
 			const modified: { [key: string]: any } = {}
@@ -326,7 +315,7 @@ export function parseCliArgs(args: string[]): CliArgs {
 				}
 				// One or more aliases.
 			} else if (current.indexOf('-') === 0) {
-				[...current.substr(1)].forEach((alias) => {
+				;[...current.substr(1)].forEach((alias) => {
 					const cliOption = cliOptions.find(
 						(cliOption) => cliOption.alias === alias,
 					)

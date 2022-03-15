@@ -3,6 +3,8 @@ import {
 	formatChangelogText,
 	formatDocblock,
 	formatRepositoryUrl,
+	getCliUsageText,
+	getReleaseBumpVersion,
 } from '../src/lib.js'
 import { basename, extname, resolve } from 'node:path'
 import { readFile } from 'node:fs/promises'
@@ -121,8 +123,6 @@ test('formats docblock', () => {
 	})
 })
 
-test.todo('gets all file paths in a directory recursively')
-
 test('formats remote git repository url', () => {
 	const expectations = [
 		{
@@ -150,4 +150,21 @@ test('formats remote git repository url', () => {
 	expectations.forEach((expectation) => {
 		expect(expectation.actual).toBe(expectation.expected)
 	})
+})
+
+test.todo('gets all file paths in a directory recursively')
+
+test('gets cli usage text', () => {
+	const actual = getCliUsageText()
+	expect(typeof actual === 'string')
+	expect(actual.includes('release-bump'))
+	expect(actual.toLowerCase().includes('usage'))
+})
+
+test('gets release bump version', async () => {
+	process.env.RELEASE_BUMP_VERSION = '3.0.0'
+	expect(await getReleaseBumpVersion()).toBe('v3.0.0')
+
+	delete process.env.RELEASE_BUMP_VERSION
+	expect(await getReleaseBumpVersion()).toBe('no version found')
 })
