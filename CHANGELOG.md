@@ -4,11 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](undefined/compare/HEAD..3.0.0)
+## [Unreleased](https://github.com/paulshryock/release-bump/compare/HEAD..v2.2.1)
 
 ### Added
 
 ### Changed
+- [Breaking changes?] Rewrite core API and CLI.
 
 ### Deprecated
 
@@ -17,23 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ### Security
-
-## [3.0.0](undefined/releases/tag/3.0.0) - 2022-03-11
-
-## [3.0.0](undefined/releases/tag/3.0.0) - 2022-03-11
-
-## [3.0.0](undefined/releases/tag/3.0.0) - 2022-03-11
-
-## [3.0.0](undefined/releases/tag/3.0.0) - 2022-03-11
-
-## [3.0.0](undefined/releases/tag/3.0.0) - 2022-03-11
-
-## [3.0.0](undefined/releases/tag/3.0.0) - 2022-03-11
-
-## [3.0.0](undefined/releases/tag/3.0.0) - 2022-03-11
-
-### Added
-- Rewrite core API.
 
 ## [2.2.1](https://github.com/paulshryock/release-bump/releases/tag/v2.2.1) - 2021/07/29
 

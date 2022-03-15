@@ -1,6 +1,6 @@
 # Release Bump
 
-Handle version bump tasks for a code release.
+Handle version bump tasks for a code release. Use `unreleased` in your Changelog and docblock comments, and Release Bump will automatically bump it to the correct release version.
 
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
@@ -14,7 +14,18 @@ Handle version bump tasks for a code release.
 
 ## Getting Started
 
-todo
+```bash
+npm install --save-dev release-bump
+```
+
+```json
+// package.json
+{
+  "scripts": {
+    "preversion": "release-bump <options>"
+  }
+}
+```
 
 ### Prerequisites
 
@@ -41,17 +52,9 @@ Config files coming soon.
   ;(async function() {
     const options: ReleaseBumpOptions = {
       changelogPath: 'CHANGELOG.md',
-      date: '2022-01-01',
-      dryRun: false,
-      files: [
-        'src/ts/script.ts',
-        'src/scss/style.scss',
-      ],
-      quiet: true,
-      prefix: 'v',
-      remote: 'github',
-      repository: 'my-org/some-repo',
-      version: '1.0.0',
+      date: '2022-03-11',
+      filesPath: '.',
+      release: '3.0.0',
     }
     const releaseBump = new ReleaseBump(options)
     await releaseBump.init()
@@ -69,17 +72,9 @@ Config files coming soon.
   ;(async function() {
     const options = {
       changelogPath: 'CHANGELOG.md',
-      date: '2022-01-01',
-      dryRun: false,
-      files: [
-        'src/ts/script.ts',
-        'src/scss/style.scss',
-      ],
-      quiet: true,
-      prefix: 'v',
-      remote: 'github',
-      repository: 'my-org/some-repo',
-      version: '1.0.0',
+      date: '2022-03-11',
+      filesPath: '.',
+      release: '3.0.0',
     }
     const releaseBump = new ReleaseBump(options)
     await releaseBump.init()
@@ -110,4 +105,4 @@ Please see the [contributing guidelines](CONTRIBUTING.md).
 
 ## Acknowledgments
 
-Thanks `globby` and sub-dependencies. Globs are hard.
+Thanks `meow` for CLI args.

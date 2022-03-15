@@ -18,10 +18,11 @@
   "license": "Hippocratic 2.1",
   "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
   "type": "module",
+  "bin": "./dist/cli.ts",
   "scripts": {
-    "build": "ts-node ./bin/ts/build.ts",
     "clean": "rm -rf ./dist",
-    "cli": "ts-node ./bin/ts/cli.ts",
+    "cli": "ts-node ./dist/cli.ts",
+    "compile": "ts-node ./bin/compile.ts",
     "format": "prettier --loglevel=warn --write \"./!(vendor)/**/*.{ts,js,{m,c}js,json}\"",
     "lint": "run-p lint:*",
     "lint:js": "eslint \"./!(tests)/**/*.{ts,d.ts,js,{m,c}js,json}\" --fix",
@@ -32,9 +33,6 @@
     "test:watch": "npm test -- --watch",
     "typecheck": "tsc",
     "typecheck:watch": "npm run typecheck -- --watch"
-  },
-  "dependencies": {
-    "fast-glob": "3.2.11"
   },
   "devDependencies": {
     "@swc/cli": "0.1.55",
