@@ -2,6 +2,11 @@ import { ReleaseBumpOptions } from './index.js'
 import { readdir, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 
+/**
+ * CLI options.
+ *
+ * @todo Convert camelCase to kebab-case.
+ */
 export const cliOptions = [
 	{
 		argument: 'changelogPath',
@@ -238,7 +243,7 @@ export async function getRecursiveFilePaths(
 	dir: string,
 	paths: string[] = [],
 ): Promise<string[]> {
-	(await readdir(dir)).forEach(async (file) => {
+	;(await readdir(dir)).forEach(async (file) => {
 		if ((await stat(dir + '/' + file)).isDirectory()) {
 			paths = await getRecursiveFilePaths(`${dir}/${file}`, paths)
 		} else {
@@ -311,7 +316,17 @@ export function parseCliArgs(args: string[]): CliArgs {
 					(cliOption) => cliOption.argument === key,
 				)
 				if (cliOption) {
-					modified[key] = cliOption.type === 'boolean' ? true : value
+					switch (cliOption.type) {
+						case 'boolean':
+							modified[key] = true
+							break
+						case 'string[]':
+							modified[key] = value?.split(',')
+							break
+						default:
+							modified[key] = value
+							break
+					}
 				}
 				// One or more aliases.
 			} else if (current.indexOf('-') === 0) {

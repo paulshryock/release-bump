@@ -5,6 +5,7 @@ import {
 	formatRepositoryUrl,
 	getCliUsageText,
 	getReleaseBumpVersion,
+	parseCliArgs,
 } from '../src/lib.js'
 import { basename, extname, resolve } from 'node:path'
 import { readFile } from 'node:fs/promises'
@@ -167,4 +168,98 @@ test('gets release bump version', async () => {
 
 	delete process.env.RELEASE_BUMP_VERSION
 	expect(await getReleaseBumpVersion()).toBe('no version found')
+})
+
+test('parses cli arguments', () => {
+	/** Parsed aliases. */
+	const parsedAliases = {
+		dryRun: true,
+		failOnError: true,
+		help: true,
+		prefix: true,
+		quiet: true,
+		version: true,
+	}
+
+	/** Parsed arguments. */
+	const parsedArguments = {
+		...parsedAliases,
+		changelogPath: 'CHANGELOG.md',
+		date: '2022-03-15',
+		filesPath: 'src',
+		ignore: ['node_modules', 'tests/fixtures'],
+		release: '3.0.0',
+		repository: 'org/repo',
+	}
+
+	const expectations = [
+		// 0. Nothing.
+		{
+			actual: parseCliArgs([]),
+			expected: {},
+		},
+		// 1. Unused args.
+		{
+			actual: parseCliArgs(['hello', 'world']),
+			expected: {},
+		},
+		// 2. Arguments with spaces.
+		{
+			actual: parseCliArgs([
+				'--changelogPath',
+				'CHANGELOG.md',
+				'--date',
+				'2022-03-15',
+				'--dryRun',
+				'--failOnError',
+				'--filesPath',
+				'src',
+				'--ignore',
+				'node_modules,tests/fixtures',
+				'--help',
+				'--prefix',
+				'--quiet',
+				'--release',
+				'3.0.0',
+				'--repository',
+				'org/repo',
+				'--version',
+			]),
+			expected: parsedArguments,
+		},
+		// 3. Arguments with equals.
+		{
+			actual: parseCliArgs([
+				'--changelogPath=CHANGELOG.md',
+				'--date=2022-03-15',
+				'--dryRun',
+				'--failOnError',
+				'--filesPath=src',
+				'--ignore=node_modules,tests/fixtures',
+				'--help',
+				'--prefix',
+				'--quiet',
+				'--release=3.0.0',
+				'--repository=org/repo',
+				'--version',
+			]),
+			expected: parsedArguments,
+		},
+		// 4. Aliases.
+		{
+			actual: parseCliArgs([
+				'-d',
+				'-e',
+				'-h',
+				'-p',
+				'-q',
+				'-v',
+			]),
+			expected: parsedAliases,
+		},
+	]
+
+	expectations.forEach((expectation) => {
+		expect(expectation.actual).toStrictEqual(expectation.expected)
+	})
 })
