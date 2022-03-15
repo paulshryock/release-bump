@@ -49,7 +49,7 @@ export function formatChangelogText(
 	const remote = repository.includes('bitbucket.org') ? 'bitbucket' : 'github'
 
 	/** Semantic release version. */
-	const version = (/\d+\.\d+\.\d+/.exec(release))?.[0] ?? release
+	const version = /\d+\.\d+\.\d+/.exec(release)?.[0] ?? release
 
 	/** Release URL. */
 	const releaseUrl = `${repository}/${
@@ -113,7 +113,7 @@ export function formatDocblock(
 	const { release } = options
 
 	/** Semantic release version. */
-	const version = (/\d+\.\d+\.\d+/.exec(release))?.[0] ?? release
+	const version = /\d+\.\d+\.\d+/.exec(release)?.[0] ?? release
 
 	return text.replace(
 		/@([Ss]ince|[Vv]ersion)(:?\s+)unreleased/g,
@@ -322,7 +322,7 @@ export function parseCliArgs(args: string[]): CliArgs {
 				}
 				// One or more aliases.
 			} else if (current.indexOf('-') === 0) {
-				;[...current.substr(1)].forEach((alias) => {
+				[...current.substr(1)].forEach((alias) => {
 					const cliOption = cliOptions.find(
 						(cliOption) => cliOption.alias === alias,
 					)

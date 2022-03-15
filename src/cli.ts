@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { ReleaseBump, ReleaseBumpOptions } from './index.js'
 import { getCliUsageText, getReleaseBumpVersion, parseCliArgs } from './lib.js'
-
 ;(async function() {
 	const { help, version, ...rest } = parseCliArgs(process.argv.slice(2))
 
