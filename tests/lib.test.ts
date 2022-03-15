@@ -17,13 +17,10 @@ test('filters file paths', () => {
 	]
 
 	/** Directories to ignore. */
-	const directoriesToIgnore = ['tests/fixtures']
+	const directoriesToIgnore = ['node_modules', 'tests/fixtures']
 
 	const actual = filterFiles(filePaths, directoriesToIgnore)
-	const expected = [
-		'src/index.ts',
-		'tests/index-test.ts',
-	]
+	const expected = ['src/index.ts', 'tests/index-test.ts']
 
 	expect(actual).toStrictEqual(expected)
 })

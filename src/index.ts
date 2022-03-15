@@ -20,6 +20,8 @@ export interface ReleaseBumpOptions {
 	failOnError?: boolean
 	/** Path to directory of files to bump. */
 	filesPath?: string
+	/** Directories to ignore. */
+	ignore?: string[]
 	/** Prefix release version with a 'v'. */
 	prefix?: boolean
 	/** Quiet, no logs. */
@@ -37,6 +39,7 @@ export interface ReleaseBumpSettings extends ReleaseBumpOptions {
 	dryRun: boolean
 	failOnError: boolean
 	filesPath: string
+	ignore: string[]
 	prefix: boolean
 	quiet: boolean
 	release: string
@@ -77,6 +80,7 @@ export class ReleaseBump {
 			dryRun: false,
 			failOnError: false,
 			filesPath: '.',
+			ignore: ['node_modules', 'tests/fixtures'],
 			prefix: false,
 			quiet: process.env.NODE_ENV === 'test' || false,
 			release: pkg.version,
@@ -152,13 +156,14 @@ export class ReleaseBump {
 	 * @todo  Refactor.
 	 */
 	private async bumpDocblock(): Promise<void> {
-		const { dryRun, failOnError, filesPath, quiet, release } = this.#settings
+		const { dryRun, failOnError, filesPath, ignore, quiet, release } =
+			this.#settings
 
 		/** File paths. */
 		const filePaths: string[] = getRecursiveFilePaths(filesPath)
 
 		/** Directory paths to ignore. */
-		const directoriesToIgnore: string[] = ['tests/fixtures']
+		const directoriesToIgnore: string[] = ignore
 
 		/** Filtered file paths. */
 		const filteredFilePaths: string[] = filterFiles(

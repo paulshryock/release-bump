@@ -14,14 +14,9 @@ export function filterFiles(
 	filePaths: string[],
 	directoriesToIgnore: string[],
 ): string[] {
-	/** Blocked directories. */
-	const blockedDirectories = ['node_modules']
-
 	return filePaths.filter(
 		(file) =>
-			![...blockedDirectories, ...directoriesToIgnore].some((directory) =>
-				file.includes(directory),
-			),
+			!directoriesToIgnore.some((directory) => file.includes(directory)),
 	)
 }
 
@@ -208,6 +203,7 @@ Options
 	--dryRun,        -d Dry run.
 	--failOnError,   -e Fail on error.
 	--filesPath         Path to directory of files to bump.
+	--ignore,        -i Directories to ignore.
 	--help,          -h Log CLI usage text.
 	--prefix,        -p Prefix release version with a 'v'.
 	--quiet,         -q Quiet, no logs.
@@ -276,6 +272,12 @@ export function parseCliArgs(args: string[]): CliArgs {
 			type: 'string',
 		},
 		{
+			argument: 'ignore',
+			alias: 'i',
+			description: 'Directories to ignore.',
+			type: 'string',
+		},
+		{
 			argument: 'help',
 			alias: 'h',
 			description: 'Log CLI usage text.',
@@ -323,11 +325,13 @@ export function parseCliArgs(args: string[]): CliArgs {
 				)
 				if (cliOption) {
 					modified[key] =
-						cliOption.type === 'boolean' ? true : value ?? `$${index}`
+						cliOption.type === 'boolean'
+							? true
+							: (value.includes(',') ? value.split(',') : value) ?? `$${index}`
 				}
 				// One or more aliases.
 			} else if (current.indexOf('-') === 0) {
-				;[...current.substr(1)].forEach((alias) => {
+				[...current.substr(1)].forEach((alias) => {
 					const cliOption = cliOptions.find(
 						(cliOption) => cliOption.alias === alias,
 					)
@@ -340,7 +344,7 @@ export function parseCliArgs(args: string[]): CliArgs {
 				const keys = Object.keys(all)
 				const key = keys[keys.length - 1]
 				if (all[key] === `$${index - 1}`) {
-					modified[key] = current
+					modified[key] = (current.includes(',') ? current.split(',') : current)
 				}
 			}
 
