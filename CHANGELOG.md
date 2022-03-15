@@ -80,13 +80,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0](https://github.com/paulshryock/release-bump/releases/tag/v1.0.0) - 3/30/2021
 
 ### Added
-- Bump Changelog.github.com/paulshryock/release-bump/releases/tag/v1.0.0) - 3/30/2021
-
-### Added
-- Bump Changelog.es/tag/v1.0.0) - 3/30/2021
-
-### Added
-- Bump Changelog.es/tag/v1.0.0) - 3/30/2021
-
-### Added
 - Bump Changelog.

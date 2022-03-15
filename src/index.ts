@@ -58,17 +58,16 @@ export class ReleaseBump {
 	 * @param {ReleaseBumpOptions} options Release Bump options.
 	 */
 	constructor(options: ReleaseBumpOptions) {
-		/** package.json text. */
-		let pkgText: string
+		/** Parsed package.json content. */
+		let pkg = { repository: '', version: '0.0.0' }
 
 		try {
-			pkgText = readFileSync('package.json', 'utf8')
-		} catch (error) {
-			pkgText = '{ "repository": "", "version": "0.0.0" }'
+			pkg = JSON.parse(readFileSync('package.json', 'utf8'))
+		} catch (error: any) {
+			if (process.env.NODE_ENV !== 'test' && options.quiet !== true) {
+				console.warn('could not read package.json')
+			}
 		}
-
-		/** package.json parsed. */
-		const pkg = JSON.parse(pkgText)
 
 		/** Release Bump defaults. */
 		const defaults: ReleaseBumpSettings = {
@@ -78,8 +77,7 @@ export class ReleaseBump {
 			failOnError: false,
 			filesPath: '.',
 			prefix: false,
-			// quiet: process.env.NODE_ENV === 'test' || false,
-			quiet: false,
+			quiet: process.env.NODE_ENV === 'test' || false,
 			release: pkg.version,
 			repository: formatRepositoryUrl(pkg.repository),
 		}
@@ -141,7 +139,7 @@ export class ReleaseBump {
 			}
 		}
 
-		if (quiet === false) {
+		if (quiet !== true) {
 			console.info((dryRun ? 'would have ' : '') + `bumped ${file}`)
 		}
 	}
@@ -162,7 +160,7 @@ export class ReleaseBump {
 		const filesToBump: string[] = []
 
 		if (files.length < 1) {
-			if (quiet === false) console.info('no files to bump')
+			if (quiet !== true) console.info('no files to bump')
 			return
 		}
 
@@ -203,7 +201,7 @@ export class ReleaseBump {
 			}),
 		)
 
-		if (filesToBump.length > 0 && quiet === false) {
+		if (filesToBump.length > 0 && quiet !== true) {
 			console.info(
 				(dryRun ? 'would have ' : '') + `bumped ${filesToBump.join(', ')}`,
 			)

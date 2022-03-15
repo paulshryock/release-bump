@@ -14,7 +14,7 @@
     "strict": true,
 
     "baseUrl": "./",
-    "module": "esnext",
+    "module": "es2022",
     "moduleResolution": "node",
     "resolveJsonModule": true,
 
@@ -27,7 +27,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
 
-    "target": "es2015",
+    "target": "es2022",
 
     "skipLibCheck": true
   },

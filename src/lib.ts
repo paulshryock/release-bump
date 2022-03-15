@@ -1,3 +1,4 @@
+import { ReleaseBumpOptions } from './index.js'
 import { readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -142,7 +143,6 @@ export function formatRepositoryUrl(
  * @param  {string[]} paths=[] File paths.
  * @return {string[]}          Recursive file paths.
  * @todo                       Make this function async.
- * @todo                       Declare or replace __dirname.
  */
 export function getRecursiveFilePaths(
 	dir: string,
@@ -159,4 +159,166 @@ export function getRecursiveFilePaths(
 	})
 
 	return paths
+}
+
+/**
+ * Gets CLI usage text.
+ *
+ * @since  unreleased
+ * @return {string} CLI usage text.
+ */
+export function getCliUsageText(): string {
+	return `
+Usage
+	$ release-bump <options>
+
+Options
+	--changelogPath     Path to changelog.
+	--date              Release date.
+	--dryRun,        -d Dry run.
+	--failOnError,   -e Fail on error.
+	--filesPath         Path to directory of files to bump.
+	--help,          -h Log CLI usage text.
+	--prefix,        -p Prefix release version with a 'v'.
+	--quiet,         -q Quiet, no logs.
+	--release           Release version.
+	--repository        Remote git repository URL.
+	--version,       -v Log Release Bump version.
+
+Examples
+	$ release-bump -pq --files=src
+`
+}
+
+/**
+ * Gets Release Bump version.
+ *
+ * @since  unreleased
+ * @return {Promise<string>} Release Bump version.
+ */
+export async function getReleaseBumpVersion(): Promise<string> {
+	return process.env.RELEASE_BUMP_VERSION
+		? 'v' + process.env.RELEASE_BUMP_VERSION
+		: 'no version found'
+}
+
+interface CliArgs extends ReleaseBumpOptions {
+	/** Log CLI usage text. */
+	help?: boolean
+	/** Log Release Bump version. */
+	version?: boolean
+}
+
+/**
+ * Parses CLI arguments.
+ *
+ * @since  unreleased
+ * @param  {string[]} args CLI arguments.
+ * @return {CliArgs}       Parsed CLI arguments.
+ */
+export function parseCliArgs(args: string[]): CliArgs {
+	const cliOptions = [
+		{
+			argument: 'changelogPath',
+			description: 'Path to changelog.',
+			type: 'string',
+		},
+		{
+			argument: 'date',
+			description: 'Release date.',
+			type: 'string',
+		},
+		{
+			argument: 'dryRun',
+			alias: 'd',
+			description: 'Dry run.',
+			type: 'boolean',
+		},
+		{
+			argument: 'failOnError',
+			alias: 'e',
+			description: 'Fail on error.',
+			type: 'boolean',
+		},
+		{
+			argument: 'filesPath',
+			description: 'Path to directory of files to bump.',
+			type: 'string',
+		},
+		{
+			argument: 'help',
+			alias: 'h',
+			description: 'Log CLI usage text.',
+			type: 'boolean',
+		},
+		{
+			argument: 'prefix',
+			alias: 'p',
+			description: "Prefix release version with a 'v'.",
+			type: 'boolean',
+		},
+		{
+			argument: 'quiet',
+			alias: 'q',
+			description: 'Quiet, no logs.',
+			type: 'boolean',
+		},
+		{
+			argument: 'release',
+			description: 'Release version.',
+			type: 'string',
+		},
+		{
+			argument: 'repository',
+			description: 'Remote git repository URL.',
+			type: 'string',
+		},
+		{
+			argument: 'version',
+			alias: 'v',
+			description: 'Log Release Bump version.',
+			type: 'boolean',
+		},
+	]
+
+	return args.reduce(
+		(all: { [key: string]: any }, current: string, index: number) => {
+			const modified: { [key: string]: any } = {}
+
+			// Argument.
+			if (current.indexOf('--') === 0) {
+				const [key, value] = current.substr(2).split('=')
+				const cliOption = cliOptions.find(
+					(cliOption) => cliOption.argument === key,
+				)
+				if (cliOption) {
+					modified[key] =
+						cliOption.type === 'boolean' ? true : value ?? `$${index}`
+				}
+				// One or more aliases.
+			} else if (current.indexOf('-') === 0) {
+				[...current.substr(1)].forEach((alias) => {
+					const cliOption = cliOptions.find(
+						(cliOption) => cliOption.alias === alias,
+					)
+					if (cliOption) {
+						modified[cliOption.argument] = true
+					}
+				})
+				// Value.
+			} else {
+				const keys = Object.keys(all)
+				const key = keys[keys.length - 1]
+				if (all[key] === `$${index - 1}`) {
+					modified[key] = current
+				}
+			}
+
+			return {
+				...all,
+				...modified,
+			}
+		},
+		{},
+	)
 }
