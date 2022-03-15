@@ -160,7 +160,7 @@ export class ReleaseBump {
 			this.#settings
 
 		/** File paths. */
-		const filePaths: string[] = getRecursiveFilePaths(filesPath)
+		const filePaths: string[] = await getRecursiveFilePaths(filesPath)
 
 		/** Directory paths to ignore. */
 		const directoriesToIgnore: string[] = ignore

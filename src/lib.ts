@@ -1,5 +1,5 @@
 import { ReleaseBumpOptions } from './index.js'
-import { readdirSync, statSync } from 'node:fs'
+import { readdir, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 
 /**
@@ -164,18 +164,17 @@ export function formatRepositoryUrl(
  * Gets all file paths in a directory recursively.
  *
  * @since  3.0.0
- * @param  {string}   dir      Directory of files.
- * @param  {string[]} paths=[] File paths.
- * @return {string[]}          Recursive file paths.
- * @todo                       Make this function async.
+ * @param  {string}            dir      Directory of files.
+ * @param  {string[]}          paths=[] File paths.
+ * @return {Promise<string[]>}          Recursive file paths.
  */
-export function getRecursiveFilePaths(
+export async function getRecursiveFilePaths(
 	dir: string,
 	paths: string[] = [],
-): string[] {
-	readdirSync(dir).forEach((file) => {
-		if (statSync(dir + '/' + file).isDirectory()) {
-			paths = getRecursiveFilePaths(`${dir}/${file}`, paths)
+): Promise<string[]> {
+	(await readdir(dir)).forEach(async (file) => {
+		if ((await stat(dir + '/' + file)).isDirectory()) {
+			paths = await getRecursiveFilePaths(`${dir}/${file}`, paths)
 		} else {
 			if (typeof paths !== 'undefined') {
 				paths.push(join(dir, '/', file))

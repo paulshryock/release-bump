@@ -121,6 +121,8 @@ test('formats docblock', () => {
 	})
 })
 
+test.todo('gets all file paths in a directory recursively')
+
 test('formats remote git repository url', () => {
 	const expectations = [
 		{
@@ -149,5 +151,3 @@ test('formats remote git repository url', () => {
 		expect(expectation.actual).toBe(expectation.expected)
 	})
 })
-
-test.todo('gets all file paths in a directory recursively')
