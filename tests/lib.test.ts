@@ -247,14 +247,7 @@ test('parses cli arguments', () => {
 		},
 		// 4. Aliases.
 		{
-			actual: parseCliArgs([
-				'-d',
-				'-e',
-				'-h',
-				'-p',
-				'-q',
-				'-v',
-			]),
+			actual: parseCliArgs(['-d', '-e', '-h', '-p', '-q', '-v']),
 			expected: parsedAliases,
 		},
 	]

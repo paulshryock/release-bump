@@ -243,7 +243,7 @@ export async function getRecursiveFilePaths(
 	dir: string,
 	paths: string[] = [],
 ): Promise<string[]> {
-	;(await readdir(dir)).forEach(async (file) => {
+	(await readdir(dir)).forEach(async (file) => {
 		if ((await stat(dir + '/' + file)).isDirectory()) {
 			paths = await getRecursiveFilePaths(`${dir}/${file}`, paths)
 		} else {
