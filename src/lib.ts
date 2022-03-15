@@ -203,7 +203,7 @@ Options
 	--dryRun,        -d Dry run.
 	--failOnError,   -e Fail on error.
 	--filesPath         Path to directory of files to bump.
-	--ignore,        -i Directories to ignore.
+	--ignore            Directories to ignore.
 	--help,          -h Log CLI usage text.
 	--prefix,        -p Prefix release version with a 'v'.
 	--quiet,         -q Quiet, no logs.
@@ -273,9 +273,8 @@ export function parseCliArgs(args: string[]): CliArgs {
 		},
 		{
 			argument: 'ignore',
-			alias: 'i',
 			description: 'Directories to ignore.',
-			type: 'string',
+			type: 'string[]',
 		},
 		{
 			argument: 'help',
@@ -324,10 +323,7 @@ export function parseCliArgs(args: string[]): CliArgs {
 					(cliOption) => cliOption.argument === key,
 				)
 				if (cliOption) {
-					modified[key] =
-						cliOption.type === 'boolean'
-							? true
-							: (value.includes(',') ? value.split(',') : value) ?? `$${index}`
+					modified[key] = cliOption.type === 'boolean' ? true : value
 				}
 				// One or more aliases.
 			} else if (current.indexOf('-') === 0) {
@@ -343,8 +339,15 @@ export function parseCliArgs(args: string[]): CliArgs {
 			} else {
 				const keys = Object.keys(all)
 				const key = keys[keys.length - 1]
-				if (all[key] === `$${index - 1}`) {
-					modified[key] = (current.includes(',') ? current.split(',') : current)
+				const cliOption = cliOptions.find(
+					(cliOption) => cliOption.argument === key,
+				)
+				if (
+					cliOption &&
+					(all[key] === `$${index - 1}` || typeof all[key] === 'undefined')
+				) {
+					modified[key] =
+						cliOption.type === 'string[]' ? current.split(',') : current
 				}
 			}
 
