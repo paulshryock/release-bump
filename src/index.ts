@@ -154,25 +154,28 @@ export class ReleaseBump {
 	private async bumpDocblock(): Promise<void> {
 		const { dryRun, failOnError, filesPath, quiet, release } = this.#settings
 
-		/** Files to maybe bump. */
-		const files: string[] = getRecursiveFilePaths(filesPath)
+		/** File paths. */
+		const filePaths: string[] = getRecursiveFilePaths(filesPath)
 
 		/** Directory paths to ignore. */
 		const directoriesToIgnore: string[] = ['tests/fixtures']
 
-		/** Filtered files to maybe bump. */
-		const filteredFiles: string[] = filterFiles(files, directoriesToIgnore)
+		/** Filtered file paths. */
+		const filteredFilePaths: string[] = filterFiles(
+			filePaths,
+			directoriesToIgnore,
+		)
 
 		/** Files to bump. */
 		const filesToBump: string[] = []
 
-		if (filteredFiles.length < 1) {
+		if (filteredFilePaths.length < 1) {
 			if (quiet !== true) console.info('no files to bump')
 			return
 		}
 
 		await Promise.all(
-			filteredFiles.map(async (file) => {
+			filteredFilePaths.map(async (file) => {
 				/** Unformatted text. */
 				let unformattedText = ''
 				try {

@@ -2,6 +2,29 @@ import { ReleaseBumpOptions } from './index.js'
 import { readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
+/**
+ * Filters file paths.
+ *
+ * @since  3.0.0
+ * @param  {string[]} filePaths           File paths.
+ * @param  {string[]} directoriesToIgnore Directory paths to ignore.
+ * @return {string[]}                     Filtered file paths.
+ */
+export function filterFiles(
+	filePaths: string[],
+	directoriesToIgnore: string[],
+): string[] {
+	/** Blocked directories. */
+	const blockedDirectories = ['node_modules']
+
+	return filePaths.filter(
+		(file) =>
+			![...blockedDirectories, ...directoriesToIgnore].some((directory) =>
+				file.includes(directory),
+			),
+	)
+}
+
 /** formatChangelogText options. */
 interface formatChangelogTextOptions {
 	/** Release date. */
@@ -12,24 +35,6 @@ interface formatChangelogTextOptions {
 	release: string
 	/** Remote git repository URL. */
 	repository: string
-}
-
-/**
- * Filters file paths.
- *
- * @since  3.0.0
- * @param  {string[]} files               File paths.
- * @param  {string[]} directoriesToIgnore Directory paths to ignore.
- * @return {string[]}                     Filtered file paths.
- */
-export function filterFiles(
-	files: string[],
-	directoriesToIgnore: string[],
-): string[] {
-	return files.filter(
-		(file) =>
-			!directoriesToIgnore.some((directory) => file.includes(directory)),
-	)
 }
 
 /**
@@ -322,7 +327,7 @@ export function parseCliArgs(args: string[]): CliArgs {
 				}
 				// One or more aliases.
 			} else if (current.indexOf('-') === 0) {
-				[...current.substr(1)].forEach((alias) => {
+				;[...current.substr(1)].forEach((alias) => {
 					const cliOption = cliOptions.find(
 						(cliOption) => cliOption.alias === alias,
 					)

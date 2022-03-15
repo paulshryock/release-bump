@@ -1,10 +1,32 @@
 import {
+	filterFiles,
 	formatChangelogText,
 	formatDocblock,
 	formatRepositoryUrl,
 } from '../src/lib.js'
 import { basename, extname, resolve } from 'node:path'
 import { readFile } from 'node:fs/promises'
+
+test('filters file paths', () => {
+	/** File paths. */
+	const filePaths = [
+		'src/index.ts',
+		'tests/index-test.ts',
+		'tests/fixtures/index.ts',
+		'node_modules/some-module/index.ts',
+	]
+
+	/** Directories to ignore. */
+	const directoriesToIgnore = ['tests/fixtures']
+
+	const actual = filterFiles(filePaths, directoriesToIgnore)
+	const expected = [
+		'src/index.ts',
+		'tests/index-test.ts',
+	]
+
+	expect(actual).toStrictEqual(expected)
+})
 
 test('formats changelog text', () => {
 	const scenarios = [
