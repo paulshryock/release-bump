@@ -2,7 +2,12 @@
 
 Handle version bump tasks for a code release. Use `unreleased` in your Changelog and docblock comments, and Release Bump will automatically bump it to the correct release version.
 
-- [Getting Started](#getting-started)
+- [x] 0 dependencies
+- [x] Under 6kb
+
+## Table of contents
+
+- [Getting started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
@@ -12,7 +17,7 @@ Handle version bump tasks for a code release. Use `unreleased` in your Changelog
 - [Contact](#contact)
 - [Acknowledgments](#acknowledgments)
 
-## Getting Started
+## Getting started
 
 ```bash
 npm install --save-dev release-bump

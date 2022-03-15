@@ -44,6 +44,7 @@ const paths = {
 
 	// CLI.
 	await $`esbuild ${paths.cli.src} \
+		--bundle \
 		--define:process=${proc} \
 		--format=esm \
 		--minify \

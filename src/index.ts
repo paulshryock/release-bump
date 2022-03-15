@@ -1,4 +1,5 @@
 import {
+	filterFiles,
 	formatChangelogText,
 	formatDocblock,
 	formatRepositoryUrl,
@@ -156,16 +157,22 @@ export class ReleaseBump {
 		/** Files to maybe bump. */
 		const files: string[] = getRecursiveFilePaths(filesPath)
 
+		/** Directory paths to ignore. */
+		const directoriesToIgnore: string[] = ['tests/fixtures']
+
+		/** Filtered files to maybe bump. */
+		const filteredFiles: string[] = filterFiles(files, directoriesToIgnore)
+
 		/** Files to bump. */
 		const filesToBump: string[] = []
 
-		if (files.length < 1) {
+		if (filteredFiles.length < 1) {
 			if (quiet !== true) console.info('no files to bump')
 			return
 		}
 
 		await Promise.all(
-			files.map(async (file) => {
+			filteredFiles.map(async (file) => {
 				/** Unformatted text. */
 				let unformattedText = ''
 				try {

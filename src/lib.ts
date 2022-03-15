@@ -15,9 +15,27 @@ interface formatChangelogTextOptions {
 }
 
 /**
+ * Filters file paths.
+ *
+ * @since  3.0.0
+ * @param  {string[]} files               File paths.
+ * @param  {string[]} directoriesToIgnore Directory paths to ignore.
+ * @return {string[]}                     Filtered file paths.
+ */
+export function filterFiles(
+	files: string[],
+	directoriesToIgnore: string[],
+): string[] {
+	return files.filter(
+		(file) =>
+			!directoriesToIgnore.some((directory) => file.includes(directory)),
+	)
+}
+
+/**
  * Formats changelog text.
  *
- * @since  unreleased
+ * @since  3.0.0
  * @param  {string}                     unformatted Unformatted changelog text.
  * @param  {formatChangelogTextOptions} options     Options.
  * @return {string}                                 Formatted changelog text.
@@ -30,21 +48,24 @@ export function formatChangelogText(
 	/** Git remote. */
 	const remote = repository.includes('bitbucket.org') ? 'bitbucket' : 'github'
 
+	/** Semantic release version. */
+	const version = (/\d+\.\d+\.\d+/.exec(release))?.[0] ?? release
+
 	/** Release URL. */
 	const releaseUrl = `${repository}/${
 		remote === 'bitbucket' ? 'commits' : 'releases'
-	}/tag/${prefix ? 'v' : ''}${release}`
+	}/tag/${prefix ? 'v' : ''}${version}`
 
 	/** Header. */
 	const header =
-		`## [${prefix ? 'v' : ''}${release}]` +
+		`## [${prefix ? 'v' : ''}${version}]` +
 		(repository !== '' ? `(${releaseUrl})` : '') +
 		(date ? ` - ${date}` : '')
 
 	/** Unreleased diff URL. */
 	const unreleasedDiffUrl = `(${repository}/${
 		remote === 'bitbucket' ? 'branches/' : ''
-	}compare/HEAD..${prefix ? 'v' : ''}${release})`
+	}compare/HEAD..${prefix ? 'v' : ''}${version})`
 
 	/** Unreleased. */
 	const unreleased =
@@ -80,7 +101,7 @@ interface formatDocblockOptions {
 /**
  * Formats Docblock.
  *
- * @since  unreleased
+ * @since  3.0.0
  * @param  {string}                text    File text.
  * @param  {formatDocblockOptions} options Options.
  * @return {string}                        Formatted file text.
@@ -90,9 +111,13 @@ export function formatDocblock(
 	options: formatDocblockOptions,
 ): string {
 	const { release } = options
+
+	/** Semantic release version. */
+	const version = (/\d+\.\d+\.\d+/.exec(release))?.[0] ?? release
+
 	return text.replace(
 		/@([Ss]ince|[Vv]ersion)(:?\s+)unreleased/g,
-		`@$1$2${release}`,
+		`@$1$2${version}`,
 	)
 }
 
@@ -105,7 +130,7 @@ interface formatRepositoryUrlOptions {
 /**
  * Formats remote git repository URL.
  *
- * @since  unreleased
+ * @since  3.0.0
  * @param  {string}                     repository Unformatted remote git
  *                                                 repository URL.
  * @param  {formatRepositoryUrlOptions} options    Options.
@@ -138,7 +163,7 @@ export function formatRepositoryUrl(
 /**
  * Gets all file paths in a directory recursively.
  *
- * @since  unreleased
+ * @since  3.0.0
  * @param  {string}   dir      Directory of files.
  * @param  {string[]} paths=[] File paths.
  * @return {string[]}          Recursive file paths.
@@ -164,7 +189,7 @@ export function getRecursiveFilePaths(
 /**
  * Gets CLI usage text.
  *
- * @since  unreleased
+ * @since  3.0.0
  * @return {string} CLI usage text.
  */
 export function getCliUsageText(): string {
@@ -193,7 +218,7 @@ Examples
 /**
  * Gets Release Bump version.
  *
- * @since  unreleased
+ * @since  3.0.0
  * @return {Promise<string>} Release Bump version.
  */
 export async function getReleaseBumpVersion(): Promise<string> {
@@ -212,7 +237,7 @@ interface CliArgs extends ReleaseBumpOptions {
 /**
  * Parses CLI arguments.
  *
- * @since  unreleased
+ * @since  3.0.0
  * @param  {string[]} args CLI arguments.
  * @return {CliArgs}       Parsed CLI arguments.
  */
@@ -297,7 +322,7 @@ export function parseCliArgs(args: string[]): CliArgs {
 				}
 				// One or more aliases.
 			} else if (current.indexOf('-') === 0) {
-				[...current.substr(1)].forEach((alias) => {
+				;[...current.substr(1)].forEach((alias) => {
 					const cliOption = cliOptions.find(
 						(cliOption) => cliOption.alias === alias,
 					)
