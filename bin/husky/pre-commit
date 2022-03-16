@@ -5,4 +5,7 @@
 # $(dirname "$0")/maybe-install
 
 # Enforce code quality.
-npm run quality
+npm run quality & \
+# Compile source code.
+npm run compile & \
+wait
