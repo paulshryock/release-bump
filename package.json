@@ -3,12 +3,16 @@
   "version": "3.0.0-alpha.13",
   "private": false,
   "description": "Handle version bump tasks for a code release.",
+  "files": [
+    "/dist"
+  ],
   "keywords": [
-    "release",
     "bump",
-    "version",
     "changelog",
-    "wordpress"
+    "docblock",
+    "jsdoc",
+    "release",
+    "version"
   ],
   "homepage": "https://github.com/paulshryock/release-bump#readme",
   "bugs": {
