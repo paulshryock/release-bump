@@ -1,178 +1,233 @@
-import { fileExists, getFileContent } from './lib.js'
-import { NonEmptyString } from './types.js'
-import { writeFile } from 'node:fs/promises'
+import {
+	filterFiles,
+	formatChangelogText,
+	formatDocblock,
+	formatRepositoryUrl,
+	getRecursiveFilePaths,
+} from './lib.js'
+import { readFileSync } from 'node:fs'
+import { readFile, writeFile } from 'node:fs/promises'
 
+/** Release Bump options. */
 export interface ReleaseBumpOptions {
+	/** Path to changelog. */
 	changelogPath?: string
+	/** Release date. */
 	date?: string
+	/** Dry run. */
 	dryRun?: boolean
-	files?: string[]
+	/** Fail on error. */
+	failOnError?: boolean
+	/** Path to directory of files to bump. */
+	filesPath?: string
+	/** Directories to ignore. */
+	ignore?: string[]
+	/** Prefix release version with a 'v'. */
+	prefix?: boolean
+	/** Quiet, no logs. */
 	quiet?: boolean
-	prefix?: 'v'
-	remote?: 'bitbucket' | 'github'
+	/** Release version. */
+	release?: string
+	/** Remote git repository URL. */
 	repository?: string
-	version: string
+}
+
+/** Release Bump settings. */
+export interface ReleaseBumpSettings extends ReleaseBumpOptions {
+	changelogPath: string
+	date: string
+	dryRun: boolean
+	failOnError: boolean
+	filesPath: string
+	ignore: string[]
+	prefix: boolean
+	quiet: boolean
+	release: string
+	repository: string
 }
 
 /**
- * ReleaseBump class.
+ * Release Bump.
  *
- * @since unreleased
+ * @since 3.0.0
  */
 export class ReleaseBump {
-	#changelogPath: undefined | string
-	#date: undefined | string
-	#dryRun: undefined | boolean
-	#files: undefined | string[]
-	#quiet: boolean
-	#prefix: '' | 'v'
-	#remote: undefined | 'bitbucket' | 'github'
-	#repository: undefined | string
-	#version: string
+	/** Release Bump settings. */
+	#settings: ReleaseBumpSettings
 
 	/**
 	 * ReleaseBump class constructor.
 	 *
-	 * @since unreleased
+	 * @since 3.0.0
 	 * @param {ReleaseBumpOptions} options Release Bump options.
 	 */
 	constructor(options: ReleaseBumpOptions) {
-		const {
-			changelogPath,
-			date,
-			dryRun,
-			files,
-			prefix,
-			quiet,
-			remote,
-			repository,
-			version,
-		} = options
-		this.#changelogPath = changelogPath
-		this.#date = date
-		this.#dryRun = dryRun || false
-		this.#files = files ?? []
-		this.#quiet = (process.env.NODE_ENV === 'test' || quiet) ?? false
-		this.#prefix = prefix || ''
-		this.#remote = remote
-		this.#repository = repository
-		this.#version = version
+		/** Parsed package.json content. */
+		let pkg = { repository: '', version: '0.0.0' }
+
+		try {
+			pkg = JSON.parse(readFileSync('package.json', 'utf8'))
+		} catch (error: any) {
+			if (process.env.NODE_ENV !== 'test' && options.quiet !== true) {
+				console.warn('could not read package.json')
+			}
+		}
+
+		/** Release Bump defaults. */
+		const defaults: ReleaseBumpSettings = {
+			changelogPath: 'CHANGELOG.md',
+			date: new Date().toISOString().split('T')?.[0],
+			dryRun: false,
+			failOnError: false,
+			filesPath: '.',
+			ignore: ['node_modules', 'tests/fixtures'],
+			prefix: false,
+			quiet: process.env.NODE_ENV === 'test' || false,
+			release: pkg.version,
+			repository: formatRepositoryUrl(pkg.repository),
+		}
+
+		this.#settings = { ...defaults, ...options }
 	}
 
 	/**
 	 * Bumps Changelog.
 	 *
-	 * @since unreleased
+	 * @since 3.0.0
+	 * @todo  Refactor.
 	 */
 	private async bumpChangelog(): Promise<void> {
-		if (typeof this.#changelogPath === 'undefined') return
+		const {
+			changelogPath,
+			date,
+			dryRun,
+			failOnError,
+			prefix,
+			quiet,
+			release,
+			repository,
+		} = this.#settings
 
-		const exists = await fileExists(this.#changelogPath)
-		if (exists !== true) {
-			if (this.#quiet === false) console.info('changelog not found')
-			return
-		}
+		const file = changelogPath
 
-		const prefix = this.#prefix ?? ''
-
-		const date: NonEmptyString = new Date(this.#date ?? new Date())
-			.toISOString()
-			.split('T')?.[0]
-
-		const header = `## [${this.#version}](${this.#repository}/${
-			this.#remote === 'bitbucket' ? 'commits/tag' : 'releases/tag'
-		}/${prefix}${this.#version}) - ${date}`
-
-		const unreleased =
-			`## [Unreleased](${this.#repository}/${
-				this.#remote === 'bitbucket' ? 'branches/' : ''
-			}compare/HEAD..${prefix}${this.#version})` +
-			'\n\n### Added' +
-			'\n\n### Changed' +
-			'\n\n### Deprecated' +
-			'\n\n### Removed' +
-			'\n\n### Fixed' +
-			'\n\n### Security'
-
-		const text = (await getFileContent(this.#changelogPath))
-			// Bump unreleased version and add date.
-			.replace(/## \[Unreleased\](\(.*\))?/, header)
-			// Remove empty changelog subheads.
-			.replace(/### (Added|Changed|Deprecated|Removed|Fixed|Security)\n\n/g, '')
-			// Remove last empty changelog subhead.
-			.replace(/### (Added|Changed|Deprecated|Removed|Fixed|Security)\n$/g, '')
-			// Remove any duplicate trailing newline.
-			.replace(/\n\n$/g, '\n')
-			// Add unreleased section.
-			.replace(header, unreleased + '\n\n' + header)
-
-		if (this.#dryRun === true) {
-			if (this.#quiet === false) {
-				console.info('changelog text:')
-				console.info(text)
+		/** Unformatted text. */
+		let unformattedText = ''
+		try {
+			unformattedText = await readFile(file, 'utf8')
+		} catch (error: any) {
+			if (failOnError) {
+				process.exitCode = 1
+				throw error
+			} else {
+				console.warn(`could not read ${file}`)
 			}
-			return
 		}
 
-		await writeFile(this.#changelogPath, text, 'utf8')
-		if (this.#quiet === false) console.info('bumped changelog')
+		/** Formatted text. */
+		const formattedText = formatChangelogText(unformattedText, {
+			date,
+			prefix,
+			release,
+			repository,
+		})
+
+		if (dryRun !== true) {
+			try {
+				await writeFile(file, formattedText, 'utf8')
+			} catch (error: any) {
+				if (failOnError) {
+					process.exitCode = 1
+					throw error
+				} else {
+					console.warn(`could not write ${file}`)
+				}
+			}
+		}
+
+		if (quiet !== true) {
+			console.info((dryRun ? 'would have ' : '') + `bumped ${file}`)
+		}
 	}
 
 	/**
 	 * Bumps Docblocks.
 	 *
-	 * @since unreleased
+	 * @since 3.0.0
+	 * @todo  Refactor.
 	 */
 	private async bumpDocblock(): Promise<void> {
-		if (typeof this.#files === 'undefined') return
+		const { dryRun, failOnError, filesPath, ignore, quiet, release } =
+			this.#settings
 
-		if (this.#files.length < 1) {
-			if (this.#quiet === false) console.info('no files to bump')
+		/** File paths. */
+		const filePaths: string[] = await getRecursiveFilePaths(filesPath)
+
+		/** Directory paths to ignore. */
+		const directoriesToIgnore: string[] = ignore
+
+		/** Filtered file paths. */
+		const filteredFilePaths: string[] = filterFiles(
+			filePaths,
+			directoriesToIgnore,
+		)
+
+		/** Files to bump. */
+		const filesToBump: string[] = []
+
+		if (filteredFilePaths.length < 1) {
+			if (quiet !== true) console.info('no files to bump')
 			return
 		}
 
-		if (this.#dryRun === true) {
-			if (this.#quiet === false) {
-				console.info('files to bump:')
-			}
-		}
-
 		await Promise.all(
-			this.#files.map(async (file) => {
-				const exists = await fileExists(file)
-				if (exists !== true) {
-					if (this.#dryRun === false && this.#quiet === false) {
-						console.info(`${file} does not exist`)
+			filteredFilePaths.map(async (file) => {
+				/** Unformatted text. */
+				let unformattedText = ''
+				try {
+					unformattedText = await readFile(file, 'utf8')
+				} catch (error: any) {
+					if (failOnError) {
+						process.exitCode = 1
+						throw error
+					} else {
+						console.warn(`could not read ${file}`)
 					}
-					return
 				}
 
-				if (this.#dryRun === true) {
-					if (this.#quiet === false) {
-						console.info(file)
+				/** Formatted text. */
+				const formattedText = formatDocblock(unformattedText, { release })
+
+				if (unformattedText === formattedText) return
+
+				filesToBump.push(file)
+
+				if (dryRun === true) return
+
+				try {
+					await writeFile(file, formattedText, 'utf8')
+				} catch (error: any) {
+					if (failOnError) {
+						process.exitCode = 1
+						throw error
+					} else {
+						console.warn(`could not write ${file}`)
 					}
-					return
 				}
-
-				const content = await getFileContent(file)
-				const text = content.replace(
-					/@([Ss]ince|[Vv]ersion)(:?\s+)unreleased/g,
-					`@$1$2${this.#version}`,
-				)
-
-				await writeFile(file, text, 'utf8')
 			}),
 		)
 
-		if (this.#dryRun === true || this.#quiet === true) return
-
-		console.info(`bumped dockblocks`)
+		if (filesToBump.length > 0 && quiet !== true) {
+			console.info(
+				(dryRun ? 'would have ' : '') + `bumped ${filesToBump.join(', ')}`,
+			)
+		}
 	}
 
 	/**
 	 * Initializes Release Bump.
 	 *
-	 * @since unreleased
+	 * @since 3.0.0
+	 * @todo  Refactor.
 	 */
 	public async init(): Promise<void> {
 		await Promise.all([this.bumpChangelog(), this.bumpDocblock()])
