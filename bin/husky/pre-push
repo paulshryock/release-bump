@@ -5,4 +5,4 @@
 # $(dirname "$0")/maybe-install
 
 # Compile source code.
-npm run build
+npm run compile
