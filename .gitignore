@@ -5,20 +5,11 @@
 
 # Dependencies.
 node_modules/
-vendor/
-
-# Compiled assets.
-build/
-dist/
 
 # Cache files.
 *.cache
 .cache/
 cache/
-.swc/
 
 # Test coverage reports.
 coverage/
-
-# Type definitions
-!types.d.ts

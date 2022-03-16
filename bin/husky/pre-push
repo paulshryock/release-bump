@@ -3,6 +3,3 @@
 
 # Maybe install dependencies.
 # $(dirname "$0")/maybe-install
-
-# Compile source code.
-npm run compile
