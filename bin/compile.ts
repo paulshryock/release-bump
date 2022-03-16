@@ -50,5 +50,5 @@ const paths = {
 		--minify \
 		--outfile=${paths.cli.dist} \
 		--platform=node \
-		--target=node11`
+		--target=node8`
 })()

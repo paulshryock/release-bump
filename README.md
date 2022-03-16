@@ -2,9 +2,9 @@
 
 Handle version bump tasks for a code release. Use `unreleased` in your Changelog and docblock comments, and Release Bump will automatically bump it to the correct release version.
 
-✅ 0 dependencies
-✅ CLI is under 6kb
-✅ API is under 4kb
+🔋 0 dependencies
+⌨️ CLI is 6kb
+🔌 API is 4kb
 
 ## Table of contents
 
