@@ -3,9 +3,6 @@
   "version": "3.0.0-alpha.13",
   "private": false,
   "description": "Handle version bump tasks for a code release.",
-  "files": [
-    "/dist"
-  ],
   "keywords": [
     "bump",
     "changelog",
@@ -22,7 +19,11 @@
   "license": "Hippocratic 2.1",
   "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
   "type": "module",
+  "module": "./dist/index.ts",
   "bin": "./dist/cli.ts",
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "clean": "rm -rf ./dist",
     "cli": "ts-node ./dist/cli.ts",
