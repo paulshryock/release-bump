@@ -1,21 +1,10 @@
 import { readFile } from 'node:fs/promises'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { $ } from 'zx'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-
-const paths = {
-	module: {
-		src: join(__dirname, '../src/index.ts'),
-		dist: join(__dirname, '../dist/index.js'),
-	},
-	cli: {
-		src: join(__dirname, '../src/cli.ts'),
-		dist: join(__dirname, '../dist/cli.js'),
-	},
-}
 
 ;(async function() {
 	/** Parsed package.json content. */
@@ -30,25 +19,55 @@ const paths = {
 		},
 	})
 
-	// Bundle module.
-	await $`esbuild ${paths.module.src} \
-		--bundle \
-		--define:process=${proc} \
-		--format=cjs \
-		--minify \
-		--outfile=${paths.module.dist} \
-		--platform=node \
-		--target=node8`
+	/** Module formats. */
+	const moduleFormats = [
+		{ name: 'cjs', extension: 'cjs' },
+		{ name: 'esm', extension: 'js' },
+	]
 
-	// todo: Types.
+	/** Node versions. */
+	const nodeVersions = [8, 10, 12, 14, 16, 17]
 
-	// CLI.
-	await $`esbuild ${paths.cli.src} \
-		--bundle \
-		--define:process=${proc} \
-		--format=cjs \
-		--minify \
-		--outfile=${paths.cli.dist} \
-		--platform=node \
-		--target=node8`
+	/** Files. */
+	const files = ['index', 'cli']
+
+	/** Compile source code. */
+	await Promise.all(
+		moduleFormats.map(async (moduleFormat) => {
+			return await Promise.all(
+				nodeVersions.map(async (nodeVersion) => {
+					return await Promise.all(
+						files.map(async (file) => {
+							/** File path destination. */
+							const outFile =
+								nodeVersion === 17
+									? resolve(
+										__dirname,
+										'..',
+										'dist',
+										`${file}.${moduleFormat.extension}`,
+									  )
+									: resolve(
+										__dirname,
+										'..',
+										'dist',
+										`${file}.node-${nodeVersion}.${moduleFormat.extension}`,
+									  )
+
+							// todo: Generate type definitions.
+
+							await $`esbuild ${resolve(__dirname, '..', 'src', `${file}.ts`)} \
+								--bundle \
+								--define:process=${proc} \
+								--format=${moduleFormat.name} \
+								--minify \
+								--outfile=${outFile} \
+								--platform=node \
+								--target=node8`
+						}),
+					)
+				}),
+			)
+		}),
+	)
 })()
