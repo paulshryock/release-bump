@@ -25,9 +25,6 @@ const __dirname = dirname(__filename)
 		{ name: 'esm', extension: 'js' },
 	]
 
-	/** Node versions. */
-	const nodeVersions = [8, 10, 12, 14, 16, 17]
-
 	/** Files. */
 	const files = ['index', 'cli']
 
@@ -35,37 +32,22 @@ const __dirname = dirname(__filename)
 	await Promise.all(
 		moduleFormats.map(async (moduleFormat) => {
 			return await Promise.all(
-				nodeVersions.map(async (nodeVersion) => {
-					return await Promise.all(
-						files.map(async (file) => {
-							/** File path destination. */
-							const outFile =
-								nodeVersion === 17
-									? resolve(
-										__dirname,
-										'..',
-										'dist',
-										`${file}.${moduleFormat.extension}`,
-									  )
-									: resolve(
-										__dirname,
-										'..',
-										'dist',
-										`${file}.node-${nodeVersion}.${moduleFormat.extension}`,
-									  )
+				files.map(async (file) => {
+					// todo: Generate type definitions.
 
-							// todo: Generate type definitions.
-
-							await $`esbuild ${resolve(__dirname, '..', 'src', `${file}.ts`)} \
-								--bundle \
-								--define:process=${proc} \
-								--format=${moduleFormat.name} \
-								--minify \
-								--outfile=${outFile} \
-								--platform=node \
-								--target=node8`
-						}),
-					)
+					await $`esbuild ${resolve(__dirname, '..', 'src', `${file}.ts`)} \
+						--bundle \
+						--define:process=${proc} \
+						--format=${moduleFormat.name} \
+						--minify \
+						--outfile=${resolve(
+							__dirname,
+							'..',
+							'dist',
+							`${file}.${moduleFormat.extension}`,
+						)} \
+						--platform=node \
+						--target=node8`
 				}),
 			)
 		}),
