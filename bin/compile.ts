@@ -34,7 +34,7 @@ const paths = {
 	await $`esbuild ${paths.module.src} \
 		--bundle \
 		--define:process=${proc} \
-		--format=esm \
+		--format=cjs \
 		--minify \
 		--outfile=${paths.module.dist} \
 		--platform=node \
@@ -46,7 +46,7 @@ const paths = {
 	await $`esbuild ${paths.cli.src} \
 		--bundle \
 		--define:process=${proc} \
-		--format=esm \
+		--format=cjs \
 		--minify \
 		--outfile=${paths.cli.dist} \
 		--platform=node \

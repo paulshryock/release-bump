@@ -19,9 +19,16 @@
   "license": "Hippocratic 2.1",
   "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
   "type": "module",
-  "module": "./dist/index.ts",
-  "bin": "./dist/cli.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./dist/index.ts",
+  "module": "./src/index.ts",
+  "bin": {
+    "release-bump": "./dist/cli.ts"
+  },
   "files": [
+    "/src",
     "/dist"
   ],
   "scripts": {
@@ -71,7 +78,6 @@
     "zx": "^5.2.0"
   },
   "engines": {
-    "node": ">=17.5.0",
-    "npm": ">=8.4.1"
+    "node": ">=17.5.0"
   }
 }
