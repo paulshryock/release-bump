@@ -44,7 +44,8 @@
     "test": "jest --coverage",
     "test:watch": "npm test -- --watch",
     "typecheck": "tsc",
-    "typecheck:watch": "npm run typecheck -- --watch"
+    "typecheck:watch": "npm run typecheck -- --watch",
+    "preversion": "npm run compile"
   },
   "devDependencies": {
     "@swc/cli": "0.1.55",
