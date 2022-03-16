@@ -41,11 +41,11 @@ const __dirname = dirname(__filename)
 						--format=${moduleFormat.name} \
 						--minify \
 						--outfile=${resolve(
-							__dirname,
-							'..',
-							'dist',
-							`${file}.${moduleFormat.extension}`,
-						)} \
+		__dirname,
+		'..',
+		'dist',
+		`${file}.${moduleFormat.extension}`,
+	)} \
 						--platform=node \
 						--target=node8`
 				}),
