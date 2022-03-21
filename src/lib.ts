@@ -1,6 +1,41 @@
 import { ReleaseBumpOptions } from './index.js'
+import { readFileSync } from 'node:fs'
 import { readdir, stat } from 'node:fs/promises'
 import { join } from 'node:path'
+
+// todo: Implement custom logger.
+
+/** Release Bump settings. */
+export interface ReleaseBumpSettings extends ReleaseBumpOptions {
+	changelogPath: string
+	date: string
+	dryRun: boolean
+	failOnError: boolean
+	filesPath: string
+	ignore: string[]
+	prefix: boolean
+	quiet: boolean
+	release: string
+	repository: string
+}
+
+/** formatChangelogText options. */
+export interface FormatChangelogTextOptions {
+	/** Release date. */
+	date: string
+	/** Prefix release version with a 'v'. */
+	prefix: boolean
+	/** Release version. */
+	release: string
+	/** Remote git repository URL. */
+	repository: string
+}
+
+/** formatDocblock options. */
+export interface FormatDocblockOptions {
+	/** Release version. */
+	release: string
+}
 
 /**
  * CLI options.
@@ -94,29 +129,17 @@ export function filterFiles(
 	)
 }
 
-/** formatChangelogText options. */
-interface formatChangelogTextOptions {
-	/** Release date. */
-	date: string
-	/** Prefix release version with a 'v'. */
-	prefix: boolean
-	/** Release version. */
-	release: string
-	/** Remote git repository URL. */
-	repository: string
-}
-
 /**
  * Formats changelog text.
  *
  * @since  3.0.0
- * @param  {string}                     unformatted Unformatted changelog text.
- * @param  {formatChangelogTextOptions} options     Options.
- * @return {string}                                 Formatted changelog text.
+ * @param  {string}                     unformatted Unformatted text.
+ * @param  {FormatChangelogTextOptions} options     Options.
+ * @return {string}                                 Formatted text.
  */
 export function formatChangelogText(
 	unformatted: string,
-	options: formatChangelogTextOptions,
+	options: FormatChangelogTextOptions,
 ): string {
 	const { date, prefix, release, repository } = options
 	/** Git remote. */
@@ -163,54 +186,40 @@ export function formatChangelogText(
 	)
 }
 
-/** formatDocblock options. */
-interface formatDocblockOptions {
-	/** Release version. */
-	release: string
-}
-
 /**
  * Formats Docblock.
  *
  * @since  3.0.0
- * @param  {string}                text    File text.
- * @param  {formatDocblockOptions} options Options.
- * @return {string}                        Formatted file text.
+ * @param  {string}                unformatted Unformatted text.
+ * @param  {FormatDocblockOptions} options     Options.
+ * @return {string}                            Formatted text.
  */
 export function formatDocblock(
-	text: string,
-	options: formatDocblockOptions,
+	unformatted: string,
+	options: FormatDocblockOptions,
 ): string {
 	const { release } = options
 
 	/** Semantic release version. */
 	const version = /\d+\.\d+\.\d+/.exec(release)?.[0] ?? release
 
-	return text.replace(
+	return unformatted.replace(
 		/@([Ss]ince|[Vv]ersion)(:?\s+)unreleased/g,
 		`@$1$2${version}`,
 	)
 }
 
-/** formatRepositoryUrl options. */
-interface formatRepositoryUrlOptions {
-	/** Git remote. */
-	remote?: 'bitbucket' | 'github'
-}
-
 /**
- * Formats remote git repository URL.
+ * Formats git repository URL.
  *
  * @since  3.0.0
- * @param  {string}                     repository Unformatted remote git
- *                                                 repository URL.
- * @param  {formatRepositoryUrlOptions} options    Options.
- * @return {string}                                Formatted remote git
- *                                                 repository URL or ''.
+ * @param  {string}               repository Unformatted git repository URL.
+ * @param  {'bitbucket'|'github'} remote     (optional) Git remote.
+ * @return {string}                          Formatted git repository URL.
  */
 export function formatRepositoryUrl(
 	repository: string,
-	options: formatRepositoryUrlOptions = {},
+	remote: 'bitbucket' | 'github' = 'github',
 ): string {
 	if (
 		/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&/=]*)/.test(
@@ -223,12 +232,34 @@ export function formatRepositoryUrl(
 	if (
 		/^[-a-zA-Z0-9()!@:%_+~#?&=]+\/[-a-zA-Z0-9()!@:%_+~#?&=]+$/.test(repository)
 	) {
-		const origin =
-			options.remote === 'bitbucket' ? 'bitbucket.org' : 'github.com'
+		const origin = remote === 'bitbucket' ? 'bitbucket.org' : 'github.com'
 		return `https://${origin}/${repository}`
 	}
 
 	return ''
+}
+
+/**
+ * Gets help text.
+ *
+ * @since  3.0.0
+ * @return {string} Help text.
+ * @todo            Add examples.
+ */
+export function getHelpText(): string {
+	return (
+		'\nUsage\n	$ release-bump <options>\n\nOptions' +
+		cliOptions.reduce((output, current) => {
+			const alias = current.alias
+				? (current.argument.length < 6 ? '	' : '') + `	-${current.alias}`
+				: `		`
+			const description = current.alias
+				? `	${current.description}`
+				: (current.argument.length < 6 ? '	' : '') + current.description
+			return output + `\n	--${current.argument}${alias}${description}`
+		}, '') +
+		'\n\nExamples\n	$ release-bump -pq --files=src\n'
+	)
 }
 
 /**
@@ -257,34 +288,12 @@ export async function getRecursiveFilePaths(
 }
 
 /**
- * Gets CLI usage text.
- *
- * @since  3.0.0
- * @return {string} CLI usage text.
- */
-export function getCliUsageText(): string {
-	return (
-		'\nUsage\n	$ release-bump <options>\n\nOptions' +
-		cliOptions.reduce((output, current) => {
-			const alias = current.alias
-				? (current.argument.length < 6 ? '	' : '') + `	-${current.alias}`
-				: `		`
-			const description = current.alias
-				? `	${current.description}`
-				: (current.argument.length < 6 ? '	' : '') + current.description
-			return output + `\n	--${current.argument}${alias}${description}`
-		}, '') +
-		'\n\nExamples\n	$ release-bump -pq --files=src\n'
-	)
-}
-
-/**
- * Gets Release Bump version.
+ * Gets version text.
  *
  * @since  3.0.0
  * @return {Promise<string>} Release Bump version.
  */
-export async function getReleaseBumpVersion(): Promise<string> {
+export async function getVersionText(): Promise<string> {
 	return process.env.RELEASE_BUMP_VERSION
 		? 'v' + process.env.RELEASE_BUMP_VERSION
 		: 'no version found'
@@ -361,4 +370,45 @@ export function parseCliArgs(args: string[]): CliArgs {
 		},
 		{},
 	)
+}
+
+/**
+ * Parses settings from options.
+ *
+ * @since  unreleased
+ * @param  {ReleaseBumpOptions}  options Release Bump options.
+ * @return {ReleaseBumpSettings}         Release Bump settings.
+ */
+export function parseSettingsFromOptions(
+	options: ReleaseBumpOptions,
+): ReleaseBumpSettings {
+	/** Parsed package.json content. */
+	let pkg = { repository: '', version: '0.0.0' }
+
+	try {
+		pkg = JSON.parse(readFileSync('package.json', 'utf8'))
+	} catch (error: any) {
+		if (process.env.NODE_ENV !== 'test' && options.quiet !== true) {
+			console.warn('could not read package.json')
+		}
+	}
+
+	/** Release Bump defaults. */
+	const defaults: ReleaseBumpSettings = {
+		changelogPath: 'CHANGELOG.md',
+		date: new Date().toISOString().split('T')?.[0],
+		dryRun: false,
+		failOnError: false,
+		filesPath: '.',
+		ignore: ['node_modules', 'tests/fixtures'],
+		prefix: false,
+		quiet: process.env.NODE_ENV === 'test' || false,
+		release: pkg.version,
+		repository: formatRepositoryUrl(pkg.repository),
+	}
+
+	/** Release Bump settings. */
+	const settings = { ...defaults, ...options }
+
+	return settings
 }

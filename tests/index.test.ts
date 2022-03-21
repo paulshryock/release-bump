@@ -1,8 +1,8 @@
-import { ReleaseBump } from '../src/index.js'
+import { releaseBump } from '../src/index.js'
 
-test('ReleaseBump class constructor', () => {
-	const actual = new ReleaseBump({})
-	expect(actual).toBeInstanceOf(ReleaseBump)
+test('releaseBump', async () => {
+	const actual = await releaseBump({})
+	expect(Array.isArray(actual))
 })
 
 test.todo('bumps changelog')

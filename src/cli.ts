@@ -1,19 +1,13 @@
 #!/usr/bin/env node
-import { ReleaseBump, ReleaseBumpOptions } from './index.js'
-import { getCliUsageText, getReleaseBumpVersion, parseCliArgs } from './lib.js'
+import { releaseBump } from './index.js'
+import { getHelpText, getVersionText, parseCliArgs } from './lib.js'
 ;(async function() {
-	const { help, version, ...rest } = parseCliArgs(process.argv?.slice(2) ?? [])
+	const { help, version, ...options } = parseCliArgs(
+		process.argv?.slice(2) ?? [],
+	)
 
-	if (help === true) return console.info(getCliUsageText())
+	if (help === true) return console.info(getHelpText())
+	if (version === true) return console.info(await getVersionText())
 
-	if (version === true) return console.info(await getReleaseBumpVersion())
-
-	/** Release Bump options. */
-	const options: ReleaseBumpOptions = {
-		...rest,
-	}
-
-	/** Release Bump. */
-	const releaseBump = new ReleaseBump(options)
-	await releaseBump.init()
+	await releaseBump(options)
 })()

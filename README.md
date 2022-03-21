@@ -108,7 +108,7 @@ npm install --save-dev release-bump
   <summary>TypeScript</summary>
 
   ```typescript
-  import { ReleaseBump, ReleaseBumpOptions } from 'release-bump'
+  import { releaseBump, ReleaseBumpOptions } from 'release-bump'
 
   ;(async function() {
     const options: ReleaseBumpOptions = {
@@ -117,8 +117,7 @@ npm install --save-dev release-bump
       filesPath: '.',
       release: '3.0.0',
     }
-    const releaseBump = new ReleaseBump(options)
-    await releaseBump.init()
+    await releaseBump(options)
   })()
 
   ```
@@ -127,7 +126,7 @@ npm install --save-dev release-bump
   <summary>JavaScript</summary>
 
   ```javascript
-  import { ReleaseBump } from 'release-bump'
+  import { releaseBump } from 'release-bump'
 
   ;(async function() {
     const options = {
@@ -136,8 +135,7 @@ npm install --save-dev release-bump
       filesPath: '.',
       release: '3.0.0',
     }
-    const releaseBump = new ReleaseBump(options)
-    await releaseBump.init()
+    await releaseBump(options)
   })()
 
   ```
