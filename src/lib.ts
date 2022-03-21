@@ -274,7 +274,7 @@ export function getCliUsageText(): string {
 				: (current.argument.length < 6 ? '	' : '') + current.description
 			return output + `\n	--${current.argument}${alias}${description}`
 		}, '') +
-		'\nExamples\n	$ release-bump -pq --files=src\n'
+		'\n\nExamples\n	$ release-bump -pq --files=src\n'
 	)
 }
 

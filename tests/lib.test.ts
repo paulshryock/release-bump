@@ -158,8 +158,10 @@ test.todo('gets all file paths in a directory recursively')
 test('gets cli usage text', () => {
 	const actual = getCliUsageText()
 	expect(typeof actual === 'string')
-	expect(actual.includes('release-bump'))
+	expect(actual.toLowerCase().includes('release-bump'))
 	expect(actual.toLowerCase().includes('usage'))
+	expect(actual.toLowerCase().includes('options'))
+	expect(actual.toLowerCase().includes('examples'))
 })
 
 test('gets release bump version', async () => {
