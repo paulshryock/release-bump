@@ -1,21 +1,10 @@
 import { readFile } from 'node:fs/promises'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { $ } from 'zx'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-
-const paths = {
-	module: {
-		src: join(__dirname, '../src/index.ts'),
-		dist: join(__dirname, '../dist/index.js'),
-	},
-	cli: {
-		src: join(__dirname, '../src/cli.ts'),
-		dist: join(__dirname, '../dist/cli.js'),
-	},
-}
 
 ;(async function() {
 	/** Parsed package.json content. */
@@ -30,25 +19,37 @@ const paths = {
 		},
 	})
 
-	// Bundle module.
-	await $`esbuild ${paths.module.src} \
-		--bundle \
-		--define:process=${proc} \
-		--format=esm \
-		--minify \
-		--outfile=${paths.module.dist} \
-		--platform=node \
-		--target=node8`
+	/** Module formats. */
+	const moduleFormats = [
+		{ name: 'cjs', extension: 'cjs' },
+		{ name: 'esm', extension: 'js' },
+	]
 
-	// todo: Types.
+	/** Files. */
+	const files = ['index', 'cli']
 
-	// CLI.
-	await $`esbuild ${paths.cli.src} \
-		--bundle \
-		--define:process=${proc} \
-		--format=esm \
-		--minify \
-		--outfile=${paths.cli.dist} \
-		--platform=node \
-		--target=node8`
+	/** Compile source code. */
+	await Promise.all(
+		moduleFormats.map(async (moduleFormat) => {
+			return await Promise.all(
+				files.map(async (file) => {
+					// todo: Generate type definitions.
+
+					await $`esbuild ${resolve(__dirname, '..', 'src', `${file}.ts`)} \
+						--bundle \
+						--define:process=${proc} \
+						--format=${moduleFormat.name} \
+						--minify \
+						--outfile=${resolve(
+		__dirname,
+		'..',
+		'dist',
+		`${file}.${moduleFormat.extension}`,
+	)} \
+						--platform=node \
+						--target=node8`
+				}),
+			)
+		}),
+	)
 })()

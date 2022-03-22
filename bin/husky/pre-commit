@@ -1,11 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-# Maybe install dependencies.
-# $(dirname "$0")/maybe-install
-
 # Enforce code quality.
-npm run quality & \
-# Compile source code.
-npm run compile & \
-wait
+npm run quality

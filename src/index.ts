@@ -1,11 +1,10 @@
 import {
-	filterFiles,
-	formatChangelogText,
-	formatDocblock,
-	formatRepositoryUrl,
+	filterFilePaths,
+	formatText,
+	FormatTextOptions,
 	getRecursiveFilePaths,
+	parseSettingsFromOptions,
 } from './lib.js'
-import { readFileSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
 
 /** Release Bump options. */
@@ -28,208 +27,121 @@ export interface ReleaseBumpOptions {
 	quiet?: boolean
 	/** Release version. */
 	release?: string
-	/** Remote git repository URL. */
+	/** Repository. */
 	repository?: string
-}
-
-/** Release Bump settings. */
-export interface ReleaseBumpSettings extends ReleaseBumpOptions {
-	changelogPath: string
-	date: string
-	dryRun: boolean
-	failOnError: boolean
-	filesPath: string
-	ignore: string[]
-	prefix: boolean
-	quiet: boolean
-	release: string
-	repository: string
 }
 
 /**
  * Release Bump.
  *
- * @since 3.0.0
+ * @since  unreleased
+ * @param  {ReleaseBumpOptions} options Release Bump options.
+ * @return {string[]}                   Bumped files.
+ * @throws {Error}                      On file system read/write error.
+ * @todo                                Inject dependencies.
  */
-export class ReleaseBump {
-	/** Release Bump settings. */
-	#settings: ReleaseBumpSettings
+export async function releaseBump(
+	options: ReleaseBumpOptions,
+): Promise<string[]> {
+	const {
+		changelogPath,
+		date,
+		dryRun,
+		failOnError,
+		filesPath,
+		ignore,
+		prefix,
+		quiet,
+		release,
+		repository,
+	} = parseSettingsFromOptions(options)
 
-	/**
-	 * ReleaseBump class constructor.
-	 *
-	 * @since 3.0.0
-	 * @param {ReleaseBumpOptions} options Release Bump options.
-	 */
-	constructor(options: ReleaseBumpOptions) {
-		/** Parsed package.json content. */
-		let pkg = { repository: '', version: '0.0.0' }
+	/** Is dry run. */
+	const isDryRun = process.env.NODE_ENV === 'test' || dryRun === true
 
-		try {
-			pkg = JSON.parse(readFileSync('package.json', 'utf8'))
-		} catch (error: any) {
-			if (process.env.NODE_ENV !== 'test' && options.quiet !== true) {
-				console.warn('could not read package.json')
-			}
-		}
+	/** Directory paths to ignore. */
+	const directoriesToIgnore: string[] = ignore
 
-		/** Release Bump defaults. */
-		const defaults: ReleaseBumpSettings = {
-			changelogPath: 'CHANGELOG.md',
-			date: new Date().toISOString().split('T')?.[0],
-			dryRun: false,
-			failOnError: false,
-			filesPath: '.',
-			ignore: ['node_modules', 'tests/fixtures'],
-			prefix: false,
-			quiet: process.env.NODE_ENV === 'test' || false,
-			release: pkg.version,
-			repository: formatRepositoryUrl(pkg.repository),
-		}
+	/** Paths. */
+	const paths: string[] = []
 
-		this.#settings = { ...defaults, ...options }
+	/** File paths. */
+	const filePaths: string[] = [
+		...new Set([
+			changelogPath,
+			...(await getRecursiveFilePaths({
+				directoriesToIgnore,
+				failOnError,
+				filesPath,
+				paths,
+			})),
+		]),
+	]
+
+	/** Filtered file paths. */
+	const filteredFilePaths: string[] = filterFilePaths(
+		filePaths,
+		directoriesToIgnore,
+	)
+
+	if (filteredFilePaths.length < 1) {
+		if (quiet !== true) console.info('no files to bump')
+		return []
 	}
 
-	/**
-	 * Bumps Changelog.
-	 *
-	 * @since 3.0.0
-	 * @todo  Refactor.
-	 */
-	private async bumpChangelog(): Promise<void> {
-		const {
-			changelogPath,
-			date,
-			dryRun,
-			failOnError,
-			prefix,
-			quiet,
-			release,
-			repository,
-		} = this.#settings
+	/** Bumped files. */
+	const bumpedFiles: string[] = []
 
-		const file = changelogPath
-
-		/** Unformatted text. */
-		let unformattedText = ''
-		try {
-			unformattedText = await readFile(file, 'utf8')
-		} catch (error: any) {
-			if (failOnError) {
-				process.exitCode = 1
-				throw error
-			} else {
-				console.warn(`could not read ${file}`)
-			}
-		}
-
-		/** Formatted text. */
-		const formattedText = formatChangelogText(unformattedText, {
-			date,
-			prefix,
-			release,
-			repository,
-		})
-
-		if (dryRun !== true) {
+	await Promise.all(
+		filteredFilePaths.map(async (filePath) => {
+			/** Unformatted text. */
+			let unformatted = ''
 			try {
-				await writeFile(file, formattedText, 'utf8')
+				unformatted = await readFile(filePath, 'utf8')
 			} catch (error: any) {
 				if (failOnError) {
 					process.exitCode = 1
 					throw error
 				} else {
-					console.warn(`could not write ${file}`)
+					console.warn(`could not read ${filePath}`)
 				}
 			}
-		}
 
-		if (quiet !== true) {
-			console.info((dryRun ? 'would have ' : '') + `bumped ${file}`)
-		}
-	}
+			/** formatText options. */
+			const options: FormatTextOptions = {
+				date,
+				isChangelog: changelogPath === filePath,
+				prefix,
+				quiet,
+				release,
+				repository,
+			}
 
-	/**
-	 * Bumps Docblocks.
-	 *
-	 * @since 3.0.0
-	 * @todo  Refactor.
-	 */
-	private async bumpDocblock(): Promise<void> {
-		const { dryRun, failOnError, filesPath, ignore, quiet, release } =
-			this.#settings
+			/** Formatted text. */
+			const formatted = await formatText(unformatted, options)
+			if (unformatted === formatted) return
 
-		/** File paths. */
-		const filePaths: string[] = await getRecursiveFilePaths(filesPath)
+			bumpedFiles.push(filePath)
+			if (isDryRun === true) return
 
-		/** Directory paths to ignore. */
-		const directoriesToIgnore: string[] = ignore
-
-		/** Filtered file paths. */
-		const filteredFilePaths: string[] = filterFiles(
-			filePaths,
-			directoriesToIgnore,
-		)
-
-		/** Files to bump. */
-		const filesToBump: string[] = []
-
-		if (filteredFilePaths.length < 1) {
-			if (quiet !== true) console.info('no files to bump')
-			return
-		}
-
-		await Promise.all(
-			filteredFilePaths.map(async (file) => {
-				/** Unformatted text. */
-				let unformattedText = ''
-				try {
-					unformattedText = await readFile(file, 'utf8')
-				} catch (error: any) {
-					if (failOnError) {
-						process.exitCode = 1
-						throw error
-					} else {
-						console.warn(`could not read ${file}`)
-					}
+			try {
+				await writeFile(filePath, formatted, 'utf8')
+			} catch (error: any) {
+				if (failOnError) {
+					process.exitCode = 1
+					throw error
+				} else {
+					console.warn(`could not write ${filePath}`)
 				}
+			}
+		}),
+	)
 
-				/** Formatted text. */
-				const formattedText = formatDocblock(unformattedText, { release })
-
-				if (unformattedText === formattedText) return
-
-				filesToBump.push(file)
-
-				if (dryRun === true) return
-
-				try {
-					await writeFile(file, formattedText, 'utf8')
-				} catch (error: any) {
-					if (failOnError) {
-						process.exitCode = 1
-						throw error
-					} else {
-						console.warn(`could not write ${file}`)
-					}
-				}
-			}),
+	if (bumpedFiles.length > 0 && quiet !== true) {
+		console.info(
+			(isDryRun ? 'would have ' : '') + `bumped ${bumpedFiles.join(', ')}`,
 		)
-
-		if (filesToBump.length > 0 && quiet !== true) {
-			console.info(
-				(dryRun ? 'would have ' : '') + `bumped ${filesToBump.join(', ')}`,
-			)
-		}
 	}
 
-	/**
-	 * Initializes Release Bump.
-	 *
-	 * @since 3.0.0
-	 * @todo  Refactor.
-	 */
-	public async init(): Promise<void> {
-		await Promise.all([this.bumpChangelog(), this.bumpDocblock()])
-	}
+	return dryRun ? [] : bumpedFiles
 }
