@@ -1,12 +1,19 @@
 #!/usr/bin/env node
 import { releaseBump } from './index.js'
-import { getHelpText, getVersionText, parseCliArgs } from './lib.js'
+import {
+	availableArgs,
+	getHelpText,
+	getVersionText,
+	parseOptionsFromArgs,
+} from './lib.js'
 ;(async function() {
-	const { help, version, ...options } = parseCliArgs(
-		process.argv?.slice(2) ?? [],
+	const passedArgs = process.argv?.slice(2) ?? []
+	const { help, version, ...options } = parseOptionsFromArgs(
+		passedArgs,
+		availableArgs,
 	)
 
-	if (help === true) return console.info(getHelpText())
+	if (help === true) return console.info(getHelpText(availableArgs))
 	if (version === true) return console.info(await getVersionText())
 
 	await releaseBump(options)

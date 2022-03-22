@@ -1,12 +1,9 @@
 import {
-	filterFiles,
-	formatChangelogText,
-	FormatChangelogTextOptions,
-	formatDocblock,
-	FormatDocblockOptions,
+	filterFilePaths,
+	formatText,
+	FormatTextOptions,
 	getRecursiveFilePaths,
 	parseSettingsFromOptions,
-	ReleaseBumpSettings,
 } from './lib.js'
 import { readFile, writeFile } from 'node:fs/promises'
 
@@ -30,152 +27,8 @@ export interface ReleaseBumpOptions {
 	quiet?: boolean
 	/** Release version. */
 	release?: string
-	/** Remote git repository URL. */
+	/** Repository. */
 	repository?: string
-}
-
-/**
- * Bumps Changelog.
- *
- * @since  3.0.0
- * @return {Promise<string>} Changelog file path.
- * @todo   Refactor, inject dependencies.
- */
-async function bumpChangelog(settings: ReleaseBumpSettings): Promise<string> {
-	const {
-		changelogPath,
-		date,
-		dryRun,
-		failOnError,
-		prefix,
-		quiet,
-		release,
-		repository,
-	} = settings
-
-	const file = changelogPath
-
-	/** Unformatted text. */
-	let unformatted = ''
-	try {
-		unformatted = await readFile(file, 'utf8')
-	} catch (error: any) {
-		if (failOnError) {
-			process.exitCode = 1
-			throw error
-		} else {
-			console.warn(`could not read ${file}`)
-		}
-	}
-
-	/** formatChangelogText options. */
-	const options: FormatChangelogTextOptions = {
-		date,
-		prefix,
-		release,
-		repository,
-	}
-
-	/** Formatted text. */
-	const formattedText = formatChangelogText(unformatted, options)
-
-	if (dryRun !== true) {
-		try {
-			await writeFile(file, formattedText, 'utf8')
-		} catch (error: any) {
-			if (failOnError) {
-				process.exitCode = 1
-				throw error
-			} else {
-				console.warn(`could not write ${file}`)
-			}
-		}
-	}
-
-	if (quiet !== true) {
-		console.info((dryRun ? 'would have ' : '') + `bumped ${file}`)
-	}
-
-	return dryRun ? '' : file
-}
-
-/**
- * Bumps Docblocks.
- *
- * @since  3.0.0
- * @return {Promise<string[]>} Files to bump.
- * @todo   Refactor, inject dependencies.
- */
-async function bumpDocblock(settings: ReleaseBumpSettings): Promise<string[]> {
-	const { dryRun, failOnError, filesPath, ignore, quiet, release } = settings
-
-	/** File paths. */
-	const filePaths: string[] = await getRecursiveFilePaths(filesPath)
-
-	/** Directory paths to ignore. */
-	const directoriesToIgnore: string[] = ignore
-
-	/** Filtered file paths. */
-	const filteredFilePaths: string[] = filterFiles(
-		filePaths,
-		directoriesToIgnore,
-	)
-
-	/** Files to bump. */
-	const filesToBump: string[] = []
-
-	if (filteredFilePaths.length < 1) {
-		if (quiet !== true) console.info('no files to bump')
-		return []
-	}
-
-	await Promise.all(
-		filteredFilePaths.map(async (file) => {
-			/** Unformatted text. */
-			let unformatted = ''
-			try {
-				unformatted = await readFile(file, 'utf8')
-			} catch (error: any) {
-				if (failOnError) {
-					process.exitCode = 1
-					throw error
-				} else {
-					console.warn(`could not read ${file}`)
-				}
-			}
-
-			/** formatDocblock options. */
-			const options: FormatDocblockOptions = { release }
-
-			/** Formatted text. */
-			const formattedText = formatDocblock(unformatted, options)
-
-			if (unformatted === formattedText) return
-
-			filesToBump.push(file)
-
-			if (dryRun === true) return
-
-			try {
-				await writeFile(file, formattedText, 'utf8')
-			} catch (error: any) {
-				if (failOnError) {
-					process.exitCode = 1
-					throw error
-				} else {
-					console.warn(`could not write ${file}`)
-				}
-			}
-		}),
-	)
-
-	if (filesToBump.length > 0 && quiet !== true) {
-		console.info(
-			(dryRun ? 'would have ' : '') + `bumped ${filesToBump.join(', ')}`,
-		)
-	}
-
-	return dryRun ? [] : filesToBump
 }
 
 /**
@@ -184,18 +37,111 @@ async function bumpDocblock(settings: ReleaseBumpSettings): Promise<string[]> {
  * @since  unreleased
  * @param  {ReleaseBumpOptions} options Release Bump options.
  * @return {string[]}                   Bumped files.
+ * @throws {Error}                      On file system read/write error.
  * @todo                                Inject dependencies.
  */
 export async function releaseBump(
 	options: ReleaseBumpOptions,
 ): Promise<string[]> {
-	/** Release Bump settings. */
-	const settings = parseSettingsFromOptions(options)
+	const {
+		changelogPath,
+		date,
+		dryRun,
+		failOnError,
+		filesPath,
+		ignore,
+		prefix,
+		quiet,
+		release,
+		repository,
+	} = parseSettingsFromOptions(options)
 
-	const files =
-		(
-			await Promise.all([bumpChangelog(settings), bumpDocblock(settings)])
-		)?.flat() ?? []
+	/** Is dry run. */
+	const isDryRun = process.env.NODE_ENV === 'test' || dryRun === true
 
-	return files
+	/** Directory paths to ignore. */
+	const directoriesToIgnore: string[] = ignore
+
+	/** Paths. */
+	const paths: string[] = []
+
+	/** File paths. */
+	const filePaths: string[] = [
+		...new Set([
+			changelogPath,
+			...(await getRecursiveFilePaths({
+				directoriesToIgnore,
+				failOnError,
+				filesPath,
+				paths,
+			})),
+		]),
+	]
+
+	/** Filtered file paths. */
+	const filteredFilePaths: string[] = filterFilePaths(
+		filePaths,
+		directoriesToIgnore,
+	)
+
+	if (filteredFilePaths.length < 1) {
+		if (quiet !== true) console.info('no files to bump')
+		return []
+	}
+
+	/** Bumped files. */
+	const bumpedFiles: string[] = []
+
+	await Promise.all(
+		filteredFilePaths.map(async (filePath) => {
+			/** Unformatted text. */
+			let unformatted = ''
+			try {
+				unformatted = await readFile(filePath, 'utf8')
+			} catch (error: any) {
+				if (failOnError) {
+					process.exitCode = 1
+					throw error
+				} else {
+					console.warn(`could not read ${filePath}`)
+				}
+			}
+
+			/** formatText options. */
+			const options: FormatTextOptions = {
+				date,
+				isChangelog: changelogPath === filePath,
+				prefix,
+				quiet,
+				release,
+				repository,
+			}
+
+			/** Formatted text. */
+			const formatted = await formatText(unformatted, options)
+			if (unformatted === formatted) return
+
+			bumpedFiles.push(filePath)
+			if (isDryRun === true) return
+
+			try {
+				await writeFile(filePath, formatted, 'utf8')
+			} catch (error: any) {
+				if (failOnError) {
+					process.exitCode = 1
+					throw error
+				} else {
+					console.warn(`could not write ${filePath}`)
+				}
+			}
+		}),
+	)
+
+	if (bumpedFiles.length > 0 && quiet !== true) {
+		console.info(
+			(isDryRun ? 'would have ' : '') + `bumped ${bumpedFiles.join(', ')}`,
+		)
+	}
+
+	return dryRun ? [] : bumpedFiles
 }
