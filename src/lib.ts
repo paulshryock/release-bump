@@ -5,18 +5,18 @@ import { join } from 'node:path'
 
 // todo: Implement custom logger.
 
-/** Release Bump settings. */
-export interface ReleaseBumpSettings extends ReleaseBumpOptions {
-	changelogPath: string
-	date: string
-	dryRun: boolean
-	failOnError: boolean
-	filesPath: string
-	ignore: string[]
-	prefix: boolean
-	quiet: boolean
+/** CLI option. */
+interface CliOption {
+	alias?: string
+	argument: string
+	description: string
+	type: string
+}
+
+/** formatDocblock options. */
+export interface FormatDocblockOptions {
+	/** Release version. */
 	release: string
-	repository: string
 }
 
 /** formatChangelogText options. */
@@ -31,10 +31,18 @@ export interface FormatChangelogTextOptions {
 	repository: string
 }
 
-/** formatDocblock options. */
-export interface FormatDocblockOptions {
-	/** Release version. */
+/** Release Bump settings. */
+export interface ReleaseBumpSettings extends ReleaseBumpOptions {
+	changelogPath: string
+	date: string
+	dryRun: boolean
+	failOnError: boolean
+	filesPath: string
+	ignore: string[]
+	prefix: boolean
+	quiet: boolean
 	release: string
+	repository: string
 }
 
 /**
@@ -42,7 +50,7 @@ export interface FormatDocblockOptions {
  *
  * @todo Convert camelCase to kebab-case.
  */
-export const cliOptions = [
+export const cliOptions: CliOption[] = [
 	{
 		argument: 'changelogPath',
 		description: 'Path to changelog.',
@@ -54,14 +62,14 @@ export const cliOptions = [
 		type: 'string',
 	},
 	{
-		argument: 'dryRun',
 		alias: 'd',
+		argument: 'dryRun',
 		description: 'Dry run.',
 		type: 'boolean',
 	},
 	{
-		argument: 'failOnError',
 		alias: 'e',
+		argument: 'failOnError',
 		description: 'Fail on error.',
 		type: 'boolean',
 	},
@@ -76,20 +84,20 @@ export const cliOptions = [
 		type: 'string[]',
 	},
 	{
-		argument: 'help',
 		alias: 'h',
+		argument: 'help',
 		description: 'Log CLI usage text.',
 		type: 'boolean',
 	},
 	{
-		argument: 'prefix',
 		alias: 'p',
+		argument: 'prefix',
 		description: "Prefix release version with a 'v'.",
 		type: 'boolean',
 	},
 	{
-		argument: 'quiet',
 		alias: 'q',
+		argument: 'quiet',
 		description: 'Quiet, no logs.',
 		type: 'boolean',
 	},
@@ -104,8 +112,8 @@ export const cliOptions = [
 		type: 'string',
 	},
 	{
-		argument: 'version',
 		alias: 'v',
+		argument: 'version',
 		description: 'Log Release Bump version.',
 		type: 'boolean',
 	},

@@ -1,8 +1,11 @@
 import { releaseBump } from '../src/index.js'
 
-test('releaseBump', async () => {
-	const actual = await releaseBump({})
-	expect(Array.isArray(actual))
+describe('releaseBump', () => {
+	test('with empty options', async () => {
+		const actual = await releaseBump({})
+		const expected: string[] = ['CHANGELOG.md']
+		expect(actual).toStrictEqual(expected)
+	})
 })
 
 test.todo('bumps changelog')
