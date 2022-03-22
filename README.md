@@ -2,9 +2,13 @@
 
 Handle version bump tasks for a code release. Use `unreleased` in your Changelog and docblock comments, and Release Bump will automatically bump it to the correct release version.
 
-- 🔋 0 dependencies
-- ⌨️ CLI is 6kb
-- 🔌 API is 4kb
+**This package writes to your file system.**
+
+- ☝️ Only does one thing
+- 🔋 Zero production dependencies
+- ⌨️ CLI is <6kb
+- 🔌 API is <4kb
+- 🤙 ESM and Common JS available
 
 > Release Bump 1.x and 2.x are officially deprecated and no longer supported. Please use Release Bump 3.x or higher.
 
