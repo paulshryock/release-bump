@@ -1,6 +1,6 @@
 {
   "name": "release-bump",
-  "version": "3.0.0-alpha.14",
+  "version": "3.0.0-alpha.21",
   "private": false,
   "description": "Handle version bump tasks for a code release.",
   "keywords": [
@@ -19,9 +19,13 @@
   "license": "Hippocratic 2.1",
   "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
   "type": "module",
-  "module": "./dist/index.ts",
-  "bin": "./dist/cli.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "bin": {
+    "release-bump": "./dist/cli.cjs"
+  },
   "files": [
+    "/src",
     "/dist"
   ],
   "scripts": {
@@ -33,11 +37,12 @@
     "lint:js": "eslint \"./!(tests)/**/*.{ts,d.ts,js,{m,c}js,json}\" --fix",
     "lint:pkg": "sort-package-json",
     "prepare": "husky install bin/husky",
-    "quality": "npm-run-all --serial format --parallel lint typecheck test",
-    "test": "jest --coverage",
+    "quality": "npm-run-all --serial format --parallel lint typecheck --serial test",
+    "test": "jest",
     "test:watch": "npm test -- --watch",
     "typecheck": "tsc",
-    "typecheck:watch": "npm run typecheck -- --watch"
+    "typecheck:watch": "npm run typecheck -- --watch",
+    "preversion": "npm run compile && git add dist"
   },
   "devDependencies": {
     "@swc/cli": "0.1.55",
@@ -71,7 +76,6 @@
     "zx": "^5.2.0"
   },
   "engines": {
-    "node": ">=17.5.0",
-    "npm": ">=8.4.1"
+    "node": ">=17.5.0"
   }
 }
