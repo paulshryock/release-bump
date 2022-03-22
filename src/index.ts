@@ -34,7 +34,7 @@ export interface ReleaseBumpOptions {
 /**
  * Release Bump.
  *
- * @since  unreleased
+ * @since  3.0.0
  * @param  {ReleaseBumpOptions} options Release Bump options.
  * @return {string[]}                   Bumped files.
  * @throws {Error}                      On file system read/write error.
@@ -63,31 +63,21 @@ export async function releaseBump(
 	const directoriesToIgnore: string[] = ignore
 
 	/** Paths. */
-	const paths: string[] = []
+	const paths: string[] = [changelogPath]
 
 	/** File paths. */
-	const filePaths: string[] = [
-		...new Set([
-			changelogPath,
-			...(await getRecursiveFilePaths({
-				directoriesToIgnore,
-				failOnError,
-				filesPath,
-				paths,
-			})),
-		]),
-	]
+	const filePaths: string[] = await getRecursiveFilePaths({
+		directoriesToIgnore,
+		failOnError,
+		filesPath,
+		paths,
+	})
 
 	/** Filtered file paths. */
 	const filteredFilePaths: string[] = filterFilePaths(
 		filePaths,
 		directoriesToIgnore,
 	)
-
-	if (filteredFilePaths.length < 1) {
-		if (quiet !== true) console.info('no files to bump')
-		return []
-	}
 
 	/** Bumped files. */
 	const bumpedFiles: string[] = []
@@ -103,7 +93,7 @@ export async function releaseBump(
 					process.exitCode = 1
 					throw error
 				} else {
-					console.warn(`could not read ${filePath}`)
+					if (quiet !== true) console.warn(`could not read ${filePath}`)
 				}
 			}
 
@@ -131,7 +121,7 @@ export async function releaseBump(
 					process.exitCode = 1
 					throw error
 				} else {
-					console.warn(`could not write ${filePath}`)
+					if (quiet !== true) console.warn(`could not write ${filePath}`)
 				}
 			}
 		}),

@@ -42,7 +42,7 @@
     "test:watch": "npm test -- --watch",
     "typecheck": "tsc",
     "typecheck:watch": "npm run typecheck -- --watch",
-    "preversion": "npm run compile && git add dist"
+    "version": "npm run compile && git add dist"
   },
   "devDependencies": {
     "@swc/cli": "0.1.56",

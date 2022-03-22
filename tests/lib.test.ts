@@ -5,6 +5,8 @@ import {
 	formatText,
 	FormatTextOptions,
 	getHelpText,
+	getRecursiveFilePaths,
+	GetRecursiveFilePathsOptions,
 	getVersionText,
 	parseOptionsFromArgs,
 } from '../src/lib.js'
@@ -277,6 +279,25 @@ describe('formatText', () => {
 			expect(actual).toBe(expected)
 		})
 	})
+
+	describe('with a pre-release version', () => {
+		test('does not format text', async () => {
+			const unformatted = await readFile(
+				resolve(__dirname, 'fixtures', 'script.ts'),
+				'utf8',
+			)
+			const options: FormatTextOptions = {
+				date: '2022-03-11',
+				isChangelog: false,
+				prefix: false,
+				quiet: true,
+				release: '3.0.0-alpha.1',
+				repository: 'https://github.com/org/repo',
+			}
+			const actual = await formatText(unformatted, options)
+			expect(actual).toBe(unformatted)
+		})
+	})
 })
 
 describe('getHelpText', () => {
@@ -299,7 +320,37 @@ describe('getHelpText', () => {
 })
 
 describe('getRecursiveFilePaths', () => {
-	test.todo('gets all file paths in a directory recursively')
+	describe('with a directory to ignore', () => {
+		test('gets all file paths in a directory recursively', async () => {
+			/** getRecursiveFilePaths options. */
+			const options: GetRecursiveFilePathsOptions = {
+				directoriesToIgnore: ['tests/fixtures'],
+				failOnError: false,
+				filesPath: 'tests',
+				paths: [],
+			}
+
+			const actual = await getRecursiveFilePaths(options)
+			const expected = ['tests/index.test.ts', 'tests/lib.test.ts']
+			expect(actual).toEqual(expect.arrayContaining(expected))
+		})
+	})
+
+	describe('without a directory to ignore', () => {
+		test('gets all file paths in a directory recursively', async () => {
+			/** getRecursiveFilePaths options. */
+			const options: GetRecursiveFilePathsOptions = {
+				directoriesToIgnore: [],
+				failOnError: false,
+				filesPath: 'tests',
+				paths: [],
+			}
+
+			const actual = await getRecursiveFilePaths(options)
+			const expected = ['tests/index.test.ts', 'tests/lib.test.ts']
+			expect(actual).toEqual(expect.arrayContaining(expected))
+		})
+	})
 })
 
 describe('getVersionText', () => {

@@ -41,7 +41,7 @@ export interface FormatTextOptions {
 }
 
 /** getRecursiveFilePaths options. */
-interface GetRecursiveFilePathsOptions {
+export interface GetRecursiveFilePathsOptions {
 	/** Fail on error. */
 	failOnError: boolean
 	/** Path to files. */
@@ -186,7 +186,7 @@ export function formatRepositoryUrl(repository: string): string {
 /**
  * Formats text.
  *
- * @since  unreleased
+ * @since  3.0.0
  * @param  {string}            unformatted Unformatted text.
  * @param  {FormatTextOptions} options     Options.
  * @return {string}                        Formatted text.
@@ -196,6 +196,16 @@ export async function formatText(
 	options: FormatTextOptions,
 ): Promise<string> {
 	const { date, isChangelog, prefix, quiet, release, repository } = options
+
+	/** Is pre-release.  */
+	const isPrerelease = !/^\d+\.\d+\.\d+$/.test(release)
+
+	if (isPrerelease) {
+		if (quiet !== true) {
+			console.info(`not formatting text for prerelease ${release}`)
+		}
+		return unformatted
+	}
 
 	/** Semantic release version. */
 	const version = /\d+\.\d+\.\d+/.exec(release)?.[0] ?? release
@@ -424,7 +434,7 @@ export function parseOptionsFromArgs(
 /**
  * Parses settings from options.
  *
- * @since  unreleased
+ * @since  3.0.0
  * @param  {ReleaseBumpOptions}  options Release Bump options.
  * @return {ReleaseBumpSettings}         Release Bump settings.
  */
