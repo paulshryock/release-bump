@@ -201,9 +201,6 @@ export async function formatText(
 	const isPrerelease = !/^\d+\.\d+\.\d+$/.test(release)
 
 	if (isPrerelease) {
-		if (quiet !== true) {
-			console.info(`not formatting text for prerelease ${release}`)
-		}
 		return unformatted
 	}
 
