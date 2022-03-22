@@ -29,10 +29,11 @@
     "/dist"
   ],
   "scripts": {
+    "bump": "./dist/cli.cjs -- -epq",
     "clean": "rm -rf ./dist",
     "cli": "ts-node ./dist/cli.ts",
     "compile": "ts-node ./bin/compile.ts",
-    "format": "prettier --loglevel=warn --write \"./!(vendor)/**/*.{ts,js,{m,c}js,json}\"",
+    "format": "prettier --loglevel=warn --write \"./!(dist)/**/*.{ts,js,{m,c}js,json}\"",
     "lint": "run-p lint:*",
     "lint:js": "eslint \"./!(tests)/**/*.{ts,d.ts,js,{m,c}js,json}\" --fix",
     "lint:pkg": "sort-package-json",
@@ -42,7 +43,8 @@
     "test:watch": "npm test -- --watch",
     "typecheck": "tsc",
     "typecheck:watch": "npm run typecheck -- --watch",
-    "version": "npm run compile && git add dist"
+    "preversion": "if [[ $(git status -s) ]]; then exit 1; fi",
+    "version": "run-s quality compile bump && git add ."
   },
   "devDependencies": {
     "@swc/cli": "0.1.56",
