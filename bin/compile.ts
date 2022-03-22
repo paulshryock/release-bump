@@ -12,7 +12,7 @@ const __dirname = dirname(__filename)
 		await readFile(resolve(__dirname, '..', 'package.json'), 'utf8'),
 	)
 
-	// Define environment variables.
+	/** Process global. */
 	const proc = JSON.stringify({
 		env: {
 			RELEASE_BUMP_VERSION: pkg.version,
