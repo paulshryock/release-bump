@@ -19,7 +19,7 @@ var v = (t, e) => {
 		for (var r of y(t)) e.indexOf(r) < 0 && w.call(t, r) && (n[r] = t[r])
 	return n
 }
-var U = { RELEASE_BUMP_VERSION: '3.0.0-alpha.20' },
+var U = { RELEASE_BUMP_VERSION: '3.0.0-alpha.21' },
 	c = { env: U }
 import { readFileSync as N } from 'fs'
 import { readdir as L, stat as V } from 'fs/promises'

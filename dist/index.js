@@ -11,7 +11,7 @@ var O = (t, e, n) =>
 		if (x) for (var n of x(e)) S.call(e, n) && O(t, n, e[n])
 		return t
 	}
-var D = { RELEASE_BUMP_VERSION: '3.0.0-alpha.20' },
+var D = { RELEASE_BUMP_VERSION: '3.0.0-alpha.21' },
 	g = { env: D }
 import { readFileSync as B } from 'fs'
 import { readdir as A, stat as T } from 'fs/promises'
