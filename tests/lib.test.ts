@@ -1,176 +1,324 @@
 import {
-	filterFiles,
-	formatChangelogText,
-	formatDocblock,
+	availableArgs,
+	filterFilePaths,
 	formatRepositoryUrl,
-	getCliUsageText,
-	getReleaseBumpVersion,
-	parseCliArgs,
+	formatText,
+	FormatTextOptions,
+	getHelpText,
+	getVersionText,
+	parseOptionsFromArgs,
 } from '../src/lib.js'
 import { basename, extname, resolve } from 'node:path'
 import { readFile } from 'node:fs/promises'
 
-test('filters file paths', () => {
-	/** File paths. */
-	const filePaths = [
-		'src/index.ts',
-		'tests/index-test.ts',
-		'tests/fixtures/index.ts',
-		'node_modules/some-module/index.ts',
-	]
+describe('filterFilePaths', () => {
+	describe('without file paths or directories to ignore', () => {
+		test('returns an empty array', () => {
+			expect(filterFilePaths([], [])).toStrictEqual([])
+		})
+	})
 
-	/** Directories to ignore. */
-	const directoriesToIgnore = ['node_modules', 'tests/fixtures']
+	describe('with overlapping directories to ignore', () => {
+		test('filters file paths', () => {
+			const filePaths = ['src/index.ts', 'tests/index-test.ts']
+			expect(
+				filterFilePaths(
+					[
+						...filePaths,
+						'tests/fixtures/index.ts',
+						'node_modules/some-module/index.ts',
+					],
+					['node_modules', 'tests/fixtures'],
+				),
+			).toStrictEqual(filePaths)
+		})
+	})
 
-	const actual = filterFiles(filePaths, directoriesToIgnore)
-	const expected = ['src/index.ts', 'tests/index-test.ts']
-
-	expect(actual).toStrictEqual(expected)
-})
-
-test('formats changelog text', () => {
-	const scenarios = [
-		// 0. GitHub with prefix.
-		{
-			date: '2022-03-11',
-			prefix: true,
-			release: '3.0.0',
-			repository: 'https://github.com/paulshryock/release-bump',
-		},
-		// 1. GitHub without prefix.
-		{
-			date: '2022-03-11',
-			prefix: false,
-			release: '3.0.0',
-			repository: 'https://github.com/paulshryock/release-bump',
-		},
-		// 2. Bitbucket with prefix.
-		{
-			date: '2022-03-11',
-			prefix: true,
-			release: '3.0.0',
-			repository: 'https://bitbucket.org/paulshryock/release-bump',
-		},
-		// 3. Bitbucket without prefix.
-		{
-			date: '2022-03-11',
-			prefix: false,
-			release: '3.0.0',
-			repository: 'https://bitbucket.org/paulshryock/release-bump',
-		},
-		// 4. No repository with prefix.
-		{
-			date: '2022-03-11',
-			prefix: true,
-			release: '3.0.0',
-			repository: '',
-		},
-		// 5. No repository without prefix.
-		{
-			date: '2022-03-11',
-			prefix: false,
-			release: '3.0.0',
-			repository: '',
-		},
-	]
-
-	scenarios.forEach(async (scenario, index) => {
-		const actual = formatChangelogText(
-			await readFile(
-				resolve(__dirname, 'fixtures', 'changelog', 'CHANGELOG-before.md'),
-				'utf8',
-			),
-			scenario,
-		)
-		const expected = await readFile(
-			resolve(
-				__dirname,
-				'fixtures',
-				'changelog',
-				`CHANGELOG-${index}-after.md`,
-			),
-			'utf8',
-		)
-		expect(actual).toBe(expected)
+	describe('with no overlapping directories to ignore', () => {
+		test('has all the same file paths', () => {
+			const filePaths = [
+				'src/index.ts',
+				'tests/index-test.ts',
+				'tests/fixtures/index.ts',
+				'node_modules/some-module/index.ts',
+			]
+			const actual = filterFilePaths(filePaths, [
+				'some/directory',
+				'some-other-directory',
+			])
+			expect(actual).toStrictEqual(filePaths)
+		})
 	})
 })
 
-test('formats docblock', () => {
-	const files = ['script.ts', 'style.scss']
-	const release = '3.0.0'
+describe('formatRepositoryUrl', () => {
+	describe('with an empty repository', () => {
+		test('returns an empty url', () => {
+			expect(formatRepositoryUrl('')).toBe('')
+		})
+	})
 
-	files.forEach(async (file) => {
-		const filename = basename(file, extname(file))
-		const actual = formatDocblock(
-			await readFile(
+	describe('with a wrongly formatted repository', () => {
+		test('returns an empty url', () => {
+			expect(formatRepositoryUrl('something')).toBe('')
+		})
+	})
+
+	describe('with an unformatted repository', () => {
+		test('returns a formatted url', () => {
+			expect(formatRepositoryUrl('org/repo')).toBe(
+				'https://github.com/org/repo',
+			)
+		})
+	})
+
+	describe('with a formatted repository url', () => {
+		describe('with a github origin', () => {
+			test('returns the right formatted url', () => {
+				expect(formatRepositoryUrl('https://github.com/org/repo')).toBe(
+					'https://github.com/org/repo',
+				)
+			})
+		})
+
+		describe('with a gitlab origin', () => {
+			test('returns the right formatted url', () => {
+				expect(formatRepositoryUrl('https://gitlab.com/org/repo')).toBe(
+					'https://gitlab.com/org/repo',
+				)
+			})
+		})
+
+		describe('with a bitbucket origin', () => {
+			test('returns the right formatted url', () => {
+				expect(formatRepositoryUrl('https://bitbucket.org/org/repo')).toBe(
+					'https://bitbucket.org/org/repo',
+				)
+			})
+		})
+	})
+})
+
+describe('formatText', () => {
+	describe('with a changelog', () => {
+		describe('with a repository', () => {
+			describe('with a prefix', () => {
+				test('formats text', async () => {
+					const file = 'CHANGELOG.md'
+					const filename = basename(file, extname(file))
+					const unformatted = await readFile(
+						resolve(__dirname, 'fixtures', 'changelog', file),
+						'utf8',
+					)
+					const options: FormatTextOptions = {
+						date: '2022-03-11',
+						isChangelog: true,
+						prefix: true,
+						quiet: true,
+						release: '3.0.0',
+						repository: 'https://github.com/org/repo',
+					}
+					const actual = await formatText(unformatted, options)
+					const expected = await readFile(
+						resolve(
+							__dirname,
+							'fixtures',
+							'changelog',
+							file.replace(filename, `${filename}-0-after`),
+						),
+						'utf8',
+					)
+					expect(actual).toBe(expected)
+				})
+			})
+
+			describe('without a prefix', () => {
+				test('formats text', async () => {
+					const file = 'CHANGELOG.md'
+					const filename = basename(file, extname(file))
+					const unformatted = await readFile(
+						resolve(__dirname, 'fixtures', 'changelog', file),
+						'utf8',
+					)
+					const options: FormatTextOptions = {
+						date: '2022-03-11',
+						isChangelog: true,
+						prefix: false,
+						quiet: true,
+						release: '3.0.0',
+						repository: 'https://github.com/org/repo',
+					}
+					const actual = await formatText(unformatted, options)
+					const expected = await readFile(
+						resolve(
+							__dirname,
+							'fixtures',
+							'changelog',
+							file.replace(filename, `${filename}-1-after`),
+						),
+						'utf8',
+					)
+					expect(actual).toBe(expected)
+				})
+			})
+		})
+
+		describe('without a repository', () => {
+			test('formats text', async () => {
+				const file = 'CHANGELOG.md'
+				const filename = basename(file, extname(file))
+				const unformatted = await readFile(
+					resolve(__dirname, 'fixtures', 'changelog', file),
+					'utf8',
+				)
+				const options: FormatTextOptions = {
+					date: '2022-03-11',
+					isChangelog: true,
+					prefix: false,
+					quiet: true,
+					release: '3.0.0',
+					repository: '',
+				}
+				const actual = await formatText(unformatted, options)
+				const expected = await readFile(
+					resolve(
+						__dirname,
+						'fixtures',
+						'changelog',
+						file.replace(filename, `${filename}-2-after`),
+					),
+					'utf8',
+				)
+				expect(actual).toBe(expected)
+			})
+		})
+
+		describe('which has already bumped', () => {
+			test('returns unformatted text', async () => {
+				const file = 'CHANGELOG.md'
+				const filename = basename(file, extname(file))
+				const unformatted = await readFile(
+					resolve(
+						__dirname,
+						'fixtures',
+						'changelog',
+						file.replace(filename, `${filename}-1-after`),
+					),
+					'utf8',
+				)
+				const options: FormatTextOptions = {
+					date: '2022-03-11',
+					isChangelog: true,
+					prefix: false,
+					quiet: true,
+					release: '3.0.0',
+					repository: 'https://github.com/org/repo',
+				}
+				const actual = await formatText(unformatted, options)
+				expect(actual).toBe(unformatted)
+			})
+		})
+	})
+
+	describe('with a docblock', () => {
+		test('formats text', async () => {
+			const file = 'script.ts'
+			const filename = basename(file, extname(file))
+			const unformatted = await readFile(
+				resolve(__dirname, 'fixtures', file),
+				'utf8',
+			)
+			const options: FormatTextOptions = {
+				date: '2022-03-11',
+				isChangelog: false,
+				prefix: false,
+				quiet: true,
+				release: '3.0.0',
+				repository: 'https://github.com/org/repo',
+			}
+			const actual = await formatText(unformatted, options)
+			const expected = await readFile(
 				resolve(
 					__dirname,
 					'fixtures',
-					file.replace(filename, `${filename}-before`),
+					file.replace(filename, `${filename}-after`),
 				),
 				'utf8',
-			),
-			{ release },
-		)
-		const expected = await readFile(
-			resolve(
-				__dirname,
-				'fixtures',
-				file.replace(filename, `${filename}-after`),
-			),
-			'utf8',
-		)
-		expect(actual).toBe(expected)
+			)
+			expect(actual).toBe(expected)
+		})
+	})
+
+	describe('with a WordPress-style docblock', () => {
+		test('formats text', async () => {
+			const file = 'style.scss'
+			const filename = basename(file, extname(file))
+			const unformatted = await readFile(
+				resolve(__dirname, 'fixtures', file),
+				'utf8',
+			)
+			const options: FormatTextOptions = {
+				date: '2022-03-11',
+				isChangelog: false,
+				prefix: false,
+				quiet: true,
+				release: '3.0.0',
+				repository: 'https://github.com/org/repo',
+			}
+			const actual = await formatText(unformatted, options)
+			const expected = await readFile(
+				resolve(
+					__dirname,
+					'fixtures',
+					file.replace(filename, `${filename}-after`),
+				),
+				'utf8',
+			)
+			expect(actual).toBe(expected)
+		})
 	})
 })
 
-test('formats remote git repository url', () => {
-	const expectations = [
-		{
-			actual: formatRepositoryUrl(''),
-			expected: '',
-		},
-		{
-			actual: formatRepositoryUrl('something'),
-			expected: '',
-		},
-		{
-			actual: formatRepositoryUrl('org/repo'),
-			expected: 'https://github.com/org/repo',
-		},
-		{
-			actual: formatRepositoryUrl('org/repo', { remote: 'bitbucket' }),
-			expected: 'https://bitbucket.org/org/repo',
-		},
-		{
-			actual: formatRepositoryUrl('https://github.com/org/repo'),
-			expected: 'https://github.com/org/repo',
-		},
-	]
-
-	expectations.forEach((expectation) => {
-		expect(expectation.actual).toBe(expectation.expected)
+describe('getHelpText', () => {
+	test('gets help text with all arguments', () => {
+		const actual = getHelpText(availableArgs)
+		expect(typeof actual).toBe('string')
+		expect(actual.toLowerCase().includes('release-bump'))
+		expect(actual.toLowerCase().includes('usage'))
+		expect(actual.toLowerCase().includes('options'))
+		expect(actual.toLowerCase().includes('examples'))
+		expect(
+			availableArgs.every((availableArg) => {
+				return (
+					actual.includes(availableArg.name) &&
+					actual.includes(availableArg.description)
+				)
+			}),
+		)
 	})
 })
 
-test.todo('gets all file paths in a directory recursively')
-
-test('gets cli usage text', () => {
-	const actual = getCliUsageText()
-	expect(typeof actual === 'string')
-	expect(actual.includes('release-bump'))
-	expect(actual.toLowerCase().includes('usage'))
+describe('getRecursiveFilePaths', () => {
+	test.todo('gets all file paths in a directory recursively')
 })
 
-test('gets release bump version', async () => {
-	process.env.RELEASE_BUMP_VERSION = '3.0.0'
-	expect(await getReleaseBumpVersion()).toBe('v3.0.0')
+describe('getVersionText', () => {
+	describe('with version defined', () => {
+		test('gets version text', async () => {
+			process.env.RELEASE_BUMP_VERSION = '3.0.0'
+			expect(await getVersionText()).toBe('v3.0.0')
+		})
+	})
 
-	delete process.env.RELEASE_BUMP_VERSION
-	expect(await getReleaseBumpVersion()).toBe('no version found')
+	describe('without version defined', () => {
+		test('gets no version found', async () => {
+			delete process.env.RELEASE_BUMP_VERSION
+			expect(await getVersionText()).toBe('no version found')
+		})
+	})
 })
 
-test('parses cli arguments', () => {
+describe('parseOptionsFromArgs', () => {
 	/** Parsed aliases. */
 	const parsedAliases = {
 		dryRun: true,
@@ -192,67 +340,82 @@ test('parses cli arguments', () => {
 		repository: 'org/repo',
 	}
 
-	const expectations = [
-		// 0. Nothing.
-		{
-			actual: parseCliArgs([]),
-			expected: {},
-		},
-		// 1. Unused args.
-		{
-			actual: parseCliArgs(['hello', 'world']),
-			expected: {},
-		},
-		// 2. Arguments with spaces.
-		{
-			actual: parseCliArgs([
-				'--changelogPath',
-				'CHANGELOG.md',
-				'--date',
-				'2022-03-15',
-				'--dryRun',
-				'--failOnError',
-				'--filesPath',
-				'src',
-				'--ignore',
-				'node_modules,tests/fixtures',
-				'--help',
-				'--prefix',
-				'--quiet',
-				'--release',
-				'3.0.0',
-				'--repository',
-				'org/repo',
-				'--version',
-			]),
-			expected: parsedArguments,
-		},
-		// 3. Arguments with equals.
-		{
-			actual: parseCliArgs([
-				'--changelogPath=CHANGELOG.md',
-				'--date=2022-03-15',
-				'--dryRun',
-				'--failOnError',
-				'--filesPath=src',
-				'--ignore=node_modules,tests/fixtures',
-				'--help',
-				'--prefix',
-				'--quiet',
-				'--release=3.0.0',
-				'--repository=org/repo',
-				'--version',
-			]),
-			expected: parsedArguments,
-		},
-		// 4. Aliases.
-		{
-			actual: parseCliArgs(['-d', '-e', '-h', '-p', '-q', '-v']),
-			expected: parsedAliases,
-		},
-	]
+	describe('with no arguments', () => {
+		test('returns empty options', () => {
+			expect(parseOptionsFromArgs([], availableArgs)).toStrictEqual({})
+		})
+	})
 
-	expectations.forEach((expectation) => {
-		expect(expectation.actual).toStrictEqual(expectation.expected)
+	describe('with wrong arguments', () => {
+		test('returns empty options', () => {
+			expect(
+				parseOptionsFromArgs(['--hello', 'world'], availableArgs),
+			).toStrictEqual({})
+		})
+	})
+
+	describe('with space-separated arguments', () => {
+		test('returns parsed options', () => {
+			expect(
+				parseOptionsFromArgs(
+					[
+						'--changelogPath',
+						'CHANGELOG.md',
+						'--date',
+						'2022-03-15',
+						'--dryRun',
+						'--failOnError',
+						'--filesPath',
+						'src',
+						'--ignore',
+						'node_modules,tests/fixtures',
+						'--help',
+						'--prefix',
+						'--quiet',
+						'--release',
+						'3.0.0',
+						'--repository',
+						'org/repo',
+						'--version',
+					],
+					availableArgs,
+				),
+			).toStrictEqual(parsedArguments)
+		})
+	})
+
+	describe('with equals-separated arguments', () => {
+		test('returns parsed options', () => {
+			expect(
+				parseOptionsFromArgs(
+					[
+						'--changelogPath=CHANGELOG.md',
+						'--date=2022-03-15',
+						'--dryRun',
+						'--failOnError',
+						'--filesPath=src',
+						'--ignore=node_modules,tests/fixtures',
+						'--help',
+						'--prefix',
+						'--quiet',
+						'--release=3.0.0',
+						'--repository=org/repo',
+						'--version',
+					],
+					availableArgs,
+				),
+			).toStrictEqual(parsedArguments)
+		})
+	})
+
+	describe('with aliases', () => {
+		test('returns parsed options', () => {
+			expect(
+				parseOptionsFromArgs(
+					['-d', '-e', '-h', '-p', '-q', '-v'],
+					availableArgs,
+				),
+			).toStrictEqual(parsedAliases)
+		})
 	})
 })
