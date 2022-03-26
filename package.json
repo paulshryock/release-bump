@@ -13,7 +13,7 @@
   ],
   "homepage": "https://github.com/paulshryock/release-bump#readme",
   "bugs": {
-    "url": "https://github.com/paulshryock/release-bump/issues"
+    "url": "https://github.com/paulshryock/release-bump/issues/new?assignees=&labels=&template=bug_report.md&title="
   },
   "repository": "paulshryock/release-bump",
   "license": "Hippocratic 2.1",
