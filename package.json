@@ -54,7 +54,6 @@
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
     "chokidar": "^3.5.3",
-    "dotenv": "^16.0.0",
     "esbuild": "^0.14.27",
     "eslint": "^8.11.0",
     "eslint-config-standard": "^16.0.3",
