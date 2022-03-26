@@ -99,6 +99,30 @@ describe('formatRepositoryUrl', () => {
 			})
 		})
 	})
+
+	describe('with a repository object', () => {
+		describe('with a url key', () => {
+			test('that is empty', () => {
+				expect(formatRepositoryUrl({ url: '' })).toBe('')
+			})
+
+			test('that is a repo path', () => {
+				expect(formatRepositoryUrl({ url: 'org/repo' })).toBe(
+					'https://github.com/org/repo',
+				)
+			})
+
+			test('that is a valid url', () => {
+				expect(
+					formatRepositoryUrl({ url: 'https://github.com/org/repo' }),
+				).toBe('https://github.com/org/repo')
+			})
+		})
+
+		test('without a url key', () => {
+			expect(formatRepositoryUrl({})).toBe('')
+		})
+	})
 })
 
 describe('formatText', () => {

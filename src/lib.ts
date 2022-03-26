@@ -52,6 +52,12 @@ export interface GetRecursiveFilePathsOptions {
 	directoriesToIgnore: string[]
 }
 
+/** Package repository. */
+interface packageRepository {
+	type?: string
+	url?: string
+}
+
 /** Release Bump settings. */
 interface ReleaseBumpSettings extends ReleaseBumpOptions {
 	changelogPath: string
@@ -162,22 +168,31 @@ export function filterFilePaths(
  * Formats repository URL.
  *
  * @since  3.0.0
- * @param  {string} repository Repository.
- * @return {string}            Formatted repository URL.
+ * @param  {string|packageRepository} repository Repository.
+ * @return {string}                              Formatted repository URL.
  */
-export function formatRepositoryUrl(repository: string): string {
-	if (
-		/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&/=]*)/.test(
-			repository,
-		)
-	) {
-		return repository
-	}
+export function formatRepositoryUrl(
+	repository: string | packageRepository,
+): string {
+	if (typeof repository === 'string') {
+		if (
+			/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_+.~#?&/=]*)/.test(
+				repository,
+			)
+		) {
+			return repository
+		}
 
-	if (
-		/^[-a-zA-Z0-9()!@:%_+~#?&=]+\/[-a-zA-Z0-9()!@:%_+~#?&=]+$/.test(repository)
-	) {
-		return `https://github.com/${repository}`
+		if (
+			/^[-a-zA-Z0-9()!@:%_+~#?&=]+\/[-a-zA-Z0-9()!@:%_+~#?&=]+$/.test(
+				repository,
+			)
+		) {
+			return `https://github.com/${repository}`
+		}
+	} else {
+		if (typeof repository.url === 'undefined') return ''
+		return formatRepositoryUrl(repository.url.replace(/(^git\+|\.git$)/, ''))
 	}
 
 	return ''
