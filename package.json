@@ -15,9 +15,12 @@
   "bugs": {
     "url": "https://github.com/paulshryock/release-bump/issues/new?assignees=&labels=&template=bug_report.md&title="
   },
-  "repository": "paulshryock/release-bump",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulshryock/release-bump.git"
+  },
   "license": "Hippocratic 2.1",
-  "author": "Paul Shryock <paul@pshry.com> (https://github.com/paulshryock)",
+  "author": "Paul Shryock (https://github.com/paulshryock)",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
