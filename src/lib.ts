@@ -191,7 +191,7 @@ export function formatRepositoryUrl(
 			return `https://github.com/${repository}`
 		}
 	} else {
-		if (typeof repository.url === 'undefined') return ''
+		if (typeof repository?.url === 'undefined') return ''
 		return formatRepositoryUrl(repository.url.replace(/(^git\+|\.git$)/, ''))
 	}
 
