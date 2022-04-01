@@ -24,6 +24,7 @@
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
     "release-bump": "./dist/cli.cjs"
   },
@@ -35,7 +36,10 @@
     "bump": "./dist/cli.cjs -- -epq",
     "clean": "rm -rf ./dist",
     "cli": "ts-node ./dist/cli.ts",
-    "compile": "ts-node ./bin/compile.ts",
+    "compile": "run-p compile:*",
+    "compile:source": "ts-node ./bin/compile.ts",
+    "compile:types": "tsc --project tsconfig-dist.json",
+    "postcompile:types": "rm -rf ./dist/lib.d.ts",
     "format": "prettier --loglevel=warn --write \"./!(dist)/**/*.{ts,js,{m,c}js,json}\"",
     "lint": "run-p lint:*",
     "lint:js": "eslint \"./!(tests)/**/*.{ts,d.ts,js,{m,c}js,json}\" --fix",
