@@ -1,6 +1,6 @@
 {
   "name": "release-bump",
-  "version": "3.0.0-alpha.26",
+  "version": "3.0.0-alpha.27",
   "private": false,
   "description": "Handle version bump tasks for a code release.",
   "keywords": [
