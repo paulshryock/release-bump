@@ -37,7 +37,7 @@ const __dirname = dirname(__filename)
 					if (file === 'cli' && moduleFormat.name === 'esm') return
 
 					await $`esbuild ${resolve(__dirname, '..', 'src', `${file}.ts`)} \
-						${file === 'index' ? '--bundle' : ''} \
+						--bundle \
 						--define:process=${proc} \
 						--format=${moduleFormat.name} \
 						--minify \
