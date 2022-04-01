@@ -5,10 +5,9 @@ Handle version bump tasks for a code release. Use `unreleased` in your Changelog
 **This package writes to your file system.**
 
 - ☝️ Only does one thing
-- 🔋 Zero production dependencies
-- ⌨️ CLI is <6kb
-- 🔌 API is <4kb
-- 🤙 ESM and Common JS available
+- 👌 Zero production dependencies
+- 🤏 API is <4kb
+- 🤙 Supports ESM and Common JS
 
 > Release Bump 1.x and 2.x are officially deprecated and no longer supported. Please use Release Bump 3.x or higher.
 

@@ -33,10 +33,11 @@ const __dirname = dirname(__filename)
 		moduleFormats.map(async (moduleFormat) => {
 			return await Promise.all(
 				files.map(async (file) => {
-					// todo: Generate type definitions.
+					// Stick with CommonJS CLI for backwards compatibility.
+					if (file === 'cli' && moduleFormat.name === 'esm') return
 
 					await $`esbuild ${resolve(__dirname, '..', 'src', `${file}.ts`)} \
-						--bundle \
+						${file === 'index' ? '--bundle' : ''} \
 						--define:process=${proc} \
 						--format=${moduleFormat.name} \
 						--minify \
