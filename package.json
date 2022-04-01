@@ -1,6 +1,6 @@
 {
   "name": "release-bump",
-  "version": "3.0.0-alpha.25",
+  "version": "3.0.0-alpha.26",
   "private": false,
   "description": "Handle version bump tasks for a code release.",
   "keywords": [
@@ -51,7 +51,7 @@
     "typecheck": "tsc",
     "typecheck:watch": "npm run typecheck -- --watch",
     "preversion": "if [[ $(git status -s) ]]; then exit 1; fi",
-    "version": "run-s quality compile bump && git add ."
+    "version": "npm-run-all --parallel clean quality --serial compile bump && git add ."
   },
   "devDependencies": {
     "@swc/cli": "0.1.57",
