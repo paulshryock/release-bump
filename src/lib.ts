@@ -170,6 +170,27 @@ export function filterFilePaths(
 }
 
 /**
+ * Flattens an array of strings.
+ *
+ * @since  unreleased
+ * @param  {(string | string[])[]} items Items.
+ * @return {string[]}
+ */
+function flattenArrayOfStrings(items: (string | string[])[]): string[] {
+	const flat: string[] = []
+
+	items.forEach((item) => {
+		if (Array.isArray(item)) {
+			flat.push(...flattenArrayOfStrings(item))
+		} else {
+			flat.push(item)
+		}
+	})
+
+	return flat
+}
+
+/**
  * Formats repository URL.
  *
  * @since  3.0.0
@@ -362,7 +383,7 @@ export async function getRecursiveFilePaths(
 		}),
 	)
 
-	return [...new Set([...paths, ...newPaths].flat(100))]
+	return [...new Set(flattenArrayOfStrings([...paths, ...newPaths]))]
 }
 
 /**
