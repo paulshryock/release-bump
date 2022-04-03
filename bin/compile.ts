@@ -1,3 +1,4 @@
+import { ProcessEnv } from '../src/lib.js'
 import { readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -12,11 +13,19 @@ const __dirname = dirname(__filename)
 		await readFile(resolve(__dirname, '..', 'package.json'), 'utf8'),
 	)
 
-	/** Modified process.env global. */
-	const env = JSON.stringify({
-		...process?.env,
-		RELEASE_BUMP_VERSION: pkg.version,
-	})
+	/** Modified, filtered process.env global. */
+	const env = JSON.stringify(
+		Object.entries(process.env).reduce(
+			(inject: ProcessEnv, [key, value]) => {
+				const processEnv = { ...inject }
+				if (key.includes('RELEASE_BUMP')) processEnv[key] = value
+				return processEnv
+			},
+			{
+				RELEASE_BUMP_VERSION: pkg.version,
+			},
+		),
+	)
 
 	/** Module formats. */
 	const moduleFormats = [
