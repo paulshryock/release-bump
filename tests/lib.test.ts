@@ -381,14 +381,14 @@ describe('getVersionText', () => {
 	describe('with version defined', () => {
 		test('gets version text', async () => {
 			process.env.RELEASE_BUMP_VERSION = '3.0.0'
-			expect(await getVersionText()).toBe('v3.0.0')
+			expect(await getVersionText(process.env)).toBe('v3.0.0')
 		})
 	})
 
 	describe('without version defined', () => {
 		test('gets no version found', async () => {
 			delete process.env.RELEASE_BUMP_VERSION
-			expect(await getVersionText()).toBe('no version found')
+			expect(await getVersionText(process.env)).toBe('no version found')
 		})
 	})
 })
