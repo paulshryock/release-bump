@@ -53,9 +53,14 @@ export interface GetRecursiveFilePathsOptions {
 }
 
 /** Package repository. */
-interface packageRepository {
+interface PackageRepository {
 	type?: string
 	url?: string
+}
+
+/** process.env */
+interface ProcessEnv {
+	[key: string]: string | undefined
 }
 
 /** Release Bump settings. */
@@ -168,11 +173,11 @@ export function filterFilePaths(
  * Formats repository URL.
  *
  * @since  3.0.0
- * @param  {string|packageRepository} repository Repository.
+ * @param  {string|PackageRepository} repository Repository.
  * @return {string}                              Formatted repository URL.
  */
 export function formatRepositoryUrl(
-	repository: string | packageRepository,
+	repository: string | PackageRepository,
 ): string {
 	if (typeof repository === 'string') {
 		if (
@@ -340,37 +345,36 @@ export async function getRecursiveFilePaths(
 	}
 
 	/** New paths. */
-	const newPaths: string[] = [
-		...(await Promise.all(
-			filesInFilesPath.map(async (filePath) => {
-				const newPath = await stat(`${filesPath}/${filePath}`)
-				const isDirectory = newPath.isDirectory() === true
-				if (isDirectory) {
-					return await getRecursiveFilePaths({
-						directoriesToIgnore,
-						failOnError,
-						filesPath: `${filesPath}/${filePath}`,
-						paths,
-					})
-				}
+	const newPaths: (string | string[])[] = await Promise.all(
+		filesInFilesPath.map(async (filePath) => {
+			const newPath = await stat(`${filesPath}/${filePath}`)
+			const isDirectory = newPath.isDirectory() === true
+			if (isDirectory) {
+				return await getRecursiveFilePaths({
+					directoriesToIgnore,
+					failOnError,
+					filesPath: `${filesPath}/${filePath}`,
+					paths,
+				})
+			}
 
-				return join(`${filesPath}/${filePath}`)
-			}),
-		)),
-	].flat(100)
+			return join(`${filesPath}/${filePath}`)
+		}),
+	)
 
-	return [...new Set([...paths, ...newPaths])]
+	return [...new Set([...paths, ...newPaths].flat(100))]
 }
 
 /**
  * Gets version text.
  *
  * @since  3.0.0
- * @return {Promise<string>} Release Bump version.
+ * @param  {ProcessEnv} env process.env.
+ * @return {string}         Release Bump version.
  */
-export async function getVersionText(): Promise<string> {
-	return process.env.RELEASE_BUMP_VERSION
-		? 'v' + process.env.RELEASE_BUMP_VERSION
+export function getVersionText(env: ProcessEnv): string {
+	return env?.RELEASE_BUMP_VERSION
+		? 'v' + env.RELEASE_BUMP_VERSION
 		: 'no version found'
 }
 
