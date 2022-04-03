@@ -14,7 +14,7 @@ import {
 	)
 
 	if (help === true) return console.info(getHelpText(availableArgs))
-	if (version === true) return console.info(await getVersionText())
+	if (version === true) return console.info(getVersionText(process.env))
 
 	await releaseBump(options)
 })()
