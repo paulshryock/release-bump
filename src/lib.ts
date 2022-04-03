@@ -303,7 +303,7 @@ export function getHelpText(availableArgs: CliArgument[]): string {
 }
 
 /**
- * Gets all file paths in a directory recursively.
+ * Gets all unique file paths in a directory recursively.
  *
  * @since  3.0.0
  * @param  {GetRecursiveFilePathsOptions} options Options.
@@ -359,7 +359,7 @@ export async function getRecursiveFilePaths(
 		)
 	).flat()
 
-	return [...paths, ...newPaths]
+	return [...new Set([...paths, ...newPaths])]
 }
 
 /**
