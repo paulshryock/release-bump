@@ -340,8 +340,8 @@ export async function getRecursiveFilePaths(
 	}
 
 	/** New paths. */
-	const newPaths: string[] = (
-		await Promise.all(
+	const newPaths: string[] = [
+		...(await Promise.all(
 			filesInFilesPath.map(async (filePath) => {
 				const newPath = await stat(`${filesPath}/${filePath}`)
 				const isDirectory = newPath.isDirectory() === true
@@ -356,8 +356,8 @@ export async function getRecursiveFilePaths(
 
 				return join(`${filesPath}/${filePath}`)
 			}),
-		)
-	).flat()
+		)),
+	].flat(100)
 
 	return [...new Set([...paths, ...newPaths])]
 }
