@@ -13,10 +13,8 @@ const __dirname = dirname(__filename)
 	)
 
 	/** Process global. */
-	const proc = JSON.stringify({
-		env: {
-			RELEASE_BUMP_VERSION: pkg.version,
-		},
+	const env = JSON.stringify({
+		RELEASE_BUMP_VERSION: pkg.version,
 	})
 
 	/** Module formats. */
@@ -38,7 +36,7 @@ const __dirname = dirname(__filename)
 
 					await $`esbuild ${resolve(__dirname, '..', 'src', `${file}.ts`)} \
 						--bundle \
-						--define:process=${proc} \
+						--define:process.env=${env} \
 						--format=${moduleFormat.name} \
 						--minify \
 						--outfile=${resolve(
