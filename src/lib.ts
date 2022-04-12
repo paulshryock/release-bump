@@ -1,9 +1,8 @@
 import { ReleaseBumpOptions } from './index.js'
-import { readFileSync } from 'node:fs'
+import { Console } from 'node:console'
+import { createWriteStream, readFileSync } from 'node:fs'
 import { readdir, stat } from 'node:fs/promises'
 import { join } from 'node:path'
-
-// todo: Implement custom logger.
 
 /** CLI argument. */
 interface CliArgument {
@@ -50,6 +49,12 @@ export interface GetRecursiveFilePathsOptions {
 	paths: string[]
 	/** Directories to ignore. */
 	directoriesToIgnore: string[]
+}
+
+/** Logger options. */
+interface LoggerOptions {
+	/** Logs to /dev/null if quiet is true. */
+	quiet: boolean
 }
 
 /** Package repository. */
@@ -269,10 +274,11 @@ export async function formatText(
 		(repository !== '' ? `(${releaseUrl})` : '') +
 		(date ? ` - ${date}` : '')
 
+	/** Logger. */
+	const logger = Logger({ quiet })
+
 	if (unformatted.includes(header)) {
-		if (quiet !== true) {
-			console.info('changelog is already formatted')
-		}
+		logger.info('changelog is already formatted')
 		return unformatted
 	}
 
@@ -400,6 +406,24 @@ export function getVersionText(env: ProcessEnv): string {
 }
 
 /**
+ * Returns a Console object which either writes to the console or /dev/null.
+ *
+ * @since  unreleased
+ * @param  {LoggerOptions} options Logger options.
+ * @return {Console}               Console object.
+ */
+export function Logger({ quiet }: LoggerOptions): Console {
+	if (quiet === true) {
+		return new Console({
+			stdout: createWriteStream('/dev/null'),
+			stderr: createWriteStream('/dev/null'),
+		})
+	} else {
+		return console
+	}
+}
+
+/**
  * Parses CLI options from arguments.
  *
  * @since  3.0.0
@@ -481,12 +505,18 @@ export function parseSettingsFromOptions(
 	/** Parsed package.json content. */
 	let pkg = { repository: '', version: '0.0.0' }
 
+	/** Quiet default value. */
+	const quietDefault = process.env.NODE_ENV === 'test' || false
+
+	/** Logger. */
+	const logger = Logger({
+		quiet: options.quiet ?? quietDefault,
+	})
+
 	try {
 		pkg = JSON.parse(readFileSync('package.json', 'utf8'))
 	} catch (error: any) {
-		if (process.env.NODE_ENV !== 'test' && options.quiet !== true) {
-			console.warn('could not read package.json')
-		}
+		logger.warn('could not read package.json')
 	}
 
 	/** Directories to ignore. */
@@ -508,7 +538,7 @@ export function parseSettingsFromOptions(
 		filesPath: '.',
 		ignore,
 		prefix: false,
-		quiet: process.env.NODE_ENV === 'test' || false,
+		quiet: quietDefault,
 		release: pkg.version,
 		repository: formatRepositoryUrl(pkg.repository),
 	}

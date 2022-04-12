@@ -3,6 +3,7 @@ import {
 	formatText,
 	FormatTextOptions,
 	getRecursiveFilePaths,
+	Logger,
 	parseSettingsFromOptions,
 } from './lib.js'
 import { readFile, writeFile } from 'node:fs/promises'
@@ -38,7 +39,7 @@ export interface ReleaseBumpOptions {
  * @param  {ReleaseBumpOptions} options Release Bump options.
  * @return {string[]}                   Bumped files.
  * @throws {Error}                      On file system read/write error.
- * @todo                                Inject dependencies.
+ * @todo                                Mock file system (123-130).
  */
 export async function releaseBump(
 	options: ReleaseBumpOptions,
@@ -56,8 +57,11 @@ export async function releaseBump(
 		repository,
 	} = parseSettingsFromOptions(options)
 
+	/** Logger. */
+	const logger = Logger({ quiet })
+
 	/** Is dry run. */
-	const isDryRun = process.env.NODE_ENV === 'test' || dryRun === true
+	const isDryRun = dryRun === true
 
 	/** Directory paths to ignore. */
 	const directoriesToIgnore: string[] = ignore
@@ -93,7 +97,7 @@ export async function releaseBump(
 					process.exitCode = 1
 					throw error
 				} else {
-					if (quiet !== true) console.warn(`could not read ${filePath}`)
+					logger.warn(`could not read ${filePath}`)
 				}
 			}
 
@@ -115,20 +119,22 @@ export async function releaseBump(
 			if (isDryRun === true) return
 
 			try {
-				await writeFile(filePath, formatted, 'utf8')
+				if (process.env.NODE_ENV !== 'test') {
+					await writeFile(filePath, formatted, 'utf8')
+				}
 			} catch (error: any) {
 				if (failOnError) {
 					process.exitCode = 1
 					throw error
 				} else {
-					if (quiet !== true) console.warn(`could not write ${filePath}`)
+					logger.warn(`could not write ${filePath}`, error)
 				}
 			}
 		}),
 	)
 
-	if (bumpedFiles.length > 0 && quiet !== true) {
-		console.info(
+	if (bumpedFiles.length > 0) {
+		logger.info(
 			(isDryRun ? 'would have ' : '') + `bumped ${bumpedFiles.join(', ')}`,
 		)
 	}
