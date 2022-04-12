@@ -33,13 +33,15 @@ export interface ReleaseBumpOptions {
 }
 
 /**
- * Release Bump.
+ * Bumps Changelog and docblock versions for a code release.
+ *
+ * Use `unreleased` in your Changelog and docblock comments, and Release Bump
+ * will automatically bump it to the correct release version.
  *
  * @since  3.0.0
  * @param  {ReleaseBumpOptions} options Release Bump options.
  * @return {string[]}                   Bumped files.
  * @throws {Error}                      On file system read/write error.
- * @todo                                Mock file system (123-130).
  */
 export async function releaseBump(
 	options: ReleaseBumpOptions,
@@ -59,9 +61,6 @@ export async function releaseBump(
 
 	/** Logger. */
 	const logger = Logger({ quiet })
-
-	/** Is dry run. */
-	const isDryRun = dryRun === true
 
 	/** Directory paths to ignore. */
 	const directoriesToIgnore: string[] = ignore
@@ -116,18 +115,16 @@ export async function releaseBump(
 			if (unformatted === formatted) return
 
 			bumpedFiles.push(filePath)
-			if (isDryRun === true) return
-
-			try {
-				if (process.env.NODE_ENV !== 'test') {
+			if (!dryRun) {
+				try {
 					await writeFile(filePath, formatted, 'utf8')
-				}
-			} catch (error: any) {
-				if (failOnError) {
-					process.exitCode = 1
-					throw error
-				} else {
-					logger.warn(`could not write ${filePath}`, error)
+				} catch (error: any) {
+					if (failOnError) {
+						process.exitCode = 1
+						throw error
+					} else {
+						logger.warn(`could not write ${filePath}`, error)
+					}
 				}
 			}
 		}),
@@ -135,9 +132,9 @@ export async function releaseBump(
 
 	if (bumpedFiles.length > 0) {
 		logger.info(
-			(isDryRun ? 'would have ' : '') + `bumped ${bumpedFiles.join(', ')}`,
+			(dryRun ? 'would have ' : '') + `bumped ${bumpedFiles.join(', ')}`,
 		)
 	}
 
-	return dryRun ? [] : bumpedFiles
+	return bumpedFiles
 }

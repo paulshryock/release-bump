@@ -5,10 +5,10 @@ module.exports = {
 	collectCoverageFrom: ['src/**', '!src/cli.ts'],
 	coverageThreshold: {
 		global: {
-			statements: 95,
-			branches: 83,
+			statements: 96,
+			branches: 87,
 			functions: 100,
-			lines: 95,
+			lines: 96,
 		},
 	},
 	extensionsToTreatAsEsm: ['.ts', '.tsx'],

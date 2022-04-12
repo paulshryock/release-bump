@@ -1,6 +1,8 @@
 # Release Bump
 
-Handle version bump tasks for a code release. Use `unreleased` in your Changelog and docblock comments, and Release Bump will automatically bump it to the correct release version.
+Bumps Changelog and docblock versions for a code release.
+
+Use `unreleased` in your Changelog and docblock comments, and Release Bump will automatically bump it to the correct release version.
 
 **This package writes to your file system.**
 
