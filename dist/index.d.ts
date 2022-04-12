@@ -22,12 +22,14 @@ export interface ReleaseBumpOptions {
     repository?: string;
 }
 /**
- * Release Bump.
+ * Bumps Changelog and docblock versions for a code release.
+ *
+ * Use `unreleased` in your Changelog and docblock comments, and Release Bump
+ * will automatically bump it to the correct release version.
  *
  * @since  3.0.0
  * @param  {ReleaseBumpOptions} options Release Bump options.
  * @return {string[]}                   Bumped files.
  * @throws {Error}                      On file system read/write error.
- * @todo                                Mock file system (123-130).
  */
 export declare function releaseBump(options: ReleaseBumpOptions): Promise<string[]>;
