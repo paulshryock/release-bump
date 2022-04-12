@@ -8,7 +8,6 @@ import {
 	getRecursiveFilePaths,
 	GetRecursiveFilePathsOptions,
 	getVersionText,
-	Logger,
 	parseOptionsFromArgs,
 } from '../src/lib.js'
 import { basename, extname, resolve } from 'node:path'
@@ -243,38 +242,6 @@ describe('formatText', () => {
 				}
 				const actual = await formatText(unformatted, options)
 				expect(actual).toBe(unformatted)
-			})
-
-			describe('without quiet', () => {
-				test('logs to the console', async () => {
-					console.info = jest.fn()
-					const quiet = false
-					const loggerSpy = jest.spyOn(Logger({ quiet }), 'info')
-					const file = 'CHANGELOG.md'
-					const filename = basename(file, extname(file))
-					const unformatted = await readFile(
-						resolve(
-							__dirname,
-							'fixtures',
-							'changelog',
-							file.replace(filename, `${filename}-1-after`),
-						),
-						'utf8',
-					)
-					const options: FormatTextOptions = {
-						date: '2022-03-11',
-						isChangelog: true,
-						prefix: false,
-						quiet: false,
-						release: '3.0.0',
-						repository: 'https://github.com/org/repo',
-					}
-					await formatText(unformatted, options)
-					expect(loggerSpy).toHaveBeenCalledTimes(1)
-					expect(loggerSpy).toHaveBeenCalledWith(
-						'changelog is already formatted',
-					)
-				})
 			})
 		})
 	})
