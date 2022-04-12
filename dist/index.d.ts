@@ -28,6 +28,6 @@ export interface ReleaseBumpOptions {
  * @param  {ReleaseBumpOptions} options Release Bump options.
  * @return {string[]}                   Bumped files.
  * @throws {Error}                      On file system read/write error.
- * @todo                                Inject dependencies.
+ * @todo                                Mock file system (123-130).
  */
 export declare function releaseBump(options: ReleaseBumpOptions): Promise<string[]>;
