@@ -360,15 +360,12 @@ export async function getRecursiveFilePaths(
 	try {
 		filesInFilesPath = await readdir(filesPath)
 	} catch (error: any) {
-		if (error.code !== 'ENOENT') {
-			if (failOnError) {
-				process.exitCode = 1
-				throw error
-			} else {
-				console.warn(`could not read files in ${filesPath}`)
-			}
+		if (failOnError) {
+			process.exitCode = 1
+			throw error
+		} else {
+			filesInFilesPath = []
 		}
-		filesInFilesPath = []
 	}
 
 	/** New paths. */

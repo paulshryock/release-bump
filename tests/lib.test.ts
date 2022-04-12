@@ -407,6 +407,38 @@ describe('getRecursiveFilePaths', () => {
 			const expected = ['tests/index.test.ts', 'tests/lib.test.ts']
 			expect(actual).toEqual(expect.arrayContaining(expected))
 		})
+
+		describe('with non-existant filesPath', () => {
+			test('gets an empty array', async () => {
+				/** getRecursiveFilePaths options. */
+				const options: GetRecursiveFilePathsOptions = {
+					directoriesToIgnore: [],
+					failOnError: false,
+					filesPath: 'path/to/nothing',
+					paths: [],
+				}
+				const actual = await getRecursiveFilePaths(options)
+				const expected: string[] = []
+				expect(actual).toStrictEqual(expected)
+			})
+
+			describe('with fail on error', () => {
+				test('throws ENOENT', async () => {
+					/** getRecursiveFilePaths options. */
+					const options: GetRecursiveFilePathsOptions = {
+						directoriesToIgnore: [],
+						failOnError: true,
+						filesPath: 'path/to/nothing',
+						paths: [],
+					}
+					try {
+						await getRecursiveFilePaths(options)
+					} catch (error: any) {
+						expect(error.code).toBe('ENOENT')
+					}
+				})
+			})
+		})
 	})
 })
 
