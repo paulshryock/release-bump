@@ -241,7 +241,7 @@ export async function formatText(
 	unformatted: string,
 	options: FormatTextOptions,
 ): Promise<string> {
-	const { date, isChangelog, prefix, quiet, release, repository } = options
+	const { date, isChangelog, prefix, release, repository } = options
 
 	/** Is pre-release.  */
 	const isPrerelease = !/^\d+\.\d+\.\d+$/.test(release)
@@ -274,13 +274,7 @@ export async function formatText(
 		(repository !== '' ? `(${releaseUrl})` : '') +
 		(date ? ` - ${date}` : '')
 
-	/** Logger. */
-	const logger = Logger({ quiet })
-
-	if (unformatted.includes(header)) {
-		logger.info('changelog is already formatted')
-		return unformatted
-	}
+	if (unformatted.includes(header)) return unformatted
 
 	/** Compare URL. */
 	const compareUrl = `(${repository}/${
@@ -500,20 +494,15 @@ export function parseSettingsFromOptions(
 	options: ReleaseBumpOptions,
 ): ReleaseBumpSettings {
 	/** Parsed package.json content. */
-	let pkg = { repository: '', version: '0.0.0' }
+	let pkg
 
 	/** Quiet default value. */
 	const quietDefault = process.env.NODE_ENV === 'test' || false
 
-	/** Logger. */
-	const logger = Logger({
-		quiet: options.quiet ?? quietDefault,
-	})
-
 	try {
 		pkg = JSON.parse(readFileSync('package.json', 'utf8'))
 	} catch (error: any) {
-		logger.warn('could not read package.json')
+		pkg = { repository: '', version: '0.0.0' }
 	}
 
 	/** Directories to ignore. */
