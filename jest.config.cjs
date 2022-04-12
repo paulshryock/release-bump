@@ -1,13 +1,14 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
+	bail: true,
 	collectCoverage: true,
 	collectCoverageFrom: ['src/**', '!src/cli.ts'],
 	coverageThreshold: {
 		global: {
-			branches: 71,
+			statements: 95,
+			branches: 83,
 			functions: 100,
-			lines: 87,
-			statements: 86,
+			lines: 95,
 		},
 	},
 	extensionsToTreatAsEsm: ['.ts', '.tsx'],
