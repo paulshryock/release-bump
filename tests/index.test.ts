@@ -48,6 +48,21 @@ describe('releaseBump', () => {
 			const expected: string[] = []
 			expect(actual).toStrictEqual(expected)
 		})
+
+		describe('with fail on error', () => {
+			test('throws ENOENT', async () => {
+				try {
+					await releaseBump({
+						changelogPath: 'not-a-real-CHANGELOG.md',
+						failOnError: true,
+						filesPath: '.',
+						release: '3.0.0',
+					})
+				} catch (error: any) {
+					expect(error.code).toBe('ENOENT')
+				}
+			})
+		})
 	})
 })
 
