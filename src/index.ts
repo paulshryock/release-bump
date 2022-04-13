@@ -57,7 +57,7 @@ export async function releaseBump(
 		quiet,
 		release,
 		repository,
-	} = parseSettingsFromOptions(options)
+	} = await parseSettingsFromOptions(options)
 
 	/** Logger. */
 	const logger = Logger({ quiet })
