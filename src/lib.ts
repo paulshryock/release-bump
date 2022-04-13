@@ -1,7 +1,7 @@
 import { ReleaseBumpOptions } from './index.js'
 import { Console } from 'node:console'
-import { createWriteStream, readFileSync } from 'node:fs'
-import { readdir, stat } from 'node:fs/promises'
+import { createWriteStream } from 'node:fs'
+import { readdir, readFile, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 
 /** CLI argument. */
@@ -487,12 +487,12 @@ export function parseOptionsFromArgs(
  * Parses settings from options.
  *
  * @since  3.0.0
- * @param  {ReleaseBumpOptions}  options Release Bump options.
- * @return {ReleaseBumpSettings}         Release Bump settings.
+ * @param  {ReleaseBumpOptions}           options Release Bump options.
+ * @return {Promise<ReleaseBumpSettings>}         Release Bump settings.
  */
-export function parseSettingsFromOptions(
+export async function parseSettingsFromOptions(
 	options?: ReleaseBumpOptions,
-): ReleaseBumpSettings {
+): Promise<ReleaseBumpSettings> {
 	/** Parsed package.json content. */
 	let pkg
 
@@ -500,7 +500,7 @@ export function parseSettingsFromOptions(
 	const quietDefault = process.env.NODE_ENV === 'test' || false
 
 	try {
-		pkg = JSON.parse(readFileSync('package.json', 'utf8'))
+		pkg = JSON.parse(await readFile('package.json', 'utf8'))
 	} catch (error: any) {
 		pkg = { repository: '', version: '0.0.0' }
 	}
