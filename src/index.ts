@@ -44,7 +44,7 @@ export interface ReleaseBumpOptions {
  * @throws {Error}                      On file system read/write error.
  */
 export async function releaseBump(
-	options: ReleaseBumpOptions,
+	options?: ReleaseBumpOptions,
 ): Promise<string[]> {
 	const {
 		changelogPath,
