@@ -97,4 +97,12 @@ describe('releaseBump', () => {
 			})
 		})
 	})
+
+	describe('with no options', () => {
+		test('bumps nothing', async () => {
+			const actual = await releaseBump()
+			const expected: string[] = []
+			expect(actual).toStrictEqual(expected)
+		})
+	})
 })

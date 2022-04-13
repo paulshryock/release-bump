@@ -491,7 +491,7 @@ export function parseOptionsFromArgs(
  * @return {ReleaseBumpSettings}         Release Bump settings.
  */
 export function parseSettingsFromOptions(
-	options: ReleaseBumpOptions,
+	options?: ReleaseBumpOptions,
 ): ReleaseBumpSettings {
 	/** Parsed package.json content. */
 	let pkg
