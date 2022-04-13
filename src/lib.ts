@@ -73,6 +73,7 @@ export interface ProcessEnv {
 /** Release Bump settings. */
 interface ReleaseBumpSettings extends ReleaseBumpOptions {
 	changelogPath: string
+	configFilePath: string
 	date: string
 	dryRun: boolean
 	failOnError: boolean
@@ -315,6 +316,79 @@ export async function formatText(
 	)
 }
 
+/** Imported config. */
+interface ImportedConfig extends ReleaseBumpOptions {
+	default?: ReleaseBumpOptions | (() => ReleaseBumpOptions)
+}
+
+/**
+ * Gets config from file.
+ *
+ * JavaScript config files may export ReleaseBumpOptions or a function which
+ * returns ReleaseBumpOptions.
+ *
+ * @since  unreleased
+ * @param  {string}                      configFilePath (opt.) Config file path.
+ * @return {Promise<ReleaseBumpOptions>} Config.
+ */
+export async function getConfigFromFile(
+	configFilePath?: string,
+): Promise<ReleaseBumpOptions> {
+	const config = configFilePath ?? 'release-bump.config.js'
+	const extensions = ['js', 'mjs', 'cjs', 'json']
+	const extension =
+		extensions.find(
+			(ext) => config.indexOf(`.${ext}`) === config.length - `.${ext}`.length,
+		) ?? ''
+
+	switch (extension) {
+		case 'js':
+		case 'mjs':
+		case 'cjs': {
+			const imported: ImportedConfig | (() => ImportedConfig) = await import(
+				config
+			).catch(() => ({}))
+
+			if (typeof imported === 'function') {
+				const importedOutput = await imported()
+				if (
+					typeof importedOutput !== 'object' ||
+					Object.keys(importedOutput).length < 1
+				) {
+					break
+				}
+				return importedOutput
+			} else if (typeof imported.default === 'function') {
+				const importedDefaultOutput = await imported.default()
+				if (
+					typeof importedDefaultOutput !== 'object' ||
+					Object.keys(importedDefaultOutput).length < 1
+				) {
+					break
+				}
+				return importedDefaultOutput
+			}
+
+			if (Object.keys(imported).length > 0) {
+				return imported.default ?? imported
+			}
+
+			break
+		}
+		case 'json':
+			try {
+				return JSON.parse(await readFile(config, 'utf8'))
+			} catch (error: any) {
+				// Do nothing.
+			}
+			break
+		default:
+			break
+	}
+
+	return {}
+}
+
 /**
  * Gets help text.
  *
@@ -533,6 +607,7 @@ export async function parseSettingsFromOptions(
 	/** Release Bump defaults. */
 	const defaults: ReleaseBumpSettings = {
 		changelogPath: 'CHANGELOG.md',
+		configFilePath: 'release-bump.config.js',
 		date: new Date().toISOString().split('T')?.[0],
 		dryRun: false,
 		failOnError: false,

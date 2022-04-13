@@ -2,6 +2,7 @@ import {
 	filterFilePaths,
 	formatText,
 	FormatTextOptions,
+	getConfigFromFile,
 	getRecursiveFilePaths,
 	Logger,
 	parseSettingsFromOptions,
@@ -12,6 +13,8 @@ import { readFile, writeFile } from 'node:fs/promises'
 export interface ReleaseBumpOptions {
 	/** Path to changelog. */
 	changelogPath?: string
+	/** Path to config file. */
+	configFilePath?: string
 	/** Release date. */
 	date?: string
 	/** Dry run. */
@@ -46,6 +49,10 @@ export interface ReleaseBumpOptions {
 export async function releaseBump(
 	options?: ReleaseBumpOptions,
 ): Promise<string[]> {
+	/** Settings. */
+	const settings = await parseSettingsFromOptions(options)
+	const config = await getConfigFromFile(settings.configFilePath)
+
 	const {
 		changelogPath,
 		date,
@@ -57,7 +64,10 @@ export async function releaseBump(
 		quiet,
 		release,
 		repository,
-	} = await parseSettingsFromOptions(options)
+	} = {
+		...config,
+		...settings,
+	}
 
 	/** Logger. */
 	const logger = Logger({ quiet })
