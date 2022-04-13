@@ -8,6 +8,8 @@ import { join } from 'node:path'
 interface CliArgument {
 	/** Alias. */
 	alias?: string
+	/** Alternate names. */
+	alternates?: string[]
 	/** Description. */
 	description: string
 	/** Name. */
@@ -84,13 +86,19 @@ interface ReleaseBumpSettings extends ReleaseBumpOptions {
 
 /**
  * Available CLI arguments.
- *
- * @todo Convert camelCase to kebab-case.
  */
 export const availableArgs: CliArgument[] = [
 	{
+		alternates: ['changelog-path', 'changelog'],
 		description: 'Path to changelog.',
 		name: 'changelogPath',
+		type: 'string',
+	},
+	{
+		alias: 'c',
+		alternates: ['config-file-path', 'config'],
+		description: 'Path to config file',
+		name: 'configFilePath',
 		type: 'string',
 	},
 	{
@@ -100,17 +108,20 @@ export const availableArgs: CliArgument[] = [
 	},
 	{
 		alias: 'd',
+		alternates: ['dry-run', 'dry'],
 		description: 'Dry run.',
 		name: 'dryRun',
 		type: 'boolean',
 	},
 	{
 		alias: 'e',
+		alternates: ['fail-on-error', 'fail'],
 		description: 'Fail on error.',
 		name: 'failOnError',
 		type: 'boolean',
 	},
 	{
+		alternates: ['files-path', 'files'],
 		description: 'Path to directory of files to bump.',
 		name: 'filesPath',
 		type: 'string',
@@ -144,6 +155,7 @@ export const availableArgs: CliArgument[] = [
 		type: 'string',
 	},
 	{
+		alternates: ['repo'],
 		description: 'Remote git repository URL.',
 		name: 'repository',
 		type: 'string',
@@ -433,19 +445,22 @@ export function parseOptionsFromArgs(
 			// Argument.
 			if (current.indexOf('--') === 0) {
 				const [key, value] = current.substr(2).split('=')
-				const arg = availableArgs.find(
-					(availableArg) => availableArg.name === key,
-				)
+				const arg = availableArgs.find((availableArg) => {
+					return (
+						availableArg.name === key ||
+						(availableArg?.alternates ?? []).includes(key)
+					)
+				})
 				if (arg) {
 					switch (arg.type) {
 						case 'boolean':
-							modified[key] = true
+							modified[arg.name] = true
 							break
 						case 'string[]':
-							modified[key] = value?.split(',')
+							modified[arg.name] = value?.split(',')
 							break
 						default:
-							modified[key] = value
+							modified[arg.name] = value
 							break
 					}
 				}
