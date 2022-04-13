@@ -2,6 +2,8 @@
 export interface ReleaseBumpOptions {
     /** Path to changelog. */
     changelogPath?: string;
+    /** Path to config file. */
+    configFilePath?: string;
     /** Release date. */
     date?: string;
     /** Dry run. */
@@ -32,4 +34,4 @@ export interface ReleaseBumpOptions {
  * @return {string[]}                   Bumped files.
  * @throws {Error}                      On file system read/write error.
  */
-export declare function releaseBump(options: ReleaseBumpOptions): Promise<string[]>;
+export declare function releaseBump(options?: ReleaseBumpOptions): Promise<string[]>;
