@@ -19,7 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/paulshryock/release-bump.git"
   },
-  "license": "Hippocratic 2.1",
+  "license": "MIT",
   "author": "Paul Shryock (https://github.com/paulshryock)",
   "type": "module",
   "main": "./dist/index.cjs",

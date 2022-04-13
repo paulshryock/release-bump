@@ -158,7 +158,7 @@ Please see the [contributing guidelines](CONTRIBUTING.md).
 
 ## License
 
-[Hippocratic 2.1](LICENSE)
+[MIT](LICENSE)
 
 ## Contact
 
