@@ -73,7 +73,7 @@ export interface ProcessEnv {
 /** Release Bump settings. */
 interface ReleaseBumpSettings extends ReleaseBumpOptions {
 	changelogPath: string
-	configFilePath: string
+	configPath: string
 	date: string
 	dryRun: boolean
 	failOnError: boolean
@@ -97,9 +97,9 @@ export const availableArgs: CliArgument[] = [
 	},
 	{
 		alias: 'c',
-		alternates: ['config-file-path', 'config'],
+		alternates: ['config-path', 'config'],
 		description: 'Path to config file',
-		name: 'configFilePath',
+		name: 'configPath',
 		type: 'string',
 	},
 	{
@@ -328,13 +328,13 @@ interface ImportedConfig extends ReleaseBumpOptions {
  * returns ReleaseBumpOptions.
  *
  * @since  unreleased
- * @param  {string}                      configFilePath (opt.) Config file path.
+ * @param  {string}                      configPath Path to config file.
  * @return {Promise<ReleaseBumpOptions>} Config.
  */
 export async function getConfigFromFile(
-	configFilePath?: string,
+	configPath: string,
 ): Promise<ReleaseBumpOptions> {
-	const config = configFilePath ?? 'release-bump.config.js'
+	const config = configPath ?? ''
 	const extensions = ['js', 'mjs', 'cjs', 'json']
 	const extension =
 		extensions.find(
@@ -607,7 +607,7 @@ export async function parseSettingsFromOptions(
 	/** Release Bump defaults. */
 	const defaults: ReleaseBumpSettings = {
 		changelogPath: 'CHANGELOG.md',
-		configFilePath: 'release-bump.config.js',
+		configPath: 'release-bump.config.js',
 		date: new Date().toISOString().split('T')?.[0],
 		dryRun: false,
 		failOnError: false,
