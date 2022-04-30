@@ -14,7 +14,7 @@ export interface ReleaseBumpOptions {
 	/** Path to changelog. */
 	changelogPath?: string
 	/** Path to config file. */
-	configFilePath?: string
+	configPath?: string
 	/** Release date. */
 	date?: string
 	/** Dry run. */
@@ -51,7 +51,7 @@ export async function releaseBump(
 ): Promise<string[]> {
 	/** Settings. */
 	const settings = await parseSettingsFromOptions(options)
-	const config = await getConfigFromFile(settings.configFilePath)
+	const config = await getConfigFromFile(settings.configPath)
 
 	const {
 		changelogPath,
