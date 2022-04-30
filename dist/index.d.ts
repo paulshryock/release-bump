@@ -3,7 +3,7 @@ export interface ReleaseBumpOptions {
     /** Path to changelog. */
     changelogPath?: string;
     /** Path to config file. */
-    configFilePath?: string;
+    configPath?: string;
     /** Release date. */
     date?: string;
     /** Dry run. */
