@@ -619,8 +619,12 @@ export async function parseSettingsFromOptions(
 		repository: formatRepositoryUrl(pkg.repository),
 	}
 
+	const config = await getConfigFromFile(
+		options?.configPath ?? defaults.configPath,
+	)
+
 	/** Release Bump settings. */
-	const settings = { ...defaults, ...options }
+	const settings = { ...defaults, ...config, ...options }
 
 	return settings
 }
