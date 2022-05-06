@@ -268,8 +268,8 @@ export async function formatText(
 
 	if (isChangelog === false) {
 		return unformatted.replace(
-			/@([Ss]ince|[Vv]ersion)(:?\s+)unreleased/g,
-			`@$1$2${version}`,
+			/(\* @?)([Ss]ince|[Vv]ersion)(:?\s+)unreleased/g,
+			`$1$2$3${version}`,
 		)
 	}
 
