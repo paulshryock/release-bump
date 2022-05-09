@@ -27,7 +27,7 @@ describe('filterFilePaths', () => {
 				filterFilePaths(
 					[
 						...filePaths,
-						'tests/fixtures/index.ts',
+						'tests/fixtures/docblock/index.ts',
 						'node_modules/some-module/index.ts',
 					],
 					['node_modules', 'tests/fixtures'],
@@ -251,7 +251,7 @@ describe('formatText', () => {
 			const file = 'script.ts'
 			const filename = basename(file, extname(file))
 			const unformatted = await readFile(
-				resolve(__dirname, 'fixtures', file),
+				resolve(__dirname, 'fixtures', 'docblock', file),
 				'utf8',
 			)
 			const options: FormatTextOptions = {
@@ -267,6 +267,7 @@ describe('formatText', () => {
 				resolve(
 					__dirname,
 					'fixtures',
+					'docblock',
 					file.replace(filename, `${filename}-after`),
 				),
 				'utf8',
@@ -280,7 +281,7 @@ describe('formatText', () => {
 			const file = 'style.scss'
 			const filename = basename(file, extname(file))
 			const unformatted = await readFile(
-				resolve(__dirname, 'fixtures', file),
+				resolve(__dirname, 'fixtures', 'docblock', file),
 				'utf8',
 			)
 			const options: FormatTextOptions = {
@@ -296,18 +297,77 @@ describe('formatText', () => {
 				resolve(
 					__dirname,
 					'fixtures',
+					'docblock',
 					file.replace(filename, `${filename}-after`),
 				),
 				'utf8',
 			)
 			expect(actual).toBe(expected)
 		})
+
+		describe('in a WordPress multiline comment', () => {
+			test('formats theme', async () => {
+				const file = 'style.css'
+				const filename = basename(file, extname(file))
+				const unformatted = await readFile(
+					resolve(__dirname, 'fixtures', 'wordpress', file),
+					'utf8',
+				)
+				const options: FormatTextOptions = {
+					date: '2022-03-11',
+					isChangelog: false,
+					prefix: false,
+					quiet: true,
+					release: '3.0.0',
+					repository: 'https://github.com/org/repo',
+				}
+				const actual = await formatText(unformatted, options)
+				const expected = await readFile(
+					resolve(
+						__dirname,
+						'fixtures',
+						'wordpress',
+						file.replace(filename, `${filename}-after`),
+					),
+					'utf8',
+				)
+				expect(actual).toBe(expected)
+			})
+
+			test('formats plugin', async () => {
+				const file = 'wordpress.php'
+				const filename = basename(file, extname(file))
+				const unformatted = await readFile(
+					resolve(__dirname, 'fixtures', 'wordpress', file),
+					'utf8',
+				)
+				const options: FormatTextOptions = {
+					date: '2022-03-11',
+					isChangelog: false,
+					prefix: false,
+					quiet: true,
+					release: '3.0.0',
+					repository: 'https://github.com/org/repo',
+				}
+				const actual = await formatText(unformatted, options)
+				const expected = await readFile(
+					resolve(
+						__dirname,
+						'fixtures',
+						'wordpress',
+						file.replace(filename, `${filename}-after`),
+					),
+					'utf8',
+				)
+				expect(actual).toBe(expected)
+			})
+		})
 	})
 
 	describe('with a pre-release version', () => {
 		test('does not format text', async () => {
 			const unformatted = await readFile(
-				resolve(__dirname, 'fixtures', 'script.ts'),
+				resolve(__dirname, 'fixtures', 'docblock', 'script.ts'),
 				'utf8',
 			)
 			const options: FormatTextOptions = {

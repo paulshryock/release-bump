@@ -14,8 +14,8 @@ describe('releaseBump', () => {
 			})
 			const expected: string[] = [
 				'tests/fixtures/changelog/CHANGELOG.md',
-				'tests/fixtures/script.ts',
-				'tests/fixtures/style.scss',
+				'tests/fixtures/docblock/script.ts',
+				'tests/fixtures/docblock/style.scss',
 			]
 			expect(actual).toEqual(expect.arrayContaining(expected))
 		})
@@ -59,8 +59,8 @@ describe('releaseBump', () => {
 				})
 				const expected: string[] = [
 					'tests/temp/changelog/CHANGELOG.md',
-					'tests/temp/script.ts',
-					'tests/temp/style.scss',
+					'tests/temp/docblock/script.ts',
+					'tests/temp/docblock/style.scss',
 				]
 				expected.forEach((file) => {
 					expect(async () => await stat(file)).not.toThrow()

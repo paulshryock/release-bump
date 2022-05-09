@@ -257,7 +257,7 @@ export async function formatText(
 	const { date, isChangelog, prefix, release, repository } = options
 
 	/** Is pre-release.  */
-	const isPrerelease = !/^\d+\.\d+\.\d+$/.test(release)
+	const isPrerelease = /^\d+\.\d+\.\d+$/.test(release) === false
 
 	if (isPrerelease) {
 		return unformatted
@@ -267,9 +267,18 @@ export async function formatText(
 	const version = /\d+\.\d+\.\d+/.exec(release)?.[0] ?? release
 
 	if (isChangelog === false) {
-		return unformatted.replace(
-			/(\* @?)([Ss]ince|[Vv]ersion)(:?\s+)unreleased/g,
-			`$1$2$3${version}`,
+		return (
+			unformatted
+				// Docblock style.
+				.replace(
+					/(\* @?)([Ss]ince|[Vv]ersion)(:?\s+)unreleased/g,
+					`$1$2$3${version}`,
+				)
+				// WordPress multiline comment style.
+				.replace(
+					/(\/\*+\n)((.+\n)+?)?(^(( |\t)*\**( |\t)*)?([Tt]heme|[Pp]lugin) [Nn]ame.+\n)((.+\n)+?)(^(( |\t)*\**( |\t)*)?([Ss]ince|[Vv]ersion)(:?\s+)(\d+\.\d+(\.\d+)?)\n)((.+\n)+?)(\s*\*+\/)/m,
+					`$1$2$4$9$12$15$16${version}\n$19$21`,
+				)
 		)
 	}
 
