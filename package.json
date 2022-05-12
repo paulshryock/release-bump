@@ -1,6 +1,6 @@
 {
   "name": "release-bump",
-  "version": "3.0.0-alpha.53",
+  "version": "3.0.0-alpha.54",
   "private": false,
   "description": "Bumps Changelog and docblock versions for a code release.",
   "keywords": [
