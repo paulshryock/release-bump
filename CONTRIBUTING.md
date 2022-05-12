@@ -1,6 +1,7 @@
 # How to contribute
 
 - [Local environment](#markdown-header-local-environment)
+- [Dependencies](#markdown-header-dependencies)
 - [Git](#markdown-header-git)
   - [Branches](#markdown-header-branches)
   - [Commits](#markdown-header-commits)
@@ -16,6 +17,12 @@
 ## Local environment
 
 Follow the [quick start guide](../README.md#markdown-header-quick-start) to get a local development environment up and running.
+
+## Dependencies
+
+npm dependencies are pinned in both `package.json` and `package-lock.json`. [Renovate](https://app.renovatebot.com/dashboard#github/paulshryock/release-bump) will automatically submit PR's for dependency upgrades, and [Socket](https://socket.dev/) will automatically submit PR's for dependency vulnerability remediation.
+
+On each `git pull`, a husky hook will also notify of any new dependency upgrades available.
 
 ## Git
 
