@@ -1,13 +1,10 @@
 #!/bin/sh
 
 # Maybe install npm dependencies.
-NPM_MISSING=$([ ! -d "$(dirname $(dirname $(dirname "$0")))/node_modules" ])
-NPM_CHANGED=$(git diff --name-only HEAD@{1} HEAD | grep "^package-lock.json" > /dev/null 2>&1)
-
-if $NPM_MISSING || $NPM_CHANGED; then
-	if $NPM_MISSING; then
+if [ ! -d "$(dirname $(dirname $(dirname "$0")))/node_modules" ] || $(git diff --name-only HEAD@{1} HEAD | grep "^package-lock.json" > /dev/null 2>&1); then
+	if [ ! -d "$(dirname $(dirname $(dirname "$0")))/node_modules" ]; then
 		echo "📦 installing npm dependencies."
-	elif $NPM_CHANGED; then
+	elif $(git diff --name-only HEAD@{1} HEAD | grep "^package-lock.json" > /dev/null 2>&1); then
 		echo "📦 updating npm dependencies."
 	fi
 	npm ci
