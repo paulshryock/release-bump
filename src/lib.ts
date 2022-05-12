@@ -270,14 +270,11 @@ export async function formatText(
 		return (
 			unformatted
 				// Docblock style.
-				.replace(
-					/(\* @?)([Ss]ince|[Vv]ersion)(:?\s+)unreleased/g,
-					`$1$2$3${version}`,
-				)
+				.replace(/(\* @?)([Ss]ince)(:?\s+)[Uu]nreleased/g, `$1$2$3${version}`)
 				// WordPress multiline comment style.
 				.replace(
-					/(\/\*+\n)((.+\n)+?)?(^(( |\t)*\**( |\t)*)?([Tt]heme|[Pp]lugin) [Nn]ame.+\n)((.+\n)+?)(^(( |\t)*\**( |\t)*)?([Ss]ince|[Vv]ersion)(:?\s+)(\d+\.\d+(\.\d+)?)\n)((.+\n)+?)(\s*\*+\/)/m,
-					`$1$2$4$9$12$15$16${version}\n$19$21`,
+					/(\/\*+\n)((.+\n)+?)?(^(( |\t)*\**( |\t)*)?([Tt]heme|[Pp]lugin) [Nn]ame.+\n)((.+\n)+?)(^(( |\t)*\**( |\t)*@?)?([Vv]ersion)(:?\s+)((\d+\.\d+(\.\d+)?)|[Uu]nreleased)\n)((.+\n)+?)(\s*\*+\/)/m,
+					`$1$2$4$9$12$15$16${version}\n$20$22`,
 				)
 		)
 	}
@@ -313,7 +310,7 @@ export async function formatText(
 	return (
 		unformatted
 			// Bump unreleased version and add date.
-			.replace(/## \[Unreleased\](\(.*\))?/, header)
+			.replace(/## \[[Uu]nreleased\](\(.*\))?/, header)
 			// Remove empty changelog subheads.
 			.replace(/### (Added|Changed|Deprecated|Removed|Fixed|Security)\n\n/g, '')
 			// Remove last empty changelog subhead.
