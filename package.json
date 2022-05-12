@@ -29,7 +29,6 @@
     "release-bump": "./dist/cli.cjs"
   },
   "files": [
-    "/src",
     "/dist"
   ],
   "scripts": {
