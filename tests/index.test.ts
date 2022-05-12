@@ -16,6 +16,8 @@ describe('releaseBump', () => {
 				'tests/fixtures/changelog/CHANGELOG.md',
 				'tests/fixtures/docblock/script.ts',
 				'tests/fixtures/docblock/style.scss',
+				'tests/fixtures/wordpress/style.css',
+				'tests/fixtures/wordpress/wordpress.php',
 			]
 			expect(actual).toEqual(expect.arrayContaining(expected))
 		})
