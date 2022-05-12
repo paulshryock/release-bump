@@ -1,4 +1,4 @@
-name: CI
+name: Enforce code quality
 
 on:
   push:
@@ -14,14 +14,17 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        uses: actions/setup-node@v3.1.1
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Format and lint source code
+      - name: Setup Node
+        uses: actions/setup-node@v3.1.1
         with:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: package-lock.json
+
+      - name: Format and lint source code
         run: |
           npm ci
           npm run format
@@ -30,14 +33,17 @@ jobs:
   typecheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        uses: actions/setup-node@v3.1.1
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Run static analysis
+      - name: Setup Node
+        uses: actions/setup-node@v3.1.1
         with:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: package-lock.json
+
+      - name: Run static analysis
         run: |
           npm ci
           npm run typecheck
@@ -45,29 +51,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        uses: actions/setup-node@v3.1.1
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Run tests
+      - name: Setup Node
+        uses: actions/setup-node@v3.1.1
         with:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: package-lock.json
+
+      - name: Run tests
         run: |
           npm ci
           npm test
-
-  compile:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        uses: actions/setup-node@v3.1.1
-
-      - name: Compile source code
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-          cache-dependency-path: package-lock.json
-        run: |
-          npm ci
-          npm run compile
