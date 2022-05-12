@@ -8,8 +8,10 @@ Use `unreleased` in your Changelog and docblock comments, and Release Bump will 
 
 - ☝️ Only does one thing
 - 👌 Zero production dependencies
-- 🤏 API is <4kb, CLI is <6kb
+- 🤏 API is 5kb, CLI is 3kb
 - 🤙 Supports ESM and Common JS
+- 🤘 TypeScript types included
+- 🙌 No ads, no analytics, no tracking
 
 ## Table of contents
 
@@ -57,9 +59,9 @@ $ release-bump --help
 
 ### Prerequisites
 
-Node ^14, or Node ^8 with a polyfill.
+[Node](https://nodejs.org/en/download/package-manager/) ^14, or Node ^8 [with a polyfill](#node-8-support).
 
-See `engines.node` in `package.json` for required Node version in development.
+See `.nvmrc` for required Node version in development.
 
 ### Installation
 
