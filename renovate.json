@@ -1,5 +1,23 @@
 {
   "extends": [
-    "config:base"
-  ]
+    "config:base",
+    ":assignee(paulshryock)",
+    ":pinAllExceptPeerDependencies"
+  ],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "updateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": true
+    }
+  ],
+  "schedule": [
+    "after 10pm every weekday",
+    "before 6am every weekday",
+    "every weekend"
+  ],
+  "timezone": "America/New_York"
 }
