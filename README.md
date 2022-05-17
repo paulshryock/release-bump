@@ -8,7 +8,7 @@ Use `unreleased` in your Changelog and docblock comments, and Release Bump will 
 
 - ☝️ Only does one thing
 - 👌 Zero production dependencies
-- 🤏 API is 5kb, CLI is 3kb
+- 🤏 API is 7kb, CLI is 4kb
 - 🤙 Supports ESM and Common JS
 - 🤘 TypeScript types included
 - 🙌 No ads, no analytics, no tracking

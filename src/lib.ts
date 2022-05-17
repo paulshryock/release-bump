@@ -43,14 +43,14 @@ export interface FormatTextOptions {
 
 /** getRecursiveFilePaths options. */
 export interface GetRecursiveFilePathsOptions {
+	/** Directories to ignore. */
+	directoriesToIgnore: string[]
 	/** Fail on error. */
 	failOnError: boolean
 	/** Path to files. */
 	filesPath: string
 	/** File paths. */
 	paths: string[]
-	/** Directories to ignore. */
-	directoriesToIgnore: string[]
 }
 
 /** Logger options. */

@@ -8,11 +8,13 @@
   - [Pull requests](#markdown-header-pull-requests)
   - [Tags](#markdown-header-tags)
 - [Code quality](#markdown-header-code-quality)
-    - [During development](#markdown-header-during-development)
-    - [Skipping code quality checks](#markdown-header-skipping-code-quality-checks)
-- [Versions](#markdown-header-versions)
+  - [During development](#markdown-header-during-development)
+  - [Skipping code quality checks](#markdown-header-skipping-code-quality-checks)
 - [Releases](#markdown-header-releases)
-- [Deployments](#markdown-header-deployments)
+  - [Release tags](#markdown-header-release-tags)
+  - [Prerelease tags](#markdown-header-prerelease-tags)
+    - [Prerelease ID's](#markdown-header-prerelease-ids)
+  - [Publishing](#markdown-header-publishing)
 
 ## Local environment
 
@@ -84,36 +86,27 @@ If you need to save code which doesn't pass code quality checks, and `git stash`
 
 **You must run your code through code quality checks before pushing to remote and setting up a pull request.**
 
-## Versions
-
 ## Releases
 
-Code is released by pushing a release tag to the remote. This is not the same as a [deployment](#markdown-header-deployments).
+Code is released by pushing a release tag to the remote and publishing on npm.
 
-### Prerelease
+### Release tags
 
-Run `npm version <premajor|preminor|prepatch|prerelease> --preid=<prerelease-id>`.
+To create a major, minor, or patch release, use `npm version <major|minor|patch>` and `git push --tags`.
 
-#### Prerelease ID's
+#### Prerelease tags
 
-| ID        | Feature status                          | Bug status     | Testing status                            |
-| :---      | :---                                    | :---           | :---                                      |
-| `nightly` | May not have any complete features yet. | May have bugs. | Not ready for testing.                    |
-| `alpha`   | At least 1 feature is complete.         | May have bugs. | Ready for developer testing.              |
-| `beta`    | All features are complete.              | May have bugs. | Ready for QA testing.                     |
-| `rc`      | Release candidate.                      | Stable.        | Ready for user acceptance testing.        |
+To release code under a prerelease tag before a formal release is ready, use `npm version <premajor|preminor|prepatch|prerelease> --preid=<prerelease-id>` and `git push --tags`.
 
-### Release
+##### Prerelease ID's
 
-Run `npm version <major|minor|patch>`.
+| ID        | Feature status                          | Bug status     | Testing status                     |
+| :---      | :---                                    | :---           | :---                               |
+| `nightly` | May not have any complete features yet. | May have bugs. | Not ready for testing.             |
+| `alpha`   | At least 1 feature is complete.         | May have bugs. | Ready for developer testing.       |
+| `beta`    | All features are complete.              | May have bugs. | Ready for QA testing.              |
+| `rc`      | Release candidate.                      | Stable.        | Ready for user acceptance testing. |
 
-## Deployments
+### Publishing
 
-todo: Code is deployed to an environment when a git tag matching one of these patterns is pushed to the remote.
-
-| Environment | Pattern         | Example          |
-| :---        | :---            | :---             |
-| Development | `x.x.x-alpha.x` | `1.0.0-alpha.1`  |
-| QA          | `x.x.x-beta.x`  | `12.4.3-beta.23` |
-| UAT         | `x.x.x-rc.x`    | `1.1.99-rc.0`    |
-| Production  | `x.x.x`         | `2.0.0`          |
+Code is published to npm using `npm publish`. See `files` in `package.json` for the list of included package files.
