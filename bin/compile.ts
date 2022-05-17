@@ -12,7 +12,7 @@ const pkg = JSON.parse(
 	await readFile(resolve(__dirname, '..', 'package.json'), 'utf8'),
 )
 
-/** Modified, filtered process.env global. */
+/** Modified process.env global. */
 const env = JSON.stringify(
 	Object.entries(process.env).reduce(
 		(inject: ProcessEnv, [key, value]) => {
@@ -48,7 +48,8 @@ await Promise.all(
 					--define:process.env=${env} \
 					${file === 'cli' ? '--external:./index.js' : ''} \
 					--format=${moduleFormat.name} \
-					--minify \
+					--minify-syntax \
+					--minify-whitespace \
 					--outfile=${resolve(
 		__dirname,
 		'..',
