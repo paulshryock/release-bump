@@ -103,15 +103,13 @@ Examples
 ```typescript
 import { releaseBump, ReleaseBumpOptions } from 'release-bump'
 
-;(async function() {
-  const options: ReleaseBumpOptions = {
-    changelogPath: 'CHANGELOG.md',
-    date: '2022-03-11',
-    filesPath: '.',
-    release: '3.0.0',
-  }
-  await releaseBump(options)
-})()
+const options: ReleaseBumpOptions = {
+  changelogPath: 'CHANGELOG.md',
+  date: '2022-03-11',
+  filesPath: '.',
+  release: '3.0.0',
+}
+await releaseBump(options)
 
 ```
 
@@ -120,15 +118,13 @@ import { releaseBump, ReleaseBumpOptions } from 'release-bump'
 ```javascript
 import { releaseBump } from 'release-bump'
 
-;(async function() {
-  const options = {
-    changelogPath: 'CHANGELOG.md',
-    date: '2022-03-11',
-    filesPath: '.',
-    release: '3.0.0',
-  }
-  await releaseBump(options)
-})()
+const options = {
+  changelogPath: 'CHANGELOG.md',
+  date: '2022-03-11',
+  filesPath: '.',
+  release: '3.0.0',
+}
+await releaseBump(options)
 
 ```
 
