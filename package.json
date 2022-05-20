@@ -11,7 +11,7 @@
     "release",
     "version"
   ],
-  "homepage": "https://github.com/paulshryock/release-bump#readme",
+  "homepage": "https://www.releasebump.dev",
   "bugs": {
     "url": "https://github.com/paulshryock/release-bump/issues/new?assignees=&labels=&template=bug_report.md&title="
   },
