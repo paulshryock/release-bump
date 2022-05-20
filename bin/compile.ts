@@ -70,3 +70,10 @@ await writeFile(
 	(await readFile(compiledCliPath, 'utf8')).replaceAll('index.js', 'index.cjs'),
 	'utf8',
 )
+
+// Rewrite docs homepage from Readme.
+await writeFile(
+	resolve(__dirname, '..', 'docs', 'index.md'),
+	await readFile(resolve(__dirname, '..', 'README.md'), 'utf8'),
+	'utf8',
+)
