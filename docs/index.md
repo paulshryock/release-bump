@@ -146,8 +146,9 @@ $ node -r fs.promises ./node_modules/.bin/release-bump -- <options>
 1. [x] Core API
 2. [x] CLI
 3. [ ] Config files
-4. [ ] Docs
-5. [ ] Polish
+4. [ ] Refactor tests with datasets
+5. [ ] Docs
+6. [ ] Polish
 
 ## Contributing
 
