@@ -632,5 +632,13 @@ export async function parseSettingsFromOptions(
 	/** Release Bump settings. */
 	const settings = { ...defaults, ...config, ...options }
 
+	// Force default ignored directories.
+	settings.ignore = [...ignore, ...settings.ignore]
+
+	// Don't ignore filesPath.
+	if (settings.ignore.includes(settings.filesPath)) {
+		settings.ignore = settings.ignore.filter((path) => path !== settings.filesPath)
+	}
+
 	return settings
 }
