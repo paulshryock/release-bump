@@ -11,7 +11,7 @@ module.exports = {
 			lines: 89,
 		},
 	},
-	extensionsToTreatAsEsm: ['.ts', '.tsx'],
+	extensionsToTreatAsEsm: ['.ts', '.tsx', '.mts', '.cts'],
 	globals: {
 		'ts-jest': {
 			tsconfig: 'tsconfig.json',
