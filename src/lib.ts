@@ -637,7 +637,9 @@ export async function parseSettingsFromOptions(
 
 	// Don't ignore filesPath.
 	if (settings.ignore.includes(settings.filesPath)) {
-		settings.ignore = settings.ignore.filter((path) => path !== settings.filesPath)
+		settings.ignore = settings.ignore.filter(
+			(path) => path !== settings.filesPath,
+		)
 	}
 
 	return settings
