@@ -60,7 +60,7 @@
     "version": "npm-run-all --parallel clean quality --serial compile bump && git add ."
   },
   "devDependencies": {
-    "@types/jest": "27.5.1",
+    "@types/jest": "27.5.2",
     "@types/node": "17.0.36",
     "@typescript-eslint/eslint-plugin": "5.27.1",
     "@typescript-eslint/parser": "5.27.1",
@@ -75,7 +75,7 @@
     "eslint-plugin-promise": "6.0.0",
     "esm": "3.2.25",
     "husky": "8.0.1",
-    "jest": "28.1.0",
+    "jest": "28.1.1",
     "jest-ts-webcompat-resolver": "1.0.0",
     "npm-check-updates": "13.0.3",
     "npm-run-all2": "5.0.2",
