@@ -1,5 +1,8 @@
 # Release Bump
 
+![Enforce code quality](https://github.com/paulshryock/release-bump/actions/workflows/code-quality.yml/badge.svg)
+![Compile](https://github.com/paulshryock/release-bump/actions/workflows/compile.yml/badge.svg)
+
 Bumps Changelog, docblock, and WordPress theme/plugin versions for a code release.
 
 Use `unreleased` in your Changelog and docblock comments, and Release Bump will automatically bump it to the correct release version.
