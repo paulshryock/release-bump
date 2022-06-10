@@ -33,15 +33,8 @@ await Promise.all([
 		)
 	}),
 	await writeFile(
-		resolve(
-			__dirname,
-			'..',
-			'docs',
-			'content',
-			'repo',
-			'README.json',
-		),
+		resolve(__dirname, '..', 'docs', 'content', 'repo', 'README.json'),
 		JSON.stringify({ permalink: './index.html' }),
 		'utf8',
-	)
+	),
 ])
