@@ -1,13 +1,9 @@
 name: Enforce code quality
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
   pull_request:
     branches: [ main ]
-
-  # Allow manual execution from the Actions tab.
-  workflow_dispatch:
 
 jobs:
 

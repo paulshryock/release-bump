@@ -1,13 +1,9 @@
-name: Compile
+name: Compile source code
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
   pull_request:
     branches: [ main ]
-
-  # Allow manual execution from the Actions tab.
-  workflow_dispatch:
 
 jobs:
 
