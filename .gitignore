@@ -3,13 +3,21 @@
 .env.*
 !.env.example
 
+# SSL certificate.
+*.cert
+*.key
+
 # Dependencies.
 node_modules/
 
 # Cache files.
 *.cache
 .cache/
+*cache
 cache/
 
 # Test coverage reports.
 coverage/
+
+# Copied repo content files.
+docs/content/repo/

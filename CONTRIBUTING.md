@@ -1,24 +1,24 @@
 # How to contribute
 
-- [Local environment](#markdown-header-local-environment)
-- [Dependencies](#markdown-header-dependencies)
-- [Git](#markdown-header-git)
-  - [Branches](#markdown-header-branches)
-  - [Commits](#markdown-header-commits)
-  - [Pull requests](#markdown-header-pull-requests)
-  - [Tags](#markdown-header-tags)
-- [Code quality](#markdown-header-code-quality)
-  - [During development](#markdown-header-during-development)
-  - [Skipping code quality checks](#markdown-header-skipping-code-quality-checks)
-- [Releases](#markdown-header-releases)
-  - [Release tags](#markdown-header-release-tags)
-  - [Prerelease tags](#markdown-header-prerelease-tags)
-    - [Prerelease ID's](#markdown-header-prerelease-ids)
-  - [Publishing](#markdown-header-publishing)
+- [Local environment](#local-environment)
+- [Dependencies](#dependencies)
+- [Git](#git)
+  - [Branches](#branches)
+  - [Commits](#commits)
+  - [Pull requests](#pull-requests)
+  - [Tags](#tags)
+- [Code quality](#code-quality)
+  - [During development](#during-development)
+  - [Skipping code quality checks](#skipping-code-quality-checks)
+- [Releases](#releases)
+  - [Release tags](#release-tags)
+  - [Prerelease tags](#prerelease-tags)
+    - [Prerelease ID's](#prerelease-ids)
+  - [Publishing](#publishing)
 
 ## Local environment
 
-Follow the [quick start guide](../README.md#markdown-header-quick-start) to get a local development environment up and running.
+Follow the [quick start guide](README.md#quick-start) to get a local development environment up and running.
 
 ## Dependencies
 
@@ -39,11 +39,20 @@ By using [commits](https://github.com/git-guides/git-commit), you're able to cra
 #### Commit messages
 
 At a minimum, commit messages should include:
-1. a ticket number followed by a colon (`:`)
-2. a capitalized, short summary
+1. a capitalized, short summary
+2. a ticket number preceeded by a hash, enclosed in parenthesis
 
-```bash
-JIRA-123: Add some cool new feature
+```
+Add some cool new feature (#1)
+```
+
+Pull request commit or squash messages should include:
+1. a capitalized, short summary
+2. a ticket number preceeded by a hash, enclosed in parenthesis
+3. a pull request number preceeded by a hash, enclosed in parenthesis
+
+```
+Add some cool new feature (#1) (#2)
 ```
 
 > More important than the mechanics of formatting the body is the practice of having a subject line. You should shoot for about 50 characters (though this isn’t a hard maximum) and always, always follow it with a blank line. This first line should be a concise summary of the changes introduced by the commit; if there are any technical details that cannot be expressed in these strict size constraints, put them in the body instead. The subject line is used all over Git, oftentimes in truncated form if too long of a message was used.
@@ -54,7 +63,11 @@ Please [sign your commits](https://docs.github.com/en/authentication/managing-co
 
 ### Pull requests
 
-Never commit directly to the `main` branch. You should always work on a short-lived feature branch and then create a pull request against `main`. When you push code to the remote, CI will automatically run code quality checks and ensure that your source code compiles. These checks must pass before merging your PR, and you must have approvals from 2 other engineers.
+Never commit directly to the `main` branch. You should always work on a short-lived feature branch and then create a pull request against `main`. When you push code to the remote, CI will automatically run code quality checks and ensure that your source code compiles. These checks must pass before merging your PR, and you must have an approval from another engineer.
+
+- *Merge commit:* If the commit history on your branch is all setup correctly and ideal for the main branch, and there's a reason you need an additional commit, use a merge commit with a descriptive commit message.
+- *Squash:* If the commit history on your branch is not ideal for the main branch, squash your changes together into a single commit with a descriptive commit message.
+- *Fast forward (rebase):* If the commit history on your branch is all setup correctly and ideal for the main branch, then use fast forward/rebase to retain the commit history of your branch.
 
 **You should almost always squash pull requests.** Only use a merge commit if there is a good reason to preserve your feature branch's full commit history.
 

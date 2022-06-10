@@ -1,0 +1,57 @@
+{%- assign site_title_words = pkg.name | slugify | split: '-' %}
+{%- capture site_title %}
+{%- for word in site_title_words %}
+	{{ word | capitalize }}
+{%- endfor %}
+{%- endcapture -%}
+{%- assign title = title | strip %}
+
+{%- assign title_words = page.fileSlug | slugify | split: '-' %}
+{%- capture title %}
+{%- for word in title_words %}
+	{{ word | capitalize }}
+{%- endfor %}
+{%- endcapture -%}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ title }} | {{ site_title }}</title>
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>✅</text></svg>" />
+</head>
+<body class="site">
+	{%- if files %}
+	<nav class="navigation">
+		<div class="navigation__container">
+			<div class="logo">✅</div>
+			<p class="wordmark">{{ site_title }}</p>
+			<ul class="navigation__list">
+				{%- for file in files %}
+				{%- capture filePathName -%}
+					{{ file | split: '.' | first | slugify | strip }}
+				{%- endcapture %}
+				{%- capture filePath -%}
+					/{{ filePathName }}/
+				{%- endcapture %}
+				{%- assign filePath = filePath %}
+				{%- if filePath == '/readme/' %}
+				{%- assign filePath = '/' %}
+				{%- endif %}
+				<li>
+					<a href="{{ filePath }}">
+						{{ filePathName | split: '-' | join: ' ' | capitalize }}
+					</a>
+				</li>
+				{%- endfor %}
+			</ul>
+		</div>
+	</nav>
+	{%- endif %}
+	<main class="main">
+		{{ content }}
+	</main>
+</body>
+</html>

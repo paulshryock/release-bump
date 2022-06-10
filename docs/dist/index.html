@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>
+	Readme | 
+	Release
+	Bump</title>
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>✅</text></svg>" />
+</head>
+<body class="site">
+	<nav class="navigation">
+		<div class="navigation__container">
+			<div class="logo">✅</div>
+			<p class="wordmark">
+	Release
+	Bump</p>
+			<ul class="navigation__list">
+				<li>
+					<a href="/changelog/">
+						Changelog
+					</a>
+				</li>
+				<li>
+					<a href="/code-of-conduct/">
+						Code of conduct
+					</a>
+				</li>
+				<li>
+					<a href="/contributing/">
+						Contributing
+					</a>
+				</li>
+				<li>
+					<a href="/license/">
+						License
+					</a>
+				</li>
+				<li>
+					<a href="/">
+						Readme
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<main class="main">
+		<h1>Release Bump</h1>
+<p><img src="https://github.com/paulshryock/release-bump/actions/workflows/quality.yml/badge.svg" alt="Enforce code quality">
+<img src="https://github.com/paulshryock/release-bump/actions/workflows/compile.yml/badge.svg" alt="Compile source code"></p>
+<p>Bumps Changelog, docblock, and WordPress theme/plugin versions for a code release.</p>
+<p>Use <code>unreleased</code> in your Changelog and docblock comments, and Release Bump will automatically bump it to the correct release version.</p>
+<p><strong>This package writes to your file system.</strong></p>
+<ul>
+<li>☝️ Only does one thing</li>
+<li>👌 Zero production dependencies</li>
+<li>🤏 API is &lt;8kb, CLI is 4kb</li>
+<li>🤙 Supports ESM and Common JS</li>
+<li>🤘 TypeScript types included</li>
+<li>🙌 No ads, no analytics, no tracking</li>
+</ul>
+<h2>Table of contents</h2>
+<ul>
+<li><a href="#getting-started">Getting started</a>
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#installation">Installation</a></li>
+</ul>
+</li>
+<li><a href="#usage">Usage</a>
+<ul>
+<li><a href="#cli">CLI</a></li>
+<li><a href="#typescript">TypeScript</a></li>
+<li><a href="#javascript">JavaScript</a></li>
+<li><a href="#config-files">Config files</a></li>
+</ul>
+</li>
+<li><a href="#node-8-support">Node 8 support</a></li>
+<li><a href="#roadmap">Roadmap</a></li>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#contact">Contact</a></li>
+<li><a href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+<h2>Getting started</h2>
+<pre><code class="language-bash">$ npm install --save-dev release-bump
+$ release-bump --help
+
+  Usage
+    $ release-bump &lt;options&gt;
+
+  Options
+    --changelogPath   Path to changelog.
+    --date            Release date.
+    --dryRun       -d Dry run.
+    --failOnError  -e Fail on error.
+    --filesPath       Path to directory of files to bump.
+    --ignore          Directories to ignore.
+    --help         -h Log CLI usage text.
+    --prefix       -p Prefix release version with a 'v'.
+    --quiet        -q Quiet, no logs.
+    --release         Release version.
+    --repository      Remote git repository URL.
+    --version      -v Log Release Bump version.
+
+  Examples
+    $ release-bump -pq --files=src
+</code></pre>
+<h3>Prerequisites</h3>
+<p><a href="https://nodejs.org/en/download/package-manager/">Node</a> ^14, or Node ^8 <a href="#node-8-support">with a polyfill</a>.</p>
+<p>See <code>.nvmrc</code> for required Node version in development.</p>
+<h3>Installation</h3>
+<pre><code class="language-bash">npm install --save-dev release-bump
+</code></pre>
+<h2>Usage</h2>
+<h3>CLI</h3>
+<p>If you install this module globally, you can use the <code>release-bump</code> binary as it will be in your path. Otherwise if you install locally per-project, you'll need to use <code>./node_modules/.bin/release-bump</code> or <code>npx release-bump</code>.</p>
+<pre><code class="language-bash">Usage
+  $ release-bump &lt;options&gt;
+
+Options
+  --changelogPath   Path to changelog.
+  --date            Release date.
+  --dryRun       -d Dry run.
+  --failOnError  -e Fail on error.
+  --filesPath       Path to directory of files to bump.
+  --ignore          Directories to ignore.
+  --help         -h Log CLI usage text.
+  --prefix       -p Prefix release version with a 'v'.
+  --quiet        -q Quiet, no logs.
+  --release         Release version.
+  --repository      Remote git repository URL.
+  --version      -v Log Release Bump version.
+
+Examples
+  $ release-bump -pq --files=src
+
+</code></pre>
+<h3>TypeScript</h3>
+<pre><code class="language-typescript">import { releaseBump, ReleaseBumpOptions } from 'release-bump'
+
+const options: ReleaseBumpOptions = {
+  changelogPath: 'CHANGELOG.md',
+  date: '2022-03-11',
+  filesPath: '.',
+  release: '3.0.0',
+}
+await releaseBump(options)
+
+</code></pre>
+<h3>JavaScript</h3>
+<pre><code class="language-javascript">import { releaseBump } from 'release-bump'
+
+const options = {
+  changelogPath: 'CHANGELOG.md',
+  date: '2022-03-11',
+  filesPath: '.',
+  release: '3.0.0',
+}
+await releaseBump(options)
+
+</code></pre>
+<h3>Config files</h3>
+<p>Config files coming soon.</p>
+<h2>Node 8 support</h2>
+<p>To extend support back to Node 8, you'll need to install a polyfill for <code>fs/promises</code> and require the polyfill when you execute the <code>release-bump</code> binary. This is not officially supported, as I don't maintain the <code>fs/promises</code> polyfill. <strong>Use at your own risk.</strong></p>
+<pre><code class="language-bash">$ npm install --save-dev fs.promises
+$ node -r fs.promises ./node_modules/.bin/release-bump -- &lt;options&gt;
+</code></pre>
+<h2>Roadmap</h2>
+<ol>
+<li>[x] Core API</li>
+<li>[x] CLI</li>
+<li>[ ] Config files</li>
+<li>[ ] Refactor tests with datasets</li>
+<li>[ ] Docs</li>
+<li>[ ] Polish</li>
+</ol>
+<h2>Contributing</h2>
+<p>Please see the <a href="CONTRIBUTING.md">contributing guidelines</a>.</p>
+<h2>License</h2>
+<p><a href="LICENSE">MIT</a></p>
+<h2>Contact</h2>
+<ul>
+<li><a href="https://github.com/paulshryock/release-bump/discussions/new">Ask a question</a></li>
+<li><a href="https://github.com/paulshryock/release-bump/issues/new?assignees=&amp;labels=&amp;template=feature_request.md&amp;title=">Request a feature</a></li>
+<li><a href="https://github.com/paulshryock/release-bump/issues/new?assignees=&amp;labels=&amp;template=bug_report.md&amp;title=">Report a bug</a></li>
+</ul>
+<h2>Acknowledgments</h2>
+<p>You're awesome.</p>
+
+	</main>
+</body>
+</html>
