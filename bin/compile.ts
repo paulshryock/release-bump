@@ -12,7 +12,7 @@ const pkg = JSON.parse(
 	await readFile(resolve(__dirname, '..', 'package.json'), 'utf8'),
 )
 
-/** Modified process.env global. */
+/** Filtered process.env global. */
 const env = JSON.stringify(
 	Object.entries(process.env).reduce(
 		(inject: ProcessEnv, [key, value]) => {
@@ -68,12 +68,5 @@ const compiledCliPath = resolve(__dirname, '..', 'dist', 'cli.cjs')
 await writeFile(
 	compiledCliPath,
 	(await readFile(compiledCliPath, 'utf8')).replaceAll('index.js', 'index.cjs'),
-	'utf8',
-)
-
-// Rewrite docs homepage from Readme.
-await writeFile(
-	resolve(__dirname, '..', 'docs', 'index.md'),
-	await readFile(resolve(__dirname, '..', 'README.md'), 'utf8'),
 	'utf8',
 )

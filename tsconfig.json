@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig-common",
-  "include": ["./*.ts", "./bin/**/*", "./src/**/*"],
+  "include": ["./bin/**/*", "./docs/**/*", "./src/**/*"],
   "compilerOptions": {
     "noEmit": true
   }

@@ -1,0 +1,4 @@
+{
+  "layout": "base",
+  "permalink": "./{{ page.fileSlug | downcase | slugify }}/index.html"
+}

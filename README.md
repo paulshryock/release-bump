@@ -1,7 +1,7 @@
 # Release Bump
 
-![Enforce code quality](https://github.com/paulshryock/release-bump/actions/workflows/code-quality.yml/badge.svg)
-![Compile](https://github.com/paulshryock/release-bump/actions/workflows/compile.yml/badge.svg)
+![Enforce code quality](https://github.com/paulshryock/release-bump/actions/workflows/quality.yml/badge.svg)
+![Compile source code](https://github.com/paulshryock/release-bump/actions/workflows/compile.yml/badge.svg)
 
 Bumps Changelog, docblock, and WordPress theme/plugin versions for a code release.
 
@@ -11,7 +11,7 @@ Use `unreleased` in your Changelog and docblock comments, and Release Bump will 
 
 - ☝️ Only does one thing
 - 👌 Zero production dependencies
-- 🤏 API is 7kb, CLI is 4kb
+- 🤏 API is <8kb, CLI is 4kb
 - 🤙 Supports ESM and Common JS
 - 🤘 TypeScript types included
 - 🙌 No ads, no analytics, no tracking
