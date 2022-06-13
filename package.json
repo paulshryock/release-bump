@@ -92,7 +92,7 @@
     "husky": "8.0.1",
     "jest": "28.1.1",
     "jest-ts-webcompat-resolver": "1.0.0",
-    "npm-check-updates": "13.1.2",
+    "npm-check-updates": "13.1.5",
     "npm-run-all2": "5.0.2",
     "prettier": "2.6.2",
     "sass": "1.52.3",
