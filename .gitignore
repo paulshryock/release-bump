@@ -19,5 +19,6 @@ cache/
 # Test coverage reports.
 coverage/
 
-# Copied repo content files.
+# Docs repo files and compiled docs.
 docs/content/repo/
+docs/dist/
