@@ -5,8 +5,14 @@ import { fileURLToPath } from 'node:url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-;(async function() {
-	const path = resolve(__dirname, '../', 'LICENSE')
+/**
+ * Bumps license year to current year.
+ *
+ * @since  unreleased
+ * @return {Promise<void>}
+ */
+export async function bumpLicenseYear() {
+	const path = resolve(__dirname, '..', '..', 'LICENSE')
 	const content = await readFile(path, 'utf8')
 	const regexp = /(\d{4}) Paul Shryock\n\n/
 	const hasYear = regexp.test(content) === true
@@ -23,4 +29,4 @@ const __dirname = dirname(__filename)
 	).then(() => {
 		console.debug(`bumped license current year to ${currentYear}`)
 	})
-})()
+}

@@ -24,6 +24,9 @@ module.exports = function(eleventyConfig) {
 	// Don't use .gitignore.
 	eleventyConfig.setUseGitIgnore(false)
 
+	// Set files to ignore.
+	eleventyConfig.ignores.add('bin')
+
 	return {
 		dir: {
 			data: 'data',
