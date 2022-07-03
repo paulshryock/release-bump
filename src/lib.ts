@@ -18,6 +18,7 @@ interface CliArgument {
 	type: string
 }
 
+/** CLI options. */
 interface CliOptions extends ReleaseBumpOptions {
 	/** Log CLI usage text. */
 	help?: boolean
@@ -172,7 +173,7 @@ export const availableArgs: CliArgument[] = [
 /**
  * Filters file paths.
  *
- * @since  3.0.0
+ * @since  unreleased
  * @param  {string[]} filePaths           File paths.
  * @param  {string[]} directoriesToIgnore Directories to ignore.
  * @return {string[]}                     Filtered file paths.
@@ -211,7 +212,7 @@ function flattenArrayOfStrings(items: (string | string[])[]): string[] {
 /**
  * Formats repository URL.
  *
- * @since  3.0.0
+ * @since  unreleased
  * @param  {string|PackageRepository} repository Repository.
  * @return {string}                              Formatted repository URL.
  */
@@ -245,7 +246,7 @@ export function formatRepositoryUrl(
 /**
  * Formats text.
  *
- * @since  3.0.0
+ * @since  unreleased
  * @param  {string}            unformatted Unformatted text.
  * @param  {FormatTextOptions} options     Options.
  * @return {string}                        Formatted text.
@@ -398,7 +399,7 @@ export async function getConfigFromFile(
 /**
  * Gets help text.
  *
- * @since  3.0.0
+ * @since  unreleased
  * @param  {CliArgument[]} availableArgs Available arguments.
  * @return {string}                      Help text.
  * @todo                                 Add examples.
@@ -423,7 +424,7 @@ export function getHelpText(availableArgs: CliArgument[]): string {
 /**
  * Gets all unique file paths in a directory recursively.
  *
- * @since  3.0.0
+ * @since  unreleased
  * @param  {GetRecursiveFilePathsOptions} options Options.
  * @return {Promise<string[]>}                    Recursive file paths.
  */
@@ -478,7 +479,7 @@ export async function getRecursiveFilePaths(
 /**
  * Gets version text.
  *
- * @since  3.0.0
+ * @since  unreleased
  * @param  {ProcessEnv} env process.env.
  * @return {string}         Release Bump version.
  */
@@ -509,7 +510,7 @@ export function Logger({ quiet }: LoggerOptions): Console {
 /**
  * Parses CLI options from arguments.
  *
- * @since  3.0.0
+ * @since  unreleased
  * @param  {string[]}   passedArgs    Passed CLI arguments.
  * @param  {string[]}   availableArgs Available CLI arguments.
  * @return {CliOptions}               Parsed CLI options.
@@ -581,7 +582,7 @@ export function parseOptionsFromArgs(
 /**
  * Parses settings from options.
  *
- * @since  3.0.0
+ * @since  unreleased
  * @param  {ReleaseBumpOptions}           options Release Bump options.
  * @return {Promise<ReleaseBumpSettings>}         Release Bump settings.
  */
