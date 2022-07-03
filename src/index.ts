@@ -103,7 +103,7 @@ export async function releaseBump(
 			}
 
 			/** formatText options. */
-			const options: FormatTextOptions = {
+			const formatTextOptions: FormatTextOptions = {
 				date,
 				isChangelog: changelogPath === filePath,
 				prefix,
@@ -113,7 +113,7 @@ export async function releaseBump(
 			}
 
 			/** Formatted text. */
-			const formatted = await formatText(unformatted, options)
+			const formatted = await formatText(unformatted, formatTextOptions)
 			if (unformatted === formatted) return
 
 			bumpedFiles.push(filePath)
