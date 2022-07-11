@@ -16,6 +16,10 @@ Use `unreleased` in your Changelog and docblock comments, and Release Bump will 
 - 🤘 TypeScript types included
 - 🙌 No ads, no analytics, no tracking
 
+Release Bump was developed to solve the problem of wanting to update a project's Changelog, and add docblock `@since` comments to source code, without yet knowing the next release version. Instead of guessing whether the next release is a major, minor, or patch release, we should be able to just write `unreleased`, and have the version number bump to the correct version automatically at release time.
+
+This becomes especially important while working on a team. Perhaps I've fixed a bug, and so I suspect the next release is a patch. But later, a team mate adds a new feature. So is the next release minor? Perhaps later we end up with some backwards-incompatible API-breaking changes. So maybe the next release is major. We shouldn't need to worry about what the next version is going to be until it's actually time for the release.
+
 ## Table of contents
 
 - [Getting started](#getting-started)
@@ -146,12 +150,12 @@ $ node -r fs.promises ./node_modules/.bin/release-bump -- <options>
 
 ## Roadmap
 
-1. [x] Core API
-2. [x] CLI
-3. [ ] Config files
-4. [ ] Refactor tests with datasets
-5. [ ] Docs
-6. [ ] Polish
+1. ✅ Core API
+2. ✅ CLI
+3. 🚧 Config files
+4. Refactor tests with datasets
+5. 🚧 Docs
+6. Polish
 
 ## Contributing
 
