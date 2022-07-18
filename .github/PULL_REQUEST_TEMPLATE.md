@@ -4,7 +4,7 @@
 
 ## Testing
 
-<!-- Add instructions for how to test and validate your change -->
+<!-- Add instructions for how to QA and validate your change -->
 
 ## Ticket
 
@@ -18,4 +18,4 @@
 
 - [ ] My change is documented
 - [ ] My change is tested
-- [ ] My change is noted in the Changelog
+- [ ] My change is in the Changelog
