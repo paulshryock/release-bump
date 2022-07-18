@@ -29,7 +29,7 @@ export interface ReleaseBumpOptions {
  * Use `unreleased` in your Changelog and docblock comments, and Release Bump
  * will automatically bump it to the correct release version.
  *
- * @since  3.0.0
+ * @since  unreleased
  * @param  {ReleaseBumpOptions} options Release Bump options.
  * @return {string[]}                   Bumped files.
  * @throws {Error}                      On file system read/write error.
