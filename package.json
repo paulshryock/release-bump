@@ -57,7 +57,7 @@
     "lint": "run-p lint:*",
     "lint:js": "eslint \"./!(tests)/**/*.{ts,{m,c}ts,d.ts,js,{m,c}js,json}\" --fix",
     "lint:pkg": "sort-package-json",
-    "prepare": "husky install bin/husky",
+    "prepare": "ts-node bin/prepare.ts",
     "quality": "npm-run-all --serial format --parallel lint typecheck --serial test",
     "preserve": "npm run clean",
     "serve": "run-p serve:*",
