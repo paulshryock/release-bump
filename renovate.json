@@ -1,17 +1,14 @@
 {
-  "extends": [
-    "config:base",
-    ":assignee(paulshryock)",
-    ":pinAllExceptPeerDependencies"
-  ],
+  "extends": ["config:base", ":pinAllExceptPeerDependencies"],
+  "assigneeesFromCodeOwners": true,
   "labels": ["dependencies"],
   "packageRules": [
     {
-      "updateTypes": [
-        "minor",
-        "patch"
-      ],
-      "automerge": true
+      "matchPackagePatterns": ["*"],
+      "updateTypes": ["major", "minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
     }
   ],
   "schedule": ["every weekend"],
