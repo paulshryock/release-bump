@@ -20,10 +20,20 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Format and lint source code
+      - name: Cache ESLint results
+        id: cache-eslint
+        uses: actions/cache@v3
+        env:
+          cache-name: eslint
+        with:
+          path: .cache/eslint
+          key: ${{ runner.os }}-quality-${{ env.cache-name }}-${{ hashFiles('.cache/eslint/*.*') }}
+          restore-keys: |
+            ${{ runner.os }}-quality-${{ env.cache-name }}-${{ hashFiles('.cache/eslint/*.*') }}
+
+      - name: Lint source code
         run: |
           npm ci
-          npm run format
           npm run lint
 
   typecheck:
@@ -39,7 +49,7 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Run static analysis
+      - name: Run static analysis and type-check source code
         run: |
           npm ci
           npm run typecheck
