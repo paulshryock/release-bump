@@ -1,6 +1,7 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
 	bail: true,
+	cacheDirectory: '.cache/jest',
 	collectCoverage: true,
 	collectCoverageFrom: ['src/**', '!src/cli.ts'],
 	coverageThreshold: {
