@@ -1,7 +1,7 @@
 {
-  "extends": "./tsconfig-common",
-  "include": ["./bin/**/*", "./docs/**/*", "./src/**/*"],
-  "compilerOptions": {
-    "noEmit": true
-  }
+	"extends": "./tsconfig-common",
+	"include": ["./bin/**/*", "./docs/**/*", "./src/**/*"],
+	"compilerOptions": {
+		"noEmit": true
+	}
 }

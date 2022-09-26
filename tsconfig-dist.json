@@ -1,6 +1,8 @@
 {
   "extends": "./tsconfig-common",
-  "files": ["./src/index.ts"],
+  "files": [
+    "./src/index.ts"
+  ],
   "compilerOptions": {
     "declaration": true,
     "emitDeclarationOnly": true
