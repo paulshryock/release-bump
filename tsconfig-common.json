@@ -10,25 +10,19 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
-
     "baseUrl": "./",
     "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-
     "newLine": "lf",
     "outDir": "dist",
-
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-
     "target": "ESNext",
-
     "skipLibCheck": true
   },
-
   "ts-node": {
     "esm": true
   }

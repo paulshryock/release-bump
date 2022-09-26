@@ -1,24 +1,29 @@
-# Environment variables.
+# Mac OS X
+.DS_Store
+
+# Vendor dependencies.
+node_modules/
+
+# Log files.
+*.log
+
+# Cache files.
+.sass-cache
+.cache
+*.cache
+
+# Test coverage files.
+coverage/
+
+# Local environment variables and overrides.
 .env
 .env.*
 !.env.example
 
+# Compiled files.
+docs/content/repo/
+docs/dist/
+
 # SSL certificate.
 *.cert
 *.key
-
-# Dependencies.
-node_modules/
-
-# Cache files.
-*.cache
-.cache/
-*cache
-cache/
-
-# Test coverage reports.
-coverage/
-
-# Docs repo files and compiled docs.
-docs/content/repo/
-docs/dist/

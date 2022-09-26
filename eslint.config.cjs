@@ -4,10 +4,7 @@ module.exports = {
 		es2021: true,
 		node: true,
 	},
-	extends: [
-		'standard',
-		'plugin:@typescript-eslint/recommended',
-	],
+	extends: ['standard', 'plugin:@typescript-eslint/recommended'],
 	ignorePatterns: [
 		'coverage',
 		'dist',
