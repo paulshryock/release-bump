@@ -98,7 +98,7 @@
     "sort-package-json": "2.0.0",
     "ts-jest": "29.0.3",
     "ts-node": "10.9.1",
-    "tslib": "2.4.0",
+    "tslib": "2.4.1",
     "typescript": "4.8.4",
     "zx": "7.1.1"
   },
