@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@11ty/eleventy": "2.0.0-canary.18",
-    "@types/jest": "29.2.3",
+    "@types/jest": "29.2.4",
     "@types/node": "18.11.10",
     "@typescript-eslint/eslint-plugin": "5.45.0",
     "@typescript-eslint/parser": "5.45.0",
