@@ -1,8 +1,7 @@
+import { FileSystem, FileSystemError } from './FileSystem'
 import { readdir, readFile, stat } from 'node:fs/promises'
 
-export interface FileSystem {
-  getFilePaths: () => Promise<string[]>
-}
+class LocalFileSystemError extends FileSystemError {}
 
 export class LocalFileSystem implements FileSystem {
 	/** @type {string[]} File paths. */
@@ -21,10 +20,26 @@ export class LocalFileSystem implements FileSystem {
    * @param {string}   path          Path to file or directory.
    * @param {string[]} pathsToIgnore Paths to ignore.
    */
-  constructor(path: string, pathsToIgnore: string[]) {
+  constructor(path: string, pathsToIgnore: string[] = []) {
     this.#filePaths = []
     this.#pathsToIgnore = ['.git', 'node_modules', 'vendor', ...pathsToIgnore]
     this.#path = path
+  }
+
+  /**
+   * Gets file contents.
+   *
+   * @since  unreleased
+   * @param  {string}          file File to read.
+   * @return {Promise<string>}      File contents.
+   * @throws {LocalFileSystemError}
+   */
+  async getFile(file: string): Promise<string> {
+  	try {
+  		return await readFile(file, 'utf8')
+  	} catch (error: any) {
+  		throw new LocalFileSystemError('could not read file', error)
+  	}
   }
 
   /**
