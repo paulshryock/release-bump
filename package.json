@@ -72,7 +72,7 @@
     "version": "npm-run-all --parallel clean quality --serial compile bump && git add ."
   },
   "devDependencies": {
-    "@11ty/eleventy": "2.0.0-canary.18",
+    "@11ty/eleventy": "2.0.0-canary.23",
     "@types/jest": "29.2.4",
     "@types/node": "18.11.16",
     "@typescript-eslint/eslint-plugin": "5.46.1",
