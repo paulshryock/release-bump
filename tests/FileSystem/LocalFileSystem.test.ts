@@ -1,5 +1,5 @@
 import mock from 'mock-fs'
-import { LocalFileSystem } from "../src/LocalFileSystem"
+import { LocalFileSystem } from "../../src/FileSystem/LocalFileSystem"
 import { expect, it } from '@jest/globals';
 
 interface ObjectWithStrings {
