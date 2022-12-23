@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-- [Breaking changes] Rewrite core API and CLI.
+- [Breaking changes] Full rewrite with TypeScript and ES Modules.
 
 ### Deprecated
 
