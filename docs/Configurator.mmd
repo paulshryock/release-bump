@@ -1,0 +1,23 @@
+classDiagram
+		direction LR
+
+		Configurator -- ConfiguratorBuilder
+		ConfiguratorBuilder -- ApiConfiguratorBuilder
+		ConfiguratorBuilder -- CliConfiguratorBuilder
+		Configurator -- Configuration
+		Configurator -- ApiConfigurator
+		ApiConfigurator -- ApiConfiguratorBuilder
+		Configurator -- CliConfigurator
+		CliConfigurator -- CliConfiguratorBuilder
+		Configurator -- DefaultConfigurator
+		Client -- Configurator
+		Client -- ApiClient
+		Client -- CliClient
+		Client -- ClientBuilder
+		ApiClient -- ApiConfigurator
+		CliClient -- CliConfigurator
+		ClientBuilder -- ConfiguratorBuilder
+		ApiClientBuilder -- ApiConfigurator
+		ApiClientBuilder -- ClientBuilder
+		CliClientBuilder -- CliConfigurator
+		CliClientBuilder -- ClientBuilder

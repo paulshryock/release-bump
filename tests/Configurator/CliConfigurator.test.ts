@@ -1,35 +1,10 @@
-import {
-	defaultConfiguration,
-} from '../../src/Configurator/DefaultConfigurator'
 import { CliConfigurator } from '../../src/Configurator/CliConfigurator'
-import { Configuration } from '../../src/Configurator/Configurator'
-import { FileSystem } from '../../src/FileSystem/FileSystem'
+import {
+	Configuration,
+	DEFAULT_CONFIGURATION,
+} from '../../src/Configurator/Configurator'
+import { MockFileSystem } from '../FileSystem/MockFileSystem'
 import { describe } from '@jest/globals'
-
-function getBeforeAfter(before: any, after: any): string {
-	return `${JSON.stringify(before)}: ${JSON.stringify(after)}`
-}
-
-class MockFileSystem implements FileSystem {
-	#path: string
-	#pathsToIgnore: string[]
-
-	constructor(path: string, pathsToIgnore: string[]) {
-		this.#path = path
-		this.#pathsToIgnore = pathsToIgnore
-	}
-
-  async getFile (file: string): Promise<string> {
-  	return JSON.stringify({
-  		file,
-  		version: '1.0.0',
-  	})
-  }
-
-  async getFilePaths(): Promise<string[]> {
-  	return [this.#path, this.#pathsToIgnore.join('')]
-  }
-}
 
 describe('CliConfigurator', () => {
 
@@ -37,6 +12,10 @@ describe('CliConfigurator', () => {
   const nodeBinaryPath = '/path/to/node/binary'
   const cliBinaryPath = '/path/to/cli/binary'
   const binaryPaths = [nodeBinaryPath, cliBinaryPath]
+  const defaults = {
+  	...DEFAULT_CONFIGURATION,
+  	release: MockFileSystem.getRelease(),
+  }
 
 	beforeEach(() => {
 	  originalArgv = process.argv
@@ -47,37 +26,28 @@ describe('CliConfigurator', () => {
 	})
 
 	describe.each([
-		[[], { ...defaultConfiguration, release: '1.0.0' }],
-		[['hello'], { ...defaultConfiguration, release: '1.0.0' }],
+		['no args, flags, or commands', [], defaults],
+		['invalid arg', ['--hello-world', 'value'], defaults],
+		['invalid flag', ['-z'], defaults],
+		['invalid command', ['hello'], defaults],
+		['one valid flag', ['-p'], { ...defaults, prefix: true}],
 		[
-			['--something', 'comma,separated,value'],
-			{
-				...defaultConfiguration,
-				something: 'comma,separated,value',
-				release: '1.0.0',
-			},
-		],
-		[
-			['--hello-world', 'value'],
-			{ ...defaultConfiguration, helloWorld: 'value', release: '1.0.0' },
-		],
-		[
+			'two valid flags',
 			['-pq'],
-			{ ...defaultConfiguration, prefix: true, quiet: true, release: '1.0.0' },
+			{ ...defaults, prefix: true, quiet: true},
 		],
-	])('getOptions', (argv: string[], expected: Configuration) => {
+	])('getConfiguration', (testCase: string, argv: string[], expected: Configuration) => {
 
 		beforeEach(() => {
 			process.argv = [...binaryPaths, ...argv]
 		})
 
-		describe('gets options', () => {
-			it(getBeforeAfter(argv, expected), async () => {
-				const fileSystem = new MockFileSystem('src', [])
-				const cliConfigurator = new CliConfigurator(fileSystem)
-				const received = await cliConfigurator.getOptions()
+		describe('gets configuration from cli', () => {
+			it(`${testCase}`, async () => {
+				const fs = new MockFileSystem('src', [])
+				const c = new CliConfigurator(fs)
 
-				expect(received).toStrictEqual(expect.objectContaining(expected))
+				expect(await c.getConfiguration()).toStrictEqual(expected)
 			})
 		})
 	})

@@ -34,21 +34,21 @@ describe('LocalFileSystem', () => {
     	{ src: { file: 'contents', path: { empty: '', to: { file: 'contents', another: 'contents' } } } },
     	['src/file', 'src/path/to/file', 'src/path/to/another'],
     ],
-  ])('getFilePaths', (
+  ])('listFiles', (
     testCase: string,
     path: string,
     mockedFileSystem: ObjectWithStrings,
     expected: string[],
   ) => {
 
-    describe('gets file paths of non-empty existing files', () => {
+    describe('lists file paths of non-empty files recursively', () => {
       beforeEach(() => mock({ ...mockedDependencies, ...mockedFileSystem }))
       afterEach(mock.restore);
 
       it(`${testCase}`, async () => {
       	const pathsToIgnore: string[] = []
         const myFs = new LocalFileSystem(path, pathsToIgnore)
-        const received = await myFs.getFilePaths()
+        const received = await myFs.listFiles()
 
         expect(received).toEqual(expect.arrayContaining(expected))
       })

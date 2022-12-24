@@ -1,5 +1,10 @@
 import { FileSystem, FileSystemError } from './FileSystem'
-import { readdir, readFile, stat } from 'node:fs/promises'
+import {
+	readdir,
+	readFile as nodeReadFile,
+	stat,
+	writeFile as nodeWriteFile,
+} from 'node:fs/promises'
 
 class LocalFileSystemError extends FileSystemError {}
 
@@ -27,35 +32,39 @@ export class LocalFileSystem implements FileSystem {
   }
 
   /**
-   * Gets file contents.
-   *
-   * @since  unreleased
-   * @param  {string}          file File to read.
-   * @return {Promise<string>}      File contents.
-   * @throws {LocalFileSystemError}
-   */
-  async getFile(file: string): Promise<string> {
-  	try {
-  		return await readFile(file, 'utf8')
-  	} catch (error: any) {
-  		throw new LocalFileSystemError('could not read file', error)
-  	}
-  }
-
-  /**
-   * Gets file paths of non-empty existing files.
+   * Lists file paths of non-empty files recursively.
    *
    * @since  unreleased
    * @return {Promise<string[]>} File paths.
    * @todo   Join relative path and get absolute path.
    */
-  async getFilePaths(): Promise<string[]> {
+  async listFiles(): Promise<string[]> {
   	if (this.#filePaths.length < 1)
     	await this.#setFilePaths(this.#path)
 
     await this.#validateFilePaths()
 
     return this.#filePaths
+  }
+
+  /**
+   * Reads a file.
+   *
+   * @since  unreleased
+   * @param  {string}          file File to read.
+   * @return {Promise<string>}      File contents.
+   * @throws {LocalFileSystemError}
+   */
+  async readFile(file: string): Promise<string> {
+  	try {
+  		return await nodeReadFile(file, 'utf8')
+  	} catch (error: any) {
+  		throw new LocalFileSystemError('could not read file', error)
+  	}
+  }
+
+  async writeFile(path: string, data: string): Promise<void> {
+  	await nodeWriteFile(path, data, 'utf8')
   }
 
   /**
@@ -124,7 +133,7 @@ export class LocalFileSystem implements FileSystem {
    */
   async #fileExistsAndIsNotEmpty(filePath: string): Promise<boolean> {
   	try {
-  		const fileContents = await readFile(filePath, 'utf8')
+  		const fileContents = await this.readFile(filePath)
   		return fileContents !== ''
   	} catch (error) {
   		return false

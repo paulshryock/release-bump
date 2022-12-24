@@ -1,18 +1,21 @@
-import { defaultConfiguration } from './DefaultConfigurator'
-import { Configuration, Configurator } from './Configurator'
+import { Configuration, Configurator, DEFAULT_CONFIGURATION } from './Configurator'
 import { FileSystem } from '../FileSystem/FileSystem'
 import yargs from 'yargs/yargs'
 
 export class CliConfigurator implements Configurator {
 	#aliases: [string, string][] = [
-		['c', 'config'],
+		['c', 'configPath'],
 		['p', 'prefix'],
 		['q', 'quiet'],
 		['r', 'release'],
 	]
-	#options: Configuration
+	#configuration: Configuration
 	#fileSystem: FileSystem
 
+	/**
+	 * @since unreleased
+	 * @param {FileSystem} fileSystem File system.
+	 */
 	constructor(fileSystem: FileSystem) {
 		this.#fileSystem = fileSystem
 
@@ -24,35 +27,39 @@ export class CliConfigurator implements Configurator {
 
 		this.#aliases.forEach((alias) => parsed.alias(...alias))
 
-		this.#options = {
-			...defaultConfiguration,
-			...parsed.argv,
+		this.#configuration = {
+			...DEFAULT_CONFIGURATION,
+			...this.#getValidConfiguration(parsed.argv),
 		}
 	}
 
 	/**
-	 * Gets options.
+	 * Gets configuration.
 	 *
 	 * @since  unreleased
-	 * @return {Promise<Configuration>} Options.
+	 * @return {Promise<Configuration>} Configuration.
 	 */
-	async getOptions(): Promise<Configuration> {
-		if (this.#options.release === '')
+	async getConfiguration(): Promise<Configuration> {
+		if (this.#configuration.release === '')
 			await this.#setRelease()
 
-		return this.#options
+		return this.#configuration
 	}
 
-	/**
-	 * Sets version.
-	 *
-	 * @since  unreleased
-	 * @return {Promise<void>}
-	 */
+	#getValidConfiguration(argv: Object): Object {
+		return Object.entries(argv)
+			.reduce((all, [key, value]) => {
+				if (!Object.keys(DEFAULT_CONFIGURATION).includes(key))
+					return all
+
+				return { ...all, [key]: value }
+			}, {})
+	}
+
 	async #setRelease(): Promise<void> {
 		const { version } =
-			JSON.parse(await this.#fileSystem.getFile('package.json'))
+			JSON.parse(await this.#fileSystem.readFile('package.json'))
 
-		this.#options.release = version
+		this.#configuration.release = version
 	}
 }

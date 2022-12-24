@@ -1,6 +1,7 @@
 export interface FileSystem {
-  getFile: (file: string) => Promise<string>
-  getFilePaths: () => Promise<string[]>
+  listFiles: () => Promise<string[]>
+  readFile: (path: string) => Promise<string>
+  writeFile: (path: string, data: string) => Promise<void>
 }
 
 export class FileSystemError extends Error {}

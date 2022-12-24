@@ -1,0 +1,52 @@
+classDiagram
+		direction LR
+
+		Configurator -- ConfiguratorBuilder
+		ConfiguratorBuilder -- ApiConfiguratorBuilder
+		ConfiguratorBuilder -- CliConfiguratorBuilder
+		Configurator -- Configuration
+		Configurator -- ApiConfigurator
+		ApiConfigurator -- ApiConfiguratorBuilder
+		Configurator -- CliConfigurator
+		CliConfigurator -- CliConfiguratorBuilder
+		Configurator -- DefaultConfigurator
+
+		FileSystem -- FileSystemBuilder
+		FileSystem -- LocalFileSystem
+		LocalFileSystem -- LocalFileSystemBuilder
+
+		Logger -- LogLevel
+		Logger -- LoggerBuilder
+		LoggerBuilder -- ConsoleLoggerBuilder
+		Logger -- ConsoleLogger
+
+		Client -- Configurator
+		Client -- FileSystem
+		Client -- Logger
+
+		ApiClient -- Client
+		ApiClient -- ApiConfigurator
+		ApiClient -- LocalFileSystem
+		ApiClient -- ConsoleLogger
+
+		CliClient -- Client
+		CliClient -- CliConfigurator
+		CliClient -- LocalFileSystem
+		CliClient -- ConsoleLogger
+
+		ClientBuilder -- Client
+		ClientBuilder -- ConfiguratorBuilder
+		ClientBuilder -- FileSystemBuilder
+		ClientBuilder -- LoggerBuilder
+
+		ApiClientBuilder -- ClientBuilder
+		ApiClientBuilder -- ApiClient
+		ApiClientBuilder -- ApiConfigurator
+		ApiClientBuilder -- LocalFileSystem
+		ApiClientBuilder -- ConsoleLogger
+
+		CliClientBuilder -- ClientBuilder
+		CliClientBuilder -- CliClient
+		CliClientBuilder -- CliConfigurator
+		CliClientBuilder -- LocalFileSystem
+		CliClientBuilder -- ConsoleLogger
