@@ -3,22 +3,20 @@ import {
 	ConsoleLogMethods,
 } from '../../src/Logger/ConsoleLogger'
 import { LogLevel } from '../../src/Client'
-import { describe, expect, it, jest } from '@jest/globals'
+import { afterAll, beforeEach, describe, expect, it, jest } from '@jest/globals'
+import console from 'node:console'
 
 describe('ConsoleLogger', () => {
 	describe.each(Object.values(LogLevel))('log', (logLevel: LogLevel) => {
-		let consoleClone: Console
-
-		beforeAll(() => {
-			consoleClone = console
-		})
+		let consoleMethod: Console['log']
 
 		beforeEach(() => {
+			consoleMethod = console[ConsoleLogMethods[logLevel]]
 			console[ConsoleLogMethods[logLevel]] = jest.fn()
 		})
 
 		afterAll(() => {
-			console = consoleClone
+			console[ConsoleLogMethods[logLevel]] = consoleMethod
 		})
 
 		it(`logs a "${logLevel}" level message`, () => {

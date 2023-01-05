@@ -1,4 +1,4 @@
-export {}
+import process from 'node:process'
 
 const isCi = process.env.CI !== undefined
 if (!isCi) {

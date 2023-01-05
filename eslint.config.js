@@ -1,39 +1,46 @@
+import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin'
+import * as typescriptEslintParser from '@typescript-eslint/parser'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+const {
+	'eslint-recommended': {
+		overrides: [{ rules: typescriptEslintEslintRecommended }],
+	},
+	recommended: { rules: typescriptEslintRecommended },
+	'recommended-requiring-type-checking': {
+		rules: typescriptEslintRecommendedRequiringTypeChecking,
+	},
+} = typescriptEslintPlugin.configs
+
 export default [
+	'eslint:recommended',
 	{
 		// env: { node: true },
-		extends: ['eslint:recommended', 'prettier'],
-		languageOptions: {
-			ecmaVersion: 'latest',
-			sourceType: 'module',
-		},
-		linterOptions: {
-			noInlineConfig: false,
-			reportUnusedDisableDirectives: true,
-		},
-		root: true,
+		// extends: ['prettier'],
+		ignores: ['**/.cache/**', '**/coverage/**'],
 	},
-	{
-		files: ['./*.json}', '{bin,docs,src,tests}/**/*.json'],
-		extends: ['eslint:recommended', 'plugin:json/recommended', 'prettier'],
-	},
+	// {
+	// files: ['./*.json}', '{bin,docs,src,tests}/**/*.json'],
+	// extends: ['plugin:json/recommended', 'prettier'],
+	// },
+	// {
+	// files: ['./*.ts', '{bin,docs,src,tests}/**/*.ts'],
+	// extends: [
+	// 	'plugin:@typescript-eslint/recommended',
+	// 	'plugin:@typescript-eslint/recommended-requiring-type-checking',
+	// 	'prettier',
+	// ],
+	// plugins: { typescriptEslintPlugin },
+	// },
 	{
 		files: ['./*.ts', '{bin,docs,src,tests}/**/*.ts'],
-		extends: [
-			'eslint:recommended',
-			'plugin:@typescript-eslint/recommended',
-			'plugin:@typescript-eslint/recommended-requiring-type-checking',
-			'prettier',
-		],
 		languageOptions: {
-			// ecmaVersion: 'latest',
-			// sourceType: 'module',
-			parser: '@typescript-eslint/parser',
+			parser: typescriptEslintParser,
+			// parser: '@typescript-eslint/parser',
 			parserOptions: {
 				ecmaVersion: 'latest',
 				project: ['./tsconfig.json'],
@@ -41,7 +48,14 @@ export default [
 				tsconfigRootDir: __dirname,
 			},
 		},
-		plugins: ['@typescript-eslint'],
+		plugins: { '@typescript-eslint': typescriptEslintPlugin },
+		rules: {
+			...typescriptEslintEslintRecommended,
+			...typescriptEslintRecommended,
+			...typescriptEslintRecommendedRequiringTypeChecking,
+			// '@typescript-eslint/no-explicit-any': 'off',
+			// "@typescript-eslint/no-implicit-any-catch": ["error", { "allowExplicitAny": true }],
+		},
 	},
 ]
 

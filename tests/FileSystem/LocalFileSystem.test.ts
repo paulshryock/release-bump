@@ -1,7 +1,7 @@
 import mockFs from 'mock-fs'
 import { FileSystemError } from '../../src/Client'
 import { LocalFileSystem } from '../../src/FileSystem/LocalFileSystem'
-import { expect, it } from '@jest/globals'
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals'
 
 interface ObjectWithStrings {
 	[key: string]: ObjectWithStrings | string
@@ -102,15 +102,15 @@ describe('LocalFileSystem', () => {
 
 			afterEach(mockFs.restore)
 
-			it('throws a FileSystemError', () => {
+			it('throws a FileSystemError', async () => {
 				const fs = new LocalFileSystem('.', [])
 
-				expect(async () => {
+				await expect(async () => {
 					await fs.readFile('path/to/file')
 				}).rejects.toThrow(FileSystemError)
 			})
 		})
 	})
 
-	test.todo('writeFile')
+	it.todo('writeFile')
 })

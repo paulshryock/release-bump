@@ -55,7 +55,7 @@ export class LocalFileSystem implements FileSystem {
 	async readFile(file: string): Promise<string> {
 		try {
 			return await nodeReadFile(file, 'utf8')
-		} catch (error: any) {
+		} catch (error) {
 			throw new FileSystemError('could not read file', error)
 		}
 	}
@@ -88,8 +88,8 @@ export class LocalFileSystem implements FileSystem {
 					}),
 				)
 			}
-		} catch (error: any) {
-			if (error.code !== 'ENOENT') throw error
+		} catch (error) {
+			if (error instanceof SystemError && error.code !== 'ENOENT') throw error
 		}
 	}
 
@@ -114,7 +114,7 @@ export class LocalFileSystem implements FileSystem {
 	 * @throws FileSystemError
 	 */
 	async #validateFilePaths(): Promise<void> {
-		let validFilePaths: string[] = []
+		const validFilePaths: string[] = []
 		for (const filePath of this.#filePaths) {
 			if (await this.#fileExistsAndIsNotEmpty(filePath))
 				validFilePaths.push(filePath)

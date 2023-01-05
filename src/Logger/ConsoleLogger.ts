@@ -1,5 +1,6 @@
 import { Stringable } from '../Stringable'
 import { Logger, LogLevel } from '../Client'
+import console from 'node:console'
 
 export enum ConsoleLogMethods {
 	emergency = 'error',
@@ -13,39 +14,43 @@ export enum ConsoleLogMethods {
 }
 
 export class ConsoleLogger implements Logger {
-	emergency(message: string | Stringable, context: any = {}): void {
+	emergency(message: string | Stringable, context: object = {}): void {
 		console[ConsoleLogMethods.emergency](message, context)
 	}
 
-	alert(message: string | Stringable, context: any = {}): void {
+	alert(message: string | Stringable, context: object = {}): void {
 		console[ConsoleLogMethods.alert](message, context)
 	}
 
-	critical(message: string | Stringable, context: any = {}): void {
+	critical(message: string | Stringable, context: object = {}): void {
 		console[ConsoleLogMethods.critical](message, context)
 	}
 
-	error(message: string | Stringable, context: any = {}): void {
+	error(message: string | Stringable, context: object = {}): void {
 		console[ConsoleLogMethods.error](message, context)
 	}
 
-	warning(message: string | Stringable, context: any = {}): void {
+	warning(message: string | Stringable, context: object = {}): void {
 		console[ConsoleLogMethods.warning](message, context)
 	}
 
-	notice(message: string | Stringable, context: any = {}): void {
+	notice(message: string | Stringable, context: object = {}): void {
 		console[ConsoleLogMethods.notice](message, context)
 	}
 
-	info(message: string | Stringable, context: any = {}): void {
+	info(message: string | Stringable, context: object = {}): void {
 		console[ConsoleLogMethods.info](message, context)
 	}
 
-	debug(message: string | Stringable, context: any = {}): void {
+	debug(message: string | Stringable, context: object = {}): void {
 		console[ConsoleLogMethods.debug](message, context)
 	}
 
-	log(level: LogLevel, message: string | Stringable, context: any = {}): void {
+	log(
+		level: LogLevel,
+		message: string | Stringable,
+		context: object = {},
+	): void {
 		this[level](message, context)
 	}
 
@@ -58,8 +63,5 @@ export class ConsoleLogger implements Logger {
 	 * @return {string}
 	 * @todo   implement
 	 */
-	// #interpolate(message: string|Stringable, context: any = {}): string {
-	// 	;((m, c) => [m, c])(message, context)
-	// 	return ''
-	// }
+	// #interpolate(message: string|Stringable, context: object = {}): string {}
 }

@@ -50,12 +50,12 @@ export enum LogLevel {
 
 type LevelLoggable = Record<
 	LogLevel,
-	(message: string | Stringable, context: any) => void
+	(message: string | Stringable, context: object) => void
 >
 
 type Loggable = Record<
 	'log',
-	(level: LogLevel, message: string | Stringable, context: any) => void
+	(level: LogLevel, message: string | Stringable, context: object) => void
 >
 
 /**

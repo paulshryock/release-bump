@@ -1,7 +1,8 @@
 import { CliConfigurator } from '../../src/Configurator/CliConfigurator'
 import { Configuration, DEFAULT_CONFIGURATION } from '../../src/Client'
 import { NullFileSystem } from '../../src/FileSystem/NullFileSystem'
-import { describe } from '@jest/globals'
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals'
+import process from 'node:process'
 
 describe('CliConfigurator', () => {
 	let originalArgv: string[]

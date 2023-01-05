@@ -1,5 +1,6 @@
 import { Configuration, Configurator, DEFAULT_CONFIGURATION } from '../Client'
 import { FileSystem } from '../Client'
+import process from 'node:process'
 import yargs from 'yargs/yargs'
 
 export class CliConfigurator implements Configurator {
@@ -45,7 +46,7 @@ export class CliConfigurator implements Configurator {
 		return this.#configuration
 	}
 
-	#getValidConfiguration(argv: Object): Object {
+	#getValidConfiguration(argv: object): object {
 		return Object.entries(argv).reduce((all, [key, value]) => {
 			if (!Object.keys(DEFAULT_CONFIGURATION).includes(key)) return all
 

@@ -19,7 +19,7 @@ export class NullFileSystem implements FileSystem {
 		this.#noop(path, data)
 	}
 
-	#noop(...x: any): any {
+	#noop(...x: Array<string | string[]>): Array<string | string[]> {
 		return x
 	}
 }
