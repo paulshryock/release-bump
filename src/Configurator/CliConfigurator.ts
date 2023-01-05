@@ -47,18 +47,20 @@ export class CliConfigurator implements Configurator {
 	}
 
 	#getValidConfiguration(argv: object): object {
-		return Object.entries(argv)
-			.reduce((all, [key, value]: [key: string, value: keyof Argv<{}>]) => {
+		return Object.entries(argv).reduce(
+			(all, [key, value]: [key: string, value: keyof Argv]) => {
 				if (!Object.keys(DEFAULT_CONFIGURATION).includes(key)) return all
 
 				return { ...all, [key]: value }
-			}, {})
+			},
+			{},
+		)
 	}
 
 	async #setRelease(): Promise<void> {
 		const { version } = JSON.parse(
 			await this.#fileSystem.readFile('package.json'),
-		)
+		) as { version: string }
 
 		this.#configuration.release = version
 	}
