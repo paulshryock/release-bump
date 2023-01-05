@@ -1,12 +1,10 @@
-import { FileSystem, FileSystemError } from './FileSystem'
+import { FileSystem, FileSystemError } from '../Client'
 import {
 	readdir,
 	readFile as nodeReadFile,
 	stat,
 	writeFile as nodeWriteFile,
 } from 'node:fs/promises'
-
-class LocalFileSystemError extends FileSystemError {}
 
 export class LocalFileSystem implements FileSystem {
 	/** @type {string[]} File paths. */
@@ -53,13 +51,13 @@ export class LocalFileSystem implements FileSystem {
    * @since  unreleased
    * @param  {string}          file File to read.
    * @return {Promise<string>}      File contents.
-   * @throws {LocalFileSystemError}
+   * @throws {FileSystemError}
    */
   async readFile(file: string): Promise<string> {
   	try {
   		return await nodeReadFile(file, 'utf8')
   	} catch (error: any) {
-  		throw new LocalFileSystemError('could not read file', error)
+  		throw new FileSystemError('could not read file', error)
   	}
   }
 
@@ -75,8 +73,9 @@ export class LocalFileSystem implements FileSystem {
    * @return {Promise<void>}
    */
   async #setFilePaths(path: string): Promise<void> {
-  	if (this.#pathsToIgnore.some((pathToIgnore) => path.includes(pathToIgnore)))
-  		return
+  	if (this.#pathsToIgnore.some((pathToIgnore) =>
+  		path.includes(pathToIgnore)))
+  			return
 
   	try {
 	  	if ((await stat(path)).isFile())
@@ -86,6 +85,7 @@ export class LocalFileSystem implements FileSystem {
 	  			.map((fileOrDirectory) => {
 	  				if (path === '.')
 	  					return fileOrDirectory
+
 	  				return `${path}/${fileOrDirectory}`
 	  			}))
 	  	}

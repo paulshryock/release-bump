@@ -1,5 +1,5 @@
-import { Configuration, Configurator, DEFAULT_CONFIGURATION } from './Configurator'
-import { FileSystem } from '../FileSystem/FileSystem'
+import { Configuration, Configurator, DEFAULT_CONFIGURATION } from '../Client'
+import { FileSystem } from '../Client'
 import yargs from 'yargs/yargs'
 
 export class CliConfigurator implements Configurator {

@@ -2,8 +2,8 @@ import { CliConfigurator } from '../../src/Configurator/CliConfigurator'
 import {
 	Configuration,
 	DEFAULT_CONFIGURATION,
-} from '../../src/Configurator/Configurator'
-import { MockFileSystem } from '../FileSystem/MockFileSystem'
+} from '../../src/Client'
+import { NullFileSystem } from '../../src/FileSystem/NullFileSystem'
 import { describe } from '@jest/globals'
 
 describe('CliConfigurator', () => {
@@ -12,10 +12,7 @@ describe('CliConfigurator', () => {
   const nodeBinaryPath = '/path/to/node/binary'
   const cliBinaryPath = '/path/to/cli/binary'
   const binaryPaths = [nodeBinaryPath, cliBinaryPath]
-  const defaults = {
-  	...DEFAULT_CONFIGURATION,
-  	release: MockFileSystem.getRelease(),
-  }
+  const defaults = DEFAULT_CONFIGURATION
 
 	beforeEach(() => {
 	  originalArgv = process.argv
@@ -44,7 +41,7 @@ describe('CliConfigurator', () => {
 
 		describe('gets configuration from cli', () => {
 			it(`${testCase}`, async () => {
-				const fs = new MockFileSystem('src', [])
+				const fs = new NullFileSystem('src', [])
 				const c = new CliConfigurator(fs)
 
 				expect(await c.getConfiguration()).toStrictEqual(expected)

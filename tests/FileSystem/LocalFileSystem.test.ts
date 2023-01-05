@@ -1,4 +1,5 @@
-import mock from 'mock-fs'
+import mockFs from 'mock-fs'
+import { FileSystemError } from "../../src/Client"
 import { LocalFileSystem } from "../../src/FileSystem/LocalFileSystem"
 import { expect, it } from '@jest/globals';
 
@@ -8,12 +9,12 @@ interface ObjectWithStrings {
 
 const mockedDependencies = {
 	'node_modules/escape-string-regexp':
-		mock.load('node_modules/escape-string-regexp'),
+		mockFs.load('node_modules/escape-string-regexp'),
 	'node_modules/jest-message-util':
-		mock.load('node_modules/jest-message-util'),
-	'node_modules/pretty-format': mock.load('node_modules/pretty-format'),
-	'node_modules/react-is': mock.load('node_modules/react-is'),
-	'node_modules/stack-utils': mock.load('node_modules/stack-utils'),
+		mockFs.load('node_modules/jest-message-util'),
+	'node_modules/pretty-format': mockFs.load('node_modules/pretty-format'),
+	'node_modules/react-is': mockFs.load('node_modules/react-is'),
+	'node_modules/stack-utils': mockFs.load('node_modules/stack-utils'),
 }
 
 describe('LocalFileSystem', () => {
@@ -42,8 +43,8 @@ describe('LocalFileSystem', () => {
   ) => {
 
     describe('lists file paths of non-empty files recursively', () => {
-      beforeEach(() => mock({ ...mockedDependencies, ...mockedFileSystem }))
-      afterEach(mock.restore);
+      beforeEach(() => mockFs({ ...mockedDependencies, ...mockedFileSystem }))
+      afterEach(mockFs.restore);
 
       it(`${testCase}`, async () => {
       	const pathsToIgnore: string[] = []
@@ -54,5 +55,38 @@ describe('LocalFileSystem', () => {
       })
     })
   })
+
+  describe('readFile', () => {
+
+    describe('file does exist', () => {
+      beforeEach(() => mockFs({
+      	...mockedDependencies,
+      	'path/to/file': 'content',
+      }))
+
+      afterEach(mockFs.restore);
+
+		  it('reads file contents', async () => {
+		  	const fs = new LocalFileSystem('.', [])
+
+		  	expect(await fs.readFile('path/to/file')).toBe('content')
+		  })
+	  })
+
+    describe('file does not exist', () => {
+      beforeEach(() => mockFs(mockedDependencies))
+
+      afterEach(mockFs.restore);
+
+		  it('throws a FileSystemError', () => {
+		  	const fs = new LocalFileSystem('.', [])
+
+		  	expect(async () => { await fs.readFile('path/to/file') })
+		  		.rejects.toThrow(FileSystemError)
+		  })
+	  })
+  })
+
+  test.todo('writeFile')
 
 })
