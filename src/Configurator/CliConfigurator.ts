@@ -1,7 +1,7 @@
 import { Configuration, Configurator, DEFAULT_CONFIGURATION } from '../Client'
 import { FileSystem } from '../Client'
 import process from 'node:process'
-import yargs from 'yargs/yargs'
+import yargs, { Argv } from 'yargs'
 
 export class CliConfigurator implements Configurator {
 	#aliases: [string, string][] = [
@@ -47,11 +47,12 @@ export class CliConfigurator implements Configurator {
 	}
 
 	#getValidConfiguration(argv: object): object {
-		return Object.entries(argv).reduce((all, [key, value]) => {
-			if (!Object.keys(DEFAULT_CONFIGURATION).includes(key)) return all
+		return Object.entries(argv)
+			.reduce((all, [key, value]: [key: string, value: keyof Argv<{}>]) => {
+				if (!Object.keys(DEFAULT_CONFIGURATION).includes(key)) return all
 
-			return { ...all, [key]: value }
-		}, {})
+				return { ...all, [key]: value }
+			}, {})
 	}
 
 	async #setRelease(): Promise<void> {
