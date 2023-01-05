@@ -5,3 +5,5 @@ mkdir -p \
 	.cache/eslint \
 	.cache/jest
 node_modules/.bin/lint-staged --config lint-staged.config.json
+npm run typecheck
+npm test
