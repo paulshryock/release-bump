@@ -26,15 +26,81 @@ export class CliClient implements Client {
 		return this
 	}
 
+	/**
+	 * Bumps one file. Do we need this?
+	 *
+	 * @since  unreleased
+	 * @param  {string}        path [description]
+	 * @return {Promise<void>}
+	 * @todo   Implement.
+	 */
 	async bumpOne(path: string): Promise<void> {
 		this.logger?.debug(path)
-		return
+		return Promise.resolve()
 	}
-	async bumpMany(): Promise<void> {}
 
-	async createChangelog(): Promise<void> {}
-	async bumpChangelog(): Promise<void> {}
-	async bumpWordPressTheme(): Promise<void> {}
-	async bumpWordPressPlugin(): Promise<void> {}
-	async bumpDocblocks(): Promise<void> {}
+	/**
+	 * Bumps many files. Do we need this?
+	 *
+	 * @return {Promise<void>}
+	 * @todo   Implement.
+	 */
+	async bumpMany(): Promise<void> {
+		return Promise.resolve()
+	}
+
+	/**
+	 * Creates an empty changelog.
+	 *
+	 * @since  unreleased
+	 * @return {Promise<void>}
+	 * @todo   Implement.
+	 */
+	async createChangelog(): Promise<void> {
+		return Promise.resolve()
+	}
+
+	/**
+	 * Bumps the changelog.
+	 *
+	 * @since  unreleased
+	 * @return {Promise<void>}
+	 * @todo   Implement.
+	 */
+	async bumpChangelog(): Promise<void> {
+		return Promise.resolve()
+	}
+
+	/**
+	 * Bumps the WordPress theme version.
+	 *
+	 * @since  unreleased
+	 * @return {Promise<void>}
+	 * @todo   Implement.
+	 */
+	async bumpWordPressTheme(): Promise<void> {
+		return Promise.resolve()
+	}
+
+	/**
+	 * Bumps the WordPress plugin version.
+	 *
+	 * @since  unreleased
+	 * @return {Promise<void>}
+	 * @todo   Implement.
+	 */
+	async bumpWordPressPlugin(): Promise<void> {
+		return Promise.resolve()
+	}
+
+	/**
+	 * Bumps any unreleased `@since` tags in docblock comments.
+	 *
+	 * @since  unreleased
+	 * @return {Promise<void>}
+	 * @todo   Implement.
+	 */
+	async bumpDocblocks(): Promise<void> {
+		return Promise.resolve()
+	}
 }
