@@ -7,8 +7,8 @@ module.exports = {
 	htmlWhitespaceSensitivity: 'css',
 	jsxSingleQuote: true,
 	/*
-	 * Do not set `printWidth`: Setting `max_line_length` in an `.editorconfig`
-	 * file will configure Prettier’s print width, unless overridden.
+	 * Do not set `printWidth`. Prettier’s print width is configured by
+	 * `max_line_length` in `.editorconfig`.
 	 */
 	proseWrap: 'preserve',
 	quoteProps: 'as-needed',
@@ -16,9 +16,12 @@ module.exports = {
 	singleAttributePerLine: false,
 	singleQuote: true,
 	/*
-	 * Do not set `tabWidth`: Setting `indent_size` or `tab_width` in an
-	 * `.editorconfig` file will configure Prettier’s tab width, unless
-	 * overridden.
+	 * Do not set `tabWidth`. Prettier’s tab width is configured by `indent_size`
+	 * or `tab_width` in `.editorconfig`.
+	 *
+	 * Since `.editorconfig` intentionally does not set `indent_size`, and does
+	 * not set `root = true`, you can create your own `.editorconfig` _outside_
+	 * this repo with `tab_width` set to whatever you want.
 	 */
 	trailingComma: 'all',
 	useTabs: true,
