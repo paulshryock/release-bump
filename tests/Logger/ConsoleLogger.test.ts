@@ -3,14 +3,7 @@ import {
 	ConsoleLogMethods,
 } from '../../src/Logger/ConsoleLogger'
 import { LogLevel } from '../../src/Client'
-import {
-	afterAll,
-	beforeEach,
-	describe,
-	expect,
-	it,
-	jest,
-} from '@jest/globals'
+import { afterAll, beforeEach, describe, expect, it, jest } from '@jest/globals'
 import console from 'node:console'
 
 describe('ConsoleLogger', () => {

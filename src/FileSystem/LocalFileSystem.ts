@@ -57,10 +57,20 @@ export class LocalFileSystem implements FileSystem {
 		try {
 			return await nodeReadFile(file, 'utf8')
 		} catch (error) {
-			throw new FileSystemError('could not read file', { cause: error })
+			throw new FileSystemError('could not read file', {
+				...(isErrnoException(error) ? { cause: error } : {}),
+			})
 		}
 	}
 
+	/**
+	 * Writes a file.
+	 *
+	 * @since  unreleased
+	 * @param  {string}        path Path to file.
+	 * @param  {string}        data File data.
+	 * @return {Promise<void>}
+	 */
 	async writeFile(path: string, data: string): Promise<void> {
 		await nodeWriteFile(path, data, 'utf8')
 	}
