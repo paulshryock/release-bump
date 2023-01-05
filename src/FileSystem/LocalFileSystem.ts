@@ -1,4 +1,5 @@
 import { FileSystem, FileSystemError } from '../Client'
+import { isErrnoException } from '../Error'
 import {
 	readdir,
 	readFile as nodeReadFile,
@@ -56,7 +57,7 @@ export class LocalFileSystem implements FileSystem {
 		try {
 			return await nodeReadFile(file, 'utf8')
 		} catch (error) {
-			throw new FileSystemError('could not read file', error)
+			throw new FileSystemError('could not read file', { cause: error })
 		}
 	}
 
@@ -89,7 +90,7 @@ export class LocalFileSystem implements FileSystem {
 				)
 			}
 		} catch (error) {
-			if (error instanceof SystemError && error.code !== 'ENOENT') throw error
+			if (isErrnoException(error) && error.code !== 'ENOENT') throw error
 		}
 	}
 
