@@ -1,4 +1,4 @@
-import { FileSystem } from '../Client'
+import { FileSystem } from '../../src/Client'
 
 export class NullFileSystem implements FileSystem {
 	constructor(path: string, pathsToIgnore: string[] = []) {

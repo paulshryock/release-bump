@@ -1,6 +1,6 @@
 import { CliConfigurator } from '../../src/Configurator/CliConfigurator'
 import { Configuration, DEFAULT_CONFIGURATION } from '../../src/Client'
-import { NullFileSystem } from '../../src/FileSystem/NullFileSystem'
+import { NullFileSystem } from '../FileSystem/NullFileSystem'
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals'
 import process from 'node:process'
 
