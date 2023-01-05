@@ -50,12 +50,12 @@ export enum LogLevel {
 
 type LevelLoggable = Record<
 	LogLevel,
-	(message: string|Stringable, context: any) => void
+	(message: string | Stringable, context: any) => void
 >
 
 type Loggable = Record<
 	'log',
-	(level: LogLevel, message: string|Stringable, context: any) => void
+	(level: LogLevel, message: string | Stringable, context: any) => void
 >
 
 /**
@@ -80,13 +80,13 @@ export interface Logger extends LevelLoggable, Loggable {}
  * Describes a logger-aware instance.
  */
 export interface LoggerAware {
-  setLogger(logger: Logger): void
+	setLogger(logger: Logger): void
 }
 
 export interface FileSystem {
-  listFiles(): Promise<string[]>
-  readFile(path: string): Promise<string>
-  writeFile(path: string, data: string): Promise<void>
+	listFiles(): Promise<string[]>
+	readFile(path: string): Promise<string>
+	writeFile(path: string, data: string): Promise<void>
 }
 
 export class FileSystemError extends Error {}

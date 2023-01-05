@@ -1,29 +1,16 @@
 {
-  "extends": [
-    "config:base",
-    ":pinAllExceptPeerDependencies"
-  ],
-  "assigneesFromCodeOwners": true,
-  "labels": [
-    "dependencies"
-  ],
-  "packageRules": [
-    {
-      "matchPackagePatterns": [
-        "*"
-      ],
-      "updateTypes": [
-        "major",
-        "minor",
-        "patch"
-      ],
-      "automerge": true,
-      "automergeType": "pr",
-      "platformAutomerge": true
-    }
-  ],
-  "schedule": [
-    "every weekend"
-  ],
-  "timezone": "America/New_York"
+	"extends": ["config:base", ":pinAllExceptPeerDependencies"],
+	"assigneesFromCodeOwners": true,
+	"labels": ["dependencies"],
+	"packageRules": [
+		{
+			"matchPackagePatterns": ["*"],
+			"updateTypes": ["major", "minor", "patch"],
+			"automerge": true,
+			"automergeType": "pr",
+			"platformAutomerge": true
+		}
+	],
+	"schedule": ["every weekend"],
+	"timezone": "America/New_York"
 }

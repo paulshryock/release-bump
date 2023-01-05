@@ -13,39 +13,39 @@ export enum ConsoleLogMethods {
 }
 
 export class ConsoleLogger implements Logger {
-	emergency(message: string|Stringable, context: any = {}): void {
+	emergency(message: string | Stringable, context: any = {}): void {
 		console[ConsoleLogMethods.emergency](message, context)
 	}
 
-	alert(message: string|Stringable, context: any = {}): void {
+	alert(message: string | Stringable, context: any = {}): void {
 		console[ConsoleLogMethods.alert](message, context)
 	}
 
-	critical(message: string|Stringable, context: any = {}): void {
+	critical(message: string | Stringable, context: any = {}): void {
 		console[ConsoleLogMethods.critical](message, context)
 	}
 
-	error(message: string|Stringable, context: any = {}): void {
+	error(message: string | Stringable, context: any = {}): void {
 		console[ConsoleLogMethods.error](message, context)
 	}
 
-	warning(message: string|Stringable, context: any = {}): void {
+	warning(message: string | Stringable, context: any = {}): void {
 		console[ConsoleLogMethods.warning](message, context)
 	}
 
-	notice(message: string|Stringable, context: any = {}): void {
+	notice(message: string | Stringable, context: any = {}): void {
 		console[ConsoleLogMethods.notice](message, context)
 	}
 
-	info(message: string|Stringable, context: any = {}): void {
+	info(message: string | Stringable, context: any = {}): void {
 		console[ConsoleLogMethods.info](message, context)
 	}
 
-	debug(message: string|Stringable, context: any = {}): void {
+	debug(message: string | Stringable, context: any = {}): void {
 		console[ConsoleLogMethods.debug](message, context)
 	}
 
-	log(level: LogLevel, message: string|Stringable, context: any = {}): void {
+	log(level: LogLevel, message: string | Stringable, context: any = {}): void {
 		this[level](message, context)
 	}
 

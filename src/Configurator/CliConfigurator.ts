@@ -40,25 +40,23 @@ export class CliConfigurator implements Configurator {
 	 * @return {Promise<Configuration>} Configuration.
 	 */
 	async getConfiguration(): Promise<Configuration> {
-		if (this.#configuration.release === '')
-			await this.#setRelease()
+		if (this.#configuration.release === '') await this.#setRelease()
 
 		return this.#configuration
 	}
 
 	#getValidConfiguration(argv: Object): Object {
-		return Object.entries(argv)
-			.reduce((all, [key, value]) => {
-				if (!Object.keys(DEFAULT_CONFIGURATION).includes(key))
-					return all
+		return Object.entries(argv).reduce((all, [key, value]) => {
+			if (!Object.keys(DEFAULT_CONFIGURATION).includes(key)) return all
 
-				return { ...all, [key]: value }
-			}, {})
+			return { ...all, [key]: value }
+		}, {})
 	}
 
 	async #setRelease(): Promise<void> {
-		const { version } =
-			JSON.parse(await this.#fileSystem.readFile('package.json'))
+		const { version } = JSON.parse(
+			await this.#fileSystem.readFile('package.json'),
+		)
 
 		this.#configuration.release = version
 	}

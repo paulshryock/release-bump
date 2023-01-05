@@ -3,7 +3,7 @@ import {
 	ConsoleLogMethods,
 } from '../../src/Logger/ConsoleLogger'
 import { LogLevel } from '../../src/Client'
-import { describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it, jest } from '@jest/globals'
 
 describe('ConsoleLogger', () => {
 	describe.each(Object.values(LogLevel))('log', (logLevel: LogLevel) => {

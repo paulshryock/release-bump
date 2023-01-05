@@ -5,19 +5,19 @@ export class NullFileSystem implements FileSystem {
 		this.#noop(path, pathsToIgnore)
 	}
 
-  async listFiles(): Promise<string[]> {
-  	return []
-  }
+	async listFiles(): Promise<string[]> {
+		return []
+	}
 
-  async readFile(file: string): Promise<string> {
-  	this.#noop(file)
+	async readFile(file: string): Promise<string> {
+		this.#noop(file)
 
-  	return JSON.stringify({ version: '' })
-  }
+		return JSON.stringify({ version: '' })
+	}
 
-  async writeFile(path: string, data: string): Promise<void> {
-  	this.#noop(path, data)
-  }
+	async writeFile(path: string, data: string): Promise<void> {
+		this.#noop(path, data)
+	}
 
 	#noop(...x: any): any {
 		return x
