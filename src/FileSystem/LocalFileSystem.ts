@@ -1,5 +1,4 @@
-import { FileSystem, FileSystemError } from '../Client'
-import { isErrnoException } from '../Error'
+import { FileSystem } from '../Client'
 import {
 	readdir,
 	readFile as nodeReadFile,
@@ -23,9 +22,11 @@ export class LocalFileSystem implements FileSystem {
 	 * @since unreleased
 	 * @param {string}   path          Path to file or directory.
 	 * @param {string[]} pathsToIgnore Paths to ignore.
+	 * @todo  Accept a Logger as a parameter.
 	 */
 	constructor(path: string, pathsToIgnore: string[] = []) {
 		this.#filePaths = []
+		// todo: this.#logger = logger
 		this.#pathsToIgnore = ['.git', 'node_modules', 'vendor', ...pathsToIgnore]
 		this.#path = path
 	}
@@ -51,15 +52,13 @@ export class LocalFileSystem implements FileSystem {
 	 * @since  unreleased
 	 * @param  {string}          file File to read.
 	 * @return {Promise<string>}      File contents.
-	 * @throws {FileSystemError}
+	 * @throws {Error}
 	 */
 	async readFile(file: string): Promise<string> {
 		try {
 			return await nodeReadFile(file, 'utf8')
 		} catch (error) {
-			throw new FileSystemError('could not read file', {
-				...(isErrnoException(error) ? { cause: error } : {}),
-			})
+			throw error
 		}
 	}
 
@@ -100,7 +99,8 @@ export class LocalFileSystem implements FileSystem {
 				)
 			}
 		} catch (error) {
-			if (isErrnoException(error) && error.code !== 'ENOENT') throw error
+			/** @todo: Use this.#logger.info(). */
+			console.error(error)
 		}
 	}
 
@@ -122,7 +122,7 @@ export class LocalFileSystem implements FileSystem {
 	 *
 	 * @since  unreleased
 	 * @return Promise<void>
-	 * @throws FileSystemError
+	 * @throws Error
 	 */
 	async #validateFilePaths(): Promise<void> {
 		const validFilePaths: string[] = []
@@ -140,13 +140,10 @@ export class LocalFileSystem implements FileSystem {
 	 * @since  unreleased
 	 * @param  {string}           filePath File path.
 	 * @return {Promise<boolean>}          Whether file exists and is not empty.
+	 * @throws Error
 	 */
 	async #fileExistsAndIsNotEmpty(filePath: string): Promise<boolean> {
-		try {
-			const fileContents = await this.readFile(filePath)
-			return fileContents !== ''
-		} catch (error) {
-			return false
-		}
+		const fileContents = await this.readFile(filePath)
+		return fileContents !== ''
 	}
 }
