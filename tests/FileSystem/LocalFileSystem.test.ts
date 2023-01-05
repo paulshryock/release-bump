@@ -112,14 +112,11 @@ describe('LocalFileSystem', () => {
 				}),
 			)
 
-			it(
-				'reads the contents of a file from the local file system',
-				async () => {
-					const fs = new LocalFileSystem('.')
+			it('reads the contents of a file from the local file system', async () => {
+				const fs = new LocalFileSystem('.')
 
-					expect(await fs.readFile('path/to/file')).toBe('content')
-				},
-			)
+				expect(await fs.readFile('path/to/file')).toBe('content')
+			})
 		})
 
 		describe('file does not exist', () => {

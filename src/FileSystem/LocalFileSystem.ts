@@ -55,11 +55,7 @@ export class LocalFileSystem implements FileSystem {
 	 * @throws {Error}
 	 */
 	async readFile(file: string): Promise<string> {
-		try {
-			return await nodeReadFile(file, 'utf8')
-		} catch (error) {
-			throw error
-		}
+		return await nodeReadFile(file, 'utf8')
 	}
 
 	/**
