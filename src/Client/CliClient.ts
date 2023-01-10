@@ -1,12 +1,27 @@
-import { Client } from '../Client'
+import { Client, Configuration } from '../Client'
 import { CliConfigurator } from '../Configurator/CliConfigurator'
 import { LocalFileSystem } from '../FileSystem/LocalFileSystem'
 import { ConsoleLogger } from '../Logger/ConsoleLogger'
 
 export class CliClient implements Client {
+	configuration?: Configuration
 	configurator?: CliConfigurator
 	fileSystem?: LocalFileSystem
 	logger?: ConsoleLogger
+
+	/**
+	 * Sets the configuration.
+	 *
+	 * @since  unreleased
+	 * @return {Promise<void>}
+	 * @throws TypeError
+	 */
+	async setConfiguration(): Promise<void> {
+		if (!(this.configurator instanceof CliConfigurator))
+			throw new TypeError('invalid configurator')
+
+		this.configuration = await this.configurator.getConfiguration()
+	}
 
 	setConfigurator(configurator: CliConfigurator): CliClient {
 		this.configurator = configurator
