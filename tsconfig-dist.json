@@ -1,6 +1,6 @@
 {
 	"extends": "./tsconfig-common",
-	"files": ["./src/index.ts"],
+	"files": ["./src/Client.ts"],
 	"compilerOptions": {
 		"declaration": true,
 		"emitDeclarationOnly": true

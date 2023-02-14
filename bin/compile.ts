@@ -1,72 +1,83 @@
-import { ProcessEnv } from '../src/lib.js'
-import { readFile, writeFile } from 'node:fs/promises'
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { $ } from 'zx'
+import esbuild, { BuildContext } from 'esbuild'
+import { mkdir } from 'node:fs/promises'
+import yargs from 'yargs/yargs'
+import { hideBin } from 'yargs/helpers'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+const PATHS = {
+	js: {
+		src: ['src/Client.ts'],
+		dist: 'dist/index.js',
+	},
+}
 
-/** Parsed package.json content. */
-const pkg = JSON.parse(
-	await readFile(resolve(__dirname, '..', 'package.json'), 'utf8'),
-)
+const icons = {
+	success: '\x1b[32m✓\x1b[0m',
+	error: '\x1b[31m✕\x1b[0m',
+	party: '🎉',
+}
 
-/** Filtered process.env global. */
-const env = JSON.stringify(
-	Object.entries(process.env).reduce(
-		(inject: ProcessEnv, [key, value]) => {
-			const processEnv = { ...inject }
-			if (key.includes('RELEASE_BUMP')) processEnv[key] = value
-			return processEnv
-		},
-		{
-			RELEASE_BUMP_VERSION: pkg.version,
-		},
-	),
-)
+const { watch } = await yargs(hideBin(process.argv))
+	.option('watch', {
+		alias: 'w',
+		default: false,
+		description: 'Watch for changes',
+		type: 'boolean',
+	})
+	.parse()
 
-/** Module formats. */
-const moduleFormats = [
-	{ name: 'cjs', extension: 'cjs' },
-	{ name: 'esm', extension: 'js' },
-]
+/**
+ * Compiles JavaScript assets.
+ *
+ * @since  unreleased
+ * @return {Promise<void>}
+ */
+async function compileJavaScript(): Promise<void> {
+	await esbuild[watch ? 'context' : 'build']({
+		bundle: true,
+		entryPoints: PATHS.js.src,
+		format: 'esm',
+		minifyIdentifiers: false,
+		minifySyntax: true,
+		minifyWhitespace: true,
+		outfile: PATHS.js.dist,
+		platform: 'node',
+	})
+		.then((result) => {
+			console.info(`${icons.success} ${PATHS.js.dist}`)
+			return result
+		})
+		.catch(() => console.error(`${icons.error} ${PATHS.js.dist}`))
+		.then(async (buildContext) => {
+			if (watch && buildContext)
+				await (buildContext as BuildContext)
+					.watch()
+					.then(() => console.info('Watching for JavaScript changes...'))
+					.catch((error: any) => {
+						console.error(`${icons.error} Failed to compile JavaScript`)
+						console.error(error)
+					})
+		})
+}
 
-/** Files. */
-const files = ['index', 'cli']
+/**
+ * Compiles exported assets.
+ *
+ * @since  unreleased
+ * @return {Promise<void>}
+ */
+async function compile(): Promise<void> {
+	console.log('Compiling to ./dist ...')
 
-/** Compile source code. */
-await Promise.all(
-	moduleFormats.map(async (moduleFormat) => {
-		return await Promise.all(
-			files.map(async (file) => {
-				// Stick with CommonJS CLI for backwards compatibility.
-				if (file === 'cli' && moduleFormat.name === 'esm') return
+	await mkdir('dist', { recursive: true })
+		.then(async () => {
+			await Promise.all([compileJavaScript()]).then(() =>
+				console.log(`${icons.party} Success`),
+			)
+		})
+		.catch((error: any) => {
+			console.error(`${icons.error} Failure`)
+			console.error(error)
+		})
+}
 
-				await $`esbuild ${resolve(__dirname, '..', 'src', `${file}.ts`)} \
-					--bundle \
-					--define:process.env=${env} \
-					${file === 'cli' ? '--external:./index.js' : ''} \
-					--format=${moduleFormat.name} \
-					--minify-syntax \
-					--minify-whitespace \
-					--outfile=${resolve(
-		__dirname,
-		'..',
-		'dist',
-		`${file}.${moduleFormat.extension}`,
-	)} \
-					--platform=node \
-					--target=node8`
-			}),
-		)
-	}),
-)
-
-// Rewrite require path in compiled CLI.
-const compiledCliPath = resolve(__dirname, '..', 'dist', 'cli.cjs')
-await writeFile(
-	compiledCliPath,
-	(await readFile(compiledCliPath, 'utf8')).replaceAll('index.js', 'index.cjs'),
-	'utf8',
-)
+compile()

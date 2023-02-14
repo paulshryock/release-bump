@@ -1,9 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-mkdir -p \
-	.cache/eslint \
-	.cache/jest
-node_modules/.bin/lint-staged --config lint-staged.config.json
-npm run typecheck
-npm test
+# Enforce code quality.
+echo '⚙️ Enforcing code quality.'
+npm run quality

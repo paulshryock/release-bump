@@ -1,6 +1,5 @@
-import process from 'node:process'
+import { install } from 'husky'
 
 const isCi = process.env.CI !== undefined
-if (!isCi) {
-	(await import('husky')).install('bin/husky')
-}
+
+if (!isCi) install('bin/husky')
