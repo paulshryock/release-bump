@@ -603,6 +603,7 @@ export async function parseSettingsFromOptions(
 
 	/** Directories to ignore. */
 	const ignore = [
+		'.cache',
 		'.git',
 		'.github',
 		'coverage',
