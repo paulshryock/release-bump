@@ -69,6 +69,10 @@
     "typecheck": "tsc",
     "typecheck:watch": "npm run typecheck -- --watch",
     "preversion": "if [[ $(git status -s) ]]; then exit 1; fi",
+    "upgrade:all": "ncu --upgrade",
+    "upgrade:dry-run": "ncu",
+    "upgrade:minor": "ncu --target=minor --upgrade",
+    "upgrade:patch": "ncu --target=patch --upgrade",
     "version": "npm-run-all --parallel clean quality --serial compile bump && git add ."
   },
   "devDependencies": {
