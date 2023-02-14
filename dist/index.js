@@ -52,7 +52,7 @@ var __toESM = (mod, isNodeMode, target) => (
 		mod,
 	)
 )
-var define_process_env_default = { RELEASE_BUMP_VERSION: '3.0.0-alpha.68' }
+var define_process_env_default = { RELEASE_BUMP_VERSION: '3.0.0-alpha.69' }
 import { Console } from 'console'
 import { createWriteStream } from 'fs'
 import { readdir, readFile, stat } from 'fs/promises'
@@ -241,6 +241,7 @@ async function parseSettingsFromOptions(options) {
 		pkg = { repository: '', version: '0.0.0' }
 	}
 	let ignore = [
+			'.cache',
 			'.git',
 			'.github',
 			'coverage',
