@@ -74,7 +74,7 @@
   "devDependencies": {
     "@11ty/eleventy": "2.0.0-canary.18",
     "@types/jest": "29.2.4",
-    "@types/node": "18.11.16",
+    "@types/node": "18.19.3",
     "@typescript-eslint/eslint-plugin": "5.46.1",
     "@typescript-eslint/parser": "5.46.1",
     "chokidar": "3.5.3",
