@@ -1,9 +1,0 @@
-{
-  "*.{ts,js,mjs,cjs,json}": [
-    "npm run format",
-    "npm run lint:js"
-  ],
-  "package.json": [
-    "npm run lint:pkg"
-  ]
-}

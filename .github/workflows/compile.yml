@@ -3,10 +3,9 @@ name: Compile source code
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-
   compile:
     runs-on: ubuntu-latest
     steps:

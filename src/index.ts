@@ -1,142 +1,52 @@
-import {
-	filterFilePaths,
-	formatText,
-	FormatTextOptions,
-	getRecursiveFilePaths,
-	Logger,
-	parseSettingsFromOptions,
-} from './lib.js'
+import { argv, exit } from 'node:process'
 import { readFile, writeFile } from 'node:fs/promises'
+import { Changelog } from './Changelog.ts'
+import { resolve } from 'node:path'
+import { spawn } from 'node:child_process'
 
-/** Release Bump options. */
-export interface ReleaseBumpOptions {
-	/** Path to changelog. */
-	changelogPath?: string
-	/** Path to config file. */
-	configPath?: string
-	/** Release date. */
-	date?: string
-	/** Dry run. */
-	dryRun?: boolean
-	/** Fail on error. */
-	failOnError?: boolean
-	/** Path to directory of files to bump. */
-	filesPath?: string
-	/** Directories to ignore. */
-	ignore?: string[]
-	/** Prefix release version with a 'v'. */
-	prefix?: boolean
-	/** Quiet, no logs. */
-	quiet?: boolean
-	/** Release version. */
-	release?: string
-	/** Repository. */
-	repository?: string
+const [, , version] = argv
+
+const helpText = `
+  Usage: release-bump [version]
+
+  Bumps changelog and docblock @since versions from unreleased to new version.
+
+  From command line: \`npm exec release-bump -- 2.0.0\`
+  package.json.scripts.version: "release-bump $npm_package_version && git add ."
+`
+
+if (!version) {
+	// eslint-disable-next-line no-console -- It's fine.
+	console.log(helpText)
+	exit(0)
 }
 
-/**
- * Bumps Changelog and docblock versions for a code release.
- *
- * Use `unreleased` in your Changelog and docblock comments, and Release Bump
- * will automatically bump it to the correct release version.
- *
- * @since  unreleased
- * @param  {ReleaseBumpOptions} options Release Bump options.
- * @return {string[]}                   Bumped files.
- * @throws {Error}                      On file system read/write error.
- */
-export async function releaseBump(
-	options?: ReleaseBumpOptions,
-): Promise<string[]> {
-	const {
-		changelogPath,
-		date,
-		dryRun,
-		failOnError,
-		filesPath,
-		ignore,
-		prefix,
-		quiet,
-		release,
-		repository,
-	} = await parseSettingsFromOptions(options)
+if (!/$\d+\.\d+\.\d+^/u.test(version)) exit(0)
 
-	/** Logger. */
-	const logger = Logger({ quiet })
+const shellScriptPath = resolve('./dist/index.sh')
+// eslint-disable-next-line no-console -- It's fine.
+console.debug({ shellScriptPath })
+const command = spawn(shellScriptPath, [version])
 
-	/** Directory paths to ignore. */
-	const directoriesToIgnore: string[] = ignore
+command.stdout.on('data', (output) => {
+	// eslint-disable-next-line no-console -- It's fine.
+	console.log(`${output}`)
+})
 
-	/** Paths. */
-	const paths: string[] = [changelogPath]
+command.stderr.on('data', (output) => {
+	// eslint-disable-next-line no-console -- It's fine.
+	console.error(`${output}`)
+})
 
-	/** File paths. */
-	const filePaths: string[] = await getRecursiveFilePaths({
-		directoriesToIgnore,
-		failOnError,
-		filesPath,
-		paths,
-	})
+command.on('close', (code) => {
+	// eslint-disable-next-line no-console -- It's fine.
+	if (code !== 0) console.log(`./dist/index.sh exited with code ${code}`)
+})
 
-	/** Filtered file paths. */
-	const filteredFilePaths: string[] = filterFilePaths(
-		filePaths,
-		directoriesToIgnore,
-	)
+const filePath = resolve('./CHANGELOG.md')
 
-	/** Bumped files. */
-	const bumpedFiles: string[] = []
+const currentChangelog = (await readFile(filePath, 'utf8')) ?? ''
 
-	await Promise.all(
-		filteredFilePaths.map(async (filePath) => {
-			/** Unformatted text. */
-			let unformatted = ''
-			try {
-				unformatted = await readFile(filePath, 'utf8')
-			} catch (error: any) {
-				if (failOnError) {
-					process.exitCode = 1
-					throw error
-				} else {
-					logger.warn(`could not read ${filePath}`)
-				}
-			}
+const changelog = new Changelog(currentChangelog, version ?? 'Unreleased')
 
-			/** formatText options. */
-			const formatTextOptions: FormatTextOptions = {
-				date,
-				isChangelog: changelogPath === filePath,
-				prefix,
-				quiet,
-				release,
-				repository,
-			}
-
-			/** Formatted text. */
-			const formatted = await formatText(unformatted, formatTextOptions)
-			if (unformatted === formatted) return
-
-			bumpedFiles.push(filePath)
-			if (!dryRun) {
-				try {
-					await writeFile(filePath, formatted, 'utf8')
-				} catch (error: any) {
-					if (failOnError) {
-						process.exitCode = 1
-						throw error
-					} else {
-						logger.warn(`could not write ${filePath}`, error)
-					}
-				}
-			}
-		}),
-	)
-
-	if (bumpedFiles.length > 0) {
-		logger.info(
-			(dryRun ? 'would have ' : '') + `bumped ${bumpedFiles.join(', ')}`,
-		)
-	}
-
-	return bumpedFiles
-}
+await writeFile(filePath, changelog.toString(), 'utf8')

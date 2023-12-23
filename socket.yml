@@ -1,1 +1,15 @@
-beta: true
+version: 2
+
+projectIgnorePaths:
+  - "ignored-folder"
+  - "foo/bar/package.json"
+
+triggerPaths:
+  - "package.json"
+  - "package-lock.json"
+
+issueRules:
+  unresolvedRequire: false
+
+githubApp:
+  enabled: true

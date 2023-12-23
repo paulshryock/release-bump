@@ -1,7 +1,7 @@
 [build]
 	base = "./"
-	publish = "docs/dist/"
-	command = "npm ci && npm run compile"
+	publish = "docs/"
+	command = "mkdir -p docs/ && cp README.md docs/index.html"
 
 [[redirects]]
   from = "http://releasebump.dev/*"

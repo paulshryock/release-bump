@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+shfmt -d src/ || exit 1
+(find src -name '*.sh' | xargs shellcheck) || exit 1
+npm run quality || exit 1

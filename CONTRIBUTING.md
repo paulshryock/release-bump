@@ -4,12 +4,14 @@
 - [Dependencies](#dependencies)
 
 - [Git](#git)
+
   - [Branches](#branches)
   - [Commits](#commits)
   - [Pull requests](#pull-requests)
   - [Tags](#tags)
 
 - [Code quality](#code-quality)
+
   - [During development](#during-development)
   - [Skipping code quality checks](#skipping-code-quality-checks)
 
@@ -47,7 +49,7 @@ This repository uses [Trunk Based Development](https://trunkbaseddevelopment.com
 
 3. [Write better commit messages](https://www.freecodecamp.org/news/how-to-write-better-git-commit-messages/)
 
-> By writing good commits, you are simply future-proofing yourself. You could save yourself and/or coworkers hours of digging around while troubleshooting by providing that helpful description. The extra time it takes to write a thoughtful commit message as a letter to your potential future self is extremely worthwhile. On large scale projects, documentation is imperative for maintenance. 
+> By writing good commits, you are simply future-proofing yourself. You could save yourself and/or coworkers hours of digging around while troubleshooting by providing that helpful description. The extra time it takes to write a thoughtful commit message as a letter to your potential future self is extremely worthwhile. On large scale projects, documentation is imperative for maintenance.
 
 4. [Format your commits](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
 
@@ -62,11 +64,11 @@ This repository uses [Trunk Based Development](https://trunkbaseddevelopment.com
 
 Never commit directly to the `main` branch. Work on a short-lived feature branch and then create a pull request against `main`. When you push code to the remote, CI will automatically run code quality checks and ensure that your source code compiles. These checks must pass before merging your PR, and you must have an approval from another engineer.
 
-- *Fast forward (`rebase` and `merge`):* Use [linear history](https://devblog.nestoria.com/post/98892582763/maintaining-a-consistent-linear-history-for-git).
+- _Fast forward (`rebase` and `merge`):_ Use [linear history](https://devblog.nestoria.com/post/98892582763/maintaining-a-consistent-linear-history-for-git).
 
-- *Squash:* If you have multiple or messy commits which should be combined into one on the `main` branch, squash your pull request with a descriptive commit message.
+- _Squash:_ If you have multiple or messy commits which should be combined into one on the `main` branch, squash your pull request with a descriptive commit message.
 
-- *Merge commit (`merge --no-ff`):* [You probably don't need this](https://dev.to/bladesensei/avoid-messy-git-history-3g26).
+- _Merge commit (`merge --no-ff`):_ [You probably don't need this](https://dev.to/bladesensei/avoid-messy-git-history-3g26).
 
 ### Tags
 
@@ -93,23 +95,24 @@ We use EditorConfig and Prettier with some configuration.
 
 1. **Line length set to 80 characters** (with soft limit at 120 characters and exceptions for data files)
 
-    > Shorter lines are more comfortable to read than longer lines. As line length increases, your eye has to travel farther from the end of one line to the beginning of the next, making it harder to track your progress vertically. Aim for an average line length of 45–90 characters, including spaces.
-    >
-    > -- [Butterick's Practical Typography](https://practicaltypography.com/line-length.html)
+   > Shorter lines are more comfortable to read than longer lines. As line length increases, your eye has to travel farther from the end of one line to the beginning of the next, making it harder to track your progress vertically. Aim for an average line length of 45–90 characters, including spaces.
+   >
+   > -- [Butterick's Practical Typography](https://practicaltypography.com/line-length.html)
 
 2. **Tabs for indenting** (with exceptions for white space-sensitive data files)
-  - [Tabs are more accessible](https://alexandersandberg.com/articles/default-to-tabs-instead-of-spaces-for-an-accessible-first-environment/)
-  - [Tabs are customizable](https://garrit.xyz/posts/2022-06-29-the-only-true-answer-to-tabs-vs-spaces) (use whatever tab size you like on your computer)
+
+- [Tabs are more accessible](https://alexandersandberg.com/articles/default-to-tabs-instead-of-spaces-for-an-accessible-first-environment/)
+- [Tabs are customizable](https://garrit.xyz/posts/2022-06-29-the-only-true-answer-to-tabs-vs-spaces) (use whatever tab size you like on your computer)
 
 3. Insert final newline at end of file: [Text files end in a newline](https://unix.stackexchange.com/a/18789)
 
 4. In function and method declarations, the opening brace SHOULD stay on the same line
 
-    ```javascript
-    function hello() {
-      return 'hello';
-    }
-    ```
+   ```javascript
+   function hello() {
+     return 'hello'
+   }
+   ```
 
 #### EditorConfig
 
@@ -169,7 +172,7 @@ To release code under a prerelease tag before a formal release is ready, use `np
 ##### Prerelease ID's
 
 | ID        | Feature status                          | Bug status     | Testing status                     |
-| :---      | :---                                    | :---           | :---                               |
+| :-------- | :-------------------------------------- | :------------- | :--------------------------------- |
 | `nightly` | May not have any complete features yet. | May have bugs. | Not ready for testing.             |
 | `alpha`   | At least 1 feature is complete.         | May have bugs. | Ready for developer testing.       |
 | `beta`    | All features are complete.              | May have bugs. | Ready for QA testing.              |
